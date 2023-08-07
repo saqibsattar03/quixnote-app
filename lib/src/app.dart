@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:quix_note/src/components/on_boarding/on_board_view_first.dart';
+import 'package:quix_note/src/base/app_theme.dart';
+import 'package:quix_note/src/components/on_boarding/on_boarding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'components/home/home_page.dart';
@@ -27,9 +28,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return  MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Quix Note',
-        home: OnBoardViewOne());
+        theme: AppThemes.light,
+        home: OnBoardView());
   }
 }

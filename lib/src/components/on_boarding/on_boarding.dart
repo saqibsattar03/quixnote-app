@@ -1,25 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:quix_note/src/components/home/home_page.dart';
+import 'package:quix_note/src/components/on_boarding/widgets/on_boarding_layout.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
-import 'package:quix_note/src/utils/app_fonts.dart';
 import 'package:quix_note/src/utils/app_images.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-const style = TextStyle(
-    color: AppColors.darkTeal,
-    fontSize: 29,
-    fontFamily: AppFonts.urbanistSemiBold);
-
-class OnBoardViewOne extends StatefulWidget {
-  const OnBoardViewOne({super.key});
+class OnBoardView extends StatefulWidget {
+  const OnBoardView({super.key});
 
   @override
-  State<OnBoardViewOne> createState() => _OnBoardViewOneState();
+  State<OnBoardView> createState() => _OnBoardViewState();
 }
 
-class _OnBoardViewOneState extends State<OnBoardViewOne> {
+class _OnBoardViewState extends State<OnBoardView> {
   final controller = PageController();
   bool isLastPage = false;
   int step = 0;
@@ -30,7 +23,6 @@ class _OnBoardViewOneState extends State<OnBoardViewOne> {
   ];
 
   void pressToAnimate({int index = -1}) {
-    print('Index => $index');
     setState(() {
       if (step >= _animationValues.length - 1) {
         if (index != -1) {
@@ -53,57 +45,6 @@ class _OnBoardViewOneState extends State<OnBoardViewOne> {
     super.dispose();
   }
 
-  Widget buildPage(
-          {required String urlImage,
-          required String title,
-          required String subtitle}) =>
-      Container(
-        color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            TextButton(
-              onPressed: () {
-                controller.jumpToPage(2);
-              },
-              style: ButtonStyle(
-                  textStyle: MaterialStateProperty.all<TextStyle>(
-                    const TextStyle(
-                        fontSize: 18, // Set the font size of the text
-                        fontFamily:
-                            AppFonts.gilroyMedium // Set the color of the text
-                        ),
-                  ),
-                  foregroundColor:
-                      MaterialStateProperty.all(AppColors.lightGrey)),
-              child: const Text('Skip'),
-            ),
-            const SizedBox(
-              height: 90,
-            ),
-            SvgPicture.asset(urlImage),
-            const SizedBox(
-              height: 104,
-            ),
-            Text(
-              title,
-              style: style,
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            SizedBox(
-              width: 250,
-              child: Text(
-                subtitle,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.darkGrey, fontSize: 17),
-              ),
-            ),
-          ],
-        ),
-      );
-
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
@@ -116,23 +57,26 @@ class _OnBoardViewOneState extends State<OnBoardViewOne> {
               child: PageView(
                 controller: controller,
                 children: [
-                  buildPage(
+                  BoardingLayout(
                     urlImage: AppImages.onBoardingOne,
                     title: "Lorem Ipsum Dolor",
                     subtitle:
                         "Lorem ipsum dolor sit amet, consetetur  sadipscing elitr",
+                    controller: controller,
                   ),
-                  buildPage(
+                  BoardingLayout(
                     urlImage: AppImages.onBoardingTwo,
                     title: "Lorem Ipsum Dolor",
                     subtitle:
                         "Lorem ipsum dolor sit amet, consetetur  sadipscing elitr",
+                    controller: controller,
                   ),
-                  buildPage(
+                  BoardingLayout(
                     urlImage: AppImages.onBoardingThree,
                     title: "Lorem Ipsum Dolor",
                     subtitle:
                         "Lorem ipsum dolor sit amet, consetetur  sadipscing elitr",
+                    controller: controller,
                   )
                 ],
               ),
