@@ -60,6 +60,7 @@ class NotesPage extends StatelessWidget {
             ),
             Expanded(
                 child: ListView.separated(
+                  shrinkWrap: true,
               separatorBuilder: (BuildContext context, int index) {
                 return const Divider(
                   thickness: 1,
@@ -69,35 +70,7 @@ class NotesPage extends StatelessWidget {
                 );
               },
               itemBuilder: (context, index) {
-                if (index == 0) {
-                  return const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Divider(
-                        thickness: 1,
-                        indent: 10,
-                        endIndent: 10,
-                        color: AppColors.dividerGrey,
-                      ),
-                      SingleNote(),
-                    ],
-                  );
-                } else if (index == 4 - 1) {
-                  return const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SingleNote(),
-                      Divider(
-                        thickness: 1,
-                        indent: 10,
-                        endIndent: 10,
-                        color: AppColors.dividerGrey,
-                      ),
-                    ],
-                  );
-                } else {
-                  return const SingleNote();
-                }
+                return  SingleNote(index:index);
               },
               itemCount: 4,
             ))
