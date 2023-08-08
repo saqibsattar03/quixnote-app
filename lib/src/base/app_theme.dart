@@ -12,7 +12,8 @@ class AppThemes {
       titleLarge: TextStyle(
           color: AppColors.darkTeal,
           fontSize: 29,
-          fontFamily: AppFonts.urbanistSemiBold),
+          fontFamily: AppFonts.urbanistSemiBold
+      ),
     ),
     dividerTheme: const DividerThemeData(
       space: 1,

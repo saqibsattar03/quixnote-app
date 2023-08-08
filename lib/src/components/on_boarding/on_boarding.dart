@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quix_note/src/components/home/home_page.dart';
 import 'package:quix_note/src/components/on_boarding/widgets/on_boarding_layout.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+import '../../base/data.dart';
 
 class OnBoardView extends StatefulWidget {
   const OnBoardView({super.key});
@@ -29,7 +32,7 @@ class _OnBoardViewState extends State<OnBoardView> {
           step = index;
           isLastPage = false;
         } else {
-          isLastPage = true;
+          // isLastPage = true;
         }
       } else {
         if (index == -1) {
@@ -50,12 +53,16 @@ class _OnBoardViewState extends State<OnBoardView> {
     final media = MediaQuery.of(context);
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.fromLTRB(20, 20+media.padding.top, 20, 20),
+        padding: EdgeInsets.fromLTRB(20, 20 + media.padding.top, 20, 20),
         child: Column(
           children: [
             Expanded(
               child: PageView(
                 controller: controller,
+                onPageChanged: (index) => {
+                  if (index == 2)
+                    {isLastPage = true, AppData.setOnBoardingValue(true)}
+                },
                 children: [
                   BoardingLayout(
                     urlImage: AppImages.onBoardingOne,
@@ -81,6 +88,7 @@ class _OnBoardViewState extends State<OnBoardView> {
                 ],
               ),
             ),
+
             ///
           ],
         ),
@@ -139,6 +147,13 @@ class _OnBoardViewState extends State<OnBoardView> {
                         );
                         if (!isLastPage) {
                           pressToAnimate();
+                        } else {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const HomePage()),
+                              (Route<dynamic> route) => false);
                         }
                       },
                       backgroundColor: AppColors.primaryYellow,
