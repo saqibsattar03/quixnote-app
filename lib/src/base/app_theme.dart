@@ -8,12 +8,15 @@ class AppThemes {
     // useMaterial3: true,
     brightness: Brightness.light,
     primaryColor: AppColors.primaryYellow,
-    textTheme: const TextTheme(
-      titleLarge: TextStyle(
+    textTheme: TextTheme(
+      titleLarge: const TextStyle(
           color: AppColors.darkTeal,
           fontSize: 29,
-          fontFamily: AppFonts.urbanistSemiBold
-      ),
+          fontFamily: AppFonts.urbanistSemiBold),
+      titleMedium: TextStyle(
+          color: Colors.black.withOpacity(0.5),
+          fontSize: 18,
+          fontFamily: AppFonts.urbanistRegular),
     ),
     dividerTheme: const DividerThemeData(
       space: 1,
