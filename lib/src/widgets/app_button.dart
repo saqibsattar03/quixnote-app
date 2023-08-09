@@ -8,12 +8,14 @@ class AppButton extends StatelessWidget {
     required this.buttonTitle,
     this.buttonSize,
     this.iconData,
+    this.radius,
   }) : super(key: key);
 
   final Function() onPressed;
   final String buttonTitle;
   final Size? buttonSize;
   final IconData? iconData;
+  final double? radius;
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +48,9 @@ class AppButton extends StatelessWidget {
             minimumSize: buttonSize ?? const Size(200, 45),
             backgroundColor: AppColors.darkTeal,
             shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(8.0), // Adjust the radius as needed
+              borderRadius: BorderRadius.circular(
+                radius ?? 8.0,
+              ), // Adjust the radius as needed
             ),
           ),
           child: Padding(
