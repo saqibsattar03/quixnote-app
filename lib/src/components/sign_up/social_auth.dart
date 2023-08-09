@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quix_note/src/components/notes/notes_page.dart';
 import 'package:quix_note/src/components/sign_up/create_account_screen.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
@@ -67,11 +68,11 @@ class SocialAuth extends StatelessWidget {
                     onPressed: () {
 
 
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => const SecondRoute()),
-                      // );
-                      //
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const NotesPage()),
+                      );
+
 
                     },
                     buttonTitle: 'Login',

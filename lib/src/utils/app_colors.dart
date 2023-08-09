@@ -10,6 +10,5 @@ class AppColors {
   static const darkTeal = Color(0xff2E3D51);
   static const dividerGrey = Color(0xffDBDBDB);
 
-  static const lightYellow = Color(0xfffcf4ec);
 
 }

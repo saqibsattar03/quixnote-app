@@ -5,28 +5,30 @@ import '../utils/app_fonts.dart';
 
 class AppThemes {
   static final light = ThemeData(
-    // useMaterial3: true,
+    useMaterial3: true,
 
     brightness: Brightness.light,
     appBarTheme: const AppBarTheme(
       elevation: 0.0,
+
       color: Colors.white,
       iconTheme: IconThemeData(
+
         color: Colors.black,
       ),
     ),
     primaryColor: AppColors.primaryYellow,
     textTheme: TextTheme(
       titleLarge: const TextStyle(
-          color: AppColors.darkTeal,
-          fontSize: 29,
-          fontFamily: AppFonts.urbanistSemiBold),
+        color: AppColors.darkTeal,
+        fontSize: 29,
+        fontFamily: AppFonts.urbanistSemiBold,
+      ),
       titleMedium: TextStyle(
           color: Colors.black.withOpacity(0.5),
           fontSize: 18,
           fontFamily: AppFonts.urbanistRegular),
-
-      bodyMedium: TextStyle(
+      bodyMedium: const TextStyle(
         color: AppColors.darkTeal,
         // fontWeight: FontWeight.normal,
         fontFamily: AppFonts.urbanistRegular,

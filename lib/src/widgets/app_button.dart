@@ -7,10 +7,13 @@ class AppButton extends StatelessWidget {
     required this.onPressed,
     required this.buttonTitle,
     this.buttonSize,
+    this.iconData,
   }) : super(key: key);
+
   final Function() onPressed;
   final String buttonTitle;
   final Size? buttonSize;
+  final IconData? iconData;
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +52,24 @@ class AppButton extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(
-              buttonTitle,
-              style: textTheme.titleLarge!.copyWith(
-                fontSize: 16,
-                color: Colors.white,
-              ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  buttonTitle,
+                  style: textTheme.titleLarge!.copyWith(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                if (iconData != null)
+                  Icon(
+                    iconData,
+                    color: Colors.white,
+                  )
+              ],
             ),
           ),
         ),

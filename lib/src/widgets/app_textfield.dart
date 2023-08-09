@@ -78,6 +78,7 @@ class AppTextField extends StatelessWidget {
   final InputBorder? border;
   final String? initialVal;
 
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -102,33 +103,32 @@ class AppTextField extends StatelessWidget {
           filled: true,
           fillColor: fillColor,
           prefixIconColor: AppColors.darkTeal,
-          border: const OutlineInputBorder(
+          border:  OutlineInputBorder(
             borderSide: BorderSide(color: AppColors.lightYellow),
             borderRadius: BorderRadius.all(
-              Radius.circular(8.0),
+              Radius.circular(  borderRadius??8.0),
             ),
           ),
-          errorBorder: const OutlineInputBorder(
+          errorBorder:  OutlineInputBorder(
             borderSide: BorderSide(color: AppColors.lightYellow),
             borderRadius: BorderRadius.all(
-              Radius.circular(8.0),
+              Radius.circular( borderRadius??8.0),
             ),
           ),
-          focusedBorder: const OutlineInputBorder(
+          focusedBorder:  OutlineInputBorder(
             borderSide: BorderSide(color: AppColors.lightYellow),
             borderRadius: BorderRadius.all(
-              Radius.circular(8.0),
+              Radius.circular( borderRadius??8.0),
             ),
           ),
-          enabledBorder: const OutlineInputBorder(
+          enabledBorder:  OutlineInputBorder(
             borderSide: BorderSide(color: AppColors.lightYellow),
             borderRadius: BorderRadius.all(
-              Radius.circular(8.0),
+              Radius.circular( borderRadius??8.0),
             ),
           ),
           contentPadding: contentPadding,
           prefixIcon: prefix,
-
           suffixIcon: suffix,
           labelText: label,
           hintText: hint ?? '',
