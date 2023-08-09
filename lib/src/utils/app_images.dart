@@ -11,4 +11,9 @@ class AppImages {
   static const googleSvgIcon = 'assets/images/google.svg';
   static const gmailSvgIcon = 'assets/images/gmail.svg';
   static const appleSvgIcon = 'assets/images/apple.svg';
+  static const stopwatchIcon = 'assets/icons/stopwatch.svg';
+  static const successBackground = 'assets/images/bg_success.png';
+  static const successIcon = 'assets/icons/success.svg';
+  static const questionMarkIcon = 'assets/icons/question_mark.svg';
+  static const chevronRight = 'assets/icons/chevron_right.svg';
 }

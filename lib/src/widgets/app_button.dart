@@ -21,6 +21,7 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Stack(
+      alignment: Alignment.center,
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 10),
@@ -67,12 +68,13 @@ class AppButton extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(width: 10),
                 if (iconData != null)
+            ... [   const SizedBox(width: 10),
+
                   Icon(
                     iconData,
                     color: Colors.white,
-                  )
+                  )]
               ],
             ),
           ),

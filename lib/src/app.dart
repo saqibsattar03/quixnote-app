@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quix_note/src/base/app_theme.dart';
+import 'package:quix_note/src/components/notes/faq_page.dart';
 import 'package:quix_note/src/components/notes/notes_page.dart';
 import 'package:quix_note/src/components/on_boarding/on_boarding.dart';
 import 'package:quix_note/src/components/sign_up/social_auth.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Quix Note',
         theme: AppThemes.light,
-        home: AppData.getOnBoardingValue() ? const SocialAuth() : const OnBoardView());
+        home: AppData.getOnBoardingValue() ? const FaqPage() : const OnBoardView());
 
   }
 }

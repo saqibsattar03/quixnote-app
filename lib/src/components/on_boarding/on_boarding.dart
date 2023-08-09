@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quix_note/src/components/home/home_page.dart';
 import 'package:quix_note/src/components/on_boarding/widgets/on_boarding_layout.dart';
+import 'package:quix_note/src/components/sign_up/social_auth.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -152,7 +153,7 @@ class _OnBoardViewState extends State<OnBoardView> {
                               context,
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      const HomePage()),
+                                      const SocialAuth()),
                               (Route<dynamic> route) => false);
                         }
                       },
