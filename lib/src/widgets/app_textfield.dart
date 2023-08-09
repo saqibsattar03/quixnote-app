@@ -98,6 +98,7 @@ class AppTextField extends StatelessWidget {
         keyboardType: keyboardType,
         validator: validator,
         obscureText: obscure ?? false,
+        maxLines: maxLines??1,
         controller: textEditingController,
         decoration: InputDecoration(
           filled: true,

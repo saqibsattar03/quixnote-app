@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:otp_pin_field/otp_pin_field.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
+import 'package:quix_note/src/widgets/app_button.dart';
 
 class VerifyEmailScreen extends StatefulWidget {
   const VerifyEmailScreen({Key? key}) : super(key: key);
@@ -84,6 +85,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
               otpPinFieldDecoration:
                   OtpPinFieldDecoration.defaultPinBoxDecoration,
             ),
+
           ],
         ),
       ),

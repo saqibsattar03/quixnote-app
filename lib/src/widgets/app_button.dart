@@ -21,6 +21,7 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Stack(
+      alignment: Alignment.center,
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 10),
