@@ -52,28 +52,38 @@ class SearchNotes extends StatelessWidget {
                       showModalBottomSheet(
                         context: context,
                         backgroundColor: Colors.transparent,
+                        isScrollControlled: true,
                         builder: (BuildContext context) {
-                          return Stack(
-                            children: [
-                              const Column(
-                                children: [
-                                  SizedBox(
-                                    height: 50,
-                                  ),
-                                  ApplyFiltersSheet(),
-                                ],
-                              ),
-                              Positioned(
-                                top: 25,
-                                right:
-                                    MediaQuery.sizeOf(context).width * .5 - 10,
-                                child: const CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  radius: 25,
-                                  child: Icon(Icons.clear),
+                          return SizedBox(
+                            height: 456,
+                            child: Stack(
+                              children: [
+                                const Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 50,
+                                    ),
+                                    ApplyFiltersSheet(),
+                                  ],
                                 ),
-                              ),
-                            ],
+                                Positioned(
+                                  top: 25,
+                                  right: MediaQuery.sizeOf(context).width * .5 -
+                                      10,
+                                  child: InkWell(
+                                    borderRadius: const BorderRadius.all(Radius.circular(40.0)),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      radius: 25,
+                                      child: Icon(Icons.clear),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           );
                         },
                       );
@@ -226,6 +236,8 @@ class _ApplyFiltersSheetState extends State<ApplyFiltersSheet> {
                     ))
                 .toList(),
           ),
+
+        const  SizedBox(height: 20),
           AppButton(onPressed: () {}, buttonTitle: 'Apply')
         ],
       ),

@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quix_note/src/components/notes/add_note.dart';
 import 'package:quix_note/src/components/notes/configure_swipe.dart';
+import 'package:quix_note/src/components/notes/connect_account.dart';
+import 'package:quix_note/src/components/notes/my_subscription.dart';
+import 'package:quix_note/src/components/notes/note_detail.dart';
 import 'package:quix_note/src/components/notes/search_notes.dart';
 import 'package:quix_note/src/components/notes/widgets/single_note.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
@@ -45,10 +49,10 @@ class _NotesPageState extends State<NotesPage> {
                   children: [
                     InkWell(
                       onTap: () {
-
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const SearchNotes()),
+                          MaterialPageRoute(
+                              builder: (context) => const SearchNotes()),
                         );
                       },
                       child: CircleAvatar(
@@ -57,13 +61,20 @@ class _NotesPageState extends State<NotesPage> {
                         child: SvgPicture.asset(AppImages.search),
                       ),
                     ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    CircleAvatar(
-                      backgroundColor: AppColors.lightYellow,
-                      radius: 26,
-                      child: SvgPicture.asset(AppImages.plusIcon),
+                    const SizedBox(width: 5),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AddNote()),
+                        );
+                      },
+                      child: CircleAvatar(
+                        backgroundColor: AppColors.lightYellow,
+                        radius: 26,
+                        child: SvgPicture.asset(AppImages.plusIcon),
+                      ),
                     ),
                   ],
                 ),
@@ -94,7 +105,15 @@ class _NotesPageState extends State<NotesPage> {
                 );
               },
               itemBuilder: (context, index) {
-                return SingleNote(index: index);
+                return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const NoteDetail()),
+                      );
+                    },
+                    child: SingleNote(index: index));
               },
               itemCount: 4,
             ))
@@ -170,13 +189,34 @@ class _NotesPageState extends State<NotesPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const DrawerItemTitle(title: 'Change Password'),
-                        const DrawerItemTitle(title: 'Connect Account'),
+                        InkWell(
+                            onTap: () {
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MySubscription()),
+                              );
+                            },
+                            child: const DrawerItemTitle(
+                                title: 'Change Password')),
+                        InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ConnectAccounts()),
+                              );
+                            },
+                            child: const DrawerItemTitle(
+                                title: 'Connect Account')),
                         InkWell(
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const ConfigureSwipe()),
+                              MaterialPageRoute(
+                                  builder: (context) => const ConfigureSwipe()),
                             );
                           },
                           child:
@@ -254,7 +294,7 @@ class DrawerItemTitle extends StatelessWidget {
             color: Colors.black,
           ),
         ),
-        const SizedBox(height: 20)
+        const SizedBox(height: 25)
       ],
     );
   }

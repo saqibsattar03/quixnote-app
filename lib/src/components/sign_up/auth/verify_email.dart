@@ -94,6 +94,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
               otpPinFieldDecoration:
                   OtpPinFieldDecoration.defaultPinBoxDecoration,
             ),
+
             const SizedBox(
               height: 38,
             ),
@@ -135,6 +136,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                   fontFamily: AppFonts.urbanistSemiBold,
                   decoration: TextDecoration.underline),
             )
+
           ],
         ),
       ),
