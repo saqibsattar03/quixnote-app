@@ -1,0 +1,64 @@
+import 'package:flutter/material.dart';
+import 'package:quix_note/src/utils/app_colors.dart';
+
+class AppButton extends StatelessWidget {
+  const AppButton({
+    Key? key,
+    required this.onPressed,
+    required this.buttonTitle,
+    this.buttonSize,
+  }) : super(key: key);
+  final Function() onPressed;
+  final String buttonTitle;
+  final Size? buttonSize;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Center(
+            child: Container(
+              height: 35,
+              width: 200,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    blurRadius: 50,
+                    spreadRadius: 0,
+                    offset: const Offset(0, 20),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            minimumSize: buttonSize ?? const Size(200, 45),
+            backgroundColor: AppColors.darkTeal,
+            shape: RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.circular(8.0), // Adjust the radius as needed
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              buttonTitle,
+              style: textTheme.titleLarge!.copyWith(
+                fontSize: 16,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

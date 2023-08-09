@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quix_note/src/base/app_theme.dart';
 import 'package:quix_note/src/components/on_boarding/on_boarding.dart';
-import 'package:quix_note/src/components/sign_up/sign_up.dart';
+import 'package:quix_note/src/components/sign_up/social_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'base/data.dart';
-import 'components/home/home_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -29,6 +27,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Quix Note',
         theme: AppThemes.light,
-        home: AppData.getOnBoardingValue() ? const SignUp() : const OnBoardView());
+        home: AppData.getOnBoardingValue() ? const SocialAuth() : const OnBoardView());
   }
 }

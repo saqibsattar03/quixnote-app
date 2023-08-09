@@ -4,17 +4,30 @@ import '../utils/app_colors.dart';
 import '../utils/app_fonts.dart';
 
 class AppThemes {
-  static final light = ThemeData.light().copyWith(
+  static final light = ThemeData(
     // useMaterial3: true,
+
     brightness: Brightness.light,
+    appBarTheme: const AppBarTheme(
+      elevation: 0.0,
+      color: Colors.white,
+      iconTheme: IconThemeData(
+        color: Colors.black,
+      ),
+    ),
     primaryColor: AppColors.primaryYellow,
     textTheme: const TextTheme(
       titleLarge: TextStyle(
           color: AppColors.darkTeal,
           fontSize: 29,
-          fontFamily: AppFonts.urbanistSemiBold
+          fontFamily: AppFonts.urbanistSemiBold),
+      bodyMedium: TextStyle(
+        color: AppColors.darkTeal,
+        // fontWeight: FontWeight.normal,
+        fontFamily: AppFonts.urbanistRegular,
       ),
     ),
+
     dividerTheme: const DividerThemeData(
       space: 1,
       color: Colors.black12,
