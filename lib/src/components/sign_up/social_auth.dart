@@ -64,7 +64,16 @@ class SocialAuth extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   AppButton(
-                    onPressed: () {},
+                    onPressed: () {
+
+
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => const SecondRoute()),
+                      // );
+                      //
+
+                    },
                     buttonTitle: 'Login',
                     buttonSize: const Size(double.infinity, 46),
                   ),
