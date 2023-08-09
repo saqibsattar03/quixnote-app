@@ -16,11 +16,16 @@ class AppThemes {
       ),
     ),
     primaryColor: AppColors.primaryYellow,
-    textTheme: const TextTheme(
-      titleLarge: TextStyle(
+    textTheme: TextTheme(
+      titleLarge: const TextStyle(
           color: AppColors.darkTeal,
           fontSize: 29,
           fontFamily: AppFonts.urbanistSemiBold),
+      titleMedium: TextStyle(
+          color: Colors.black.withOpacity(0.5),
+          fontSize: 18,
+          fontFamily: AppFonts.urbanistRegular),
+
       bodyMedium: TextStyle(
         color: AppColors.darkTeal,
         // fontWeight: FontWeight.normal,
