@@ -53,29 +53,27 @@ class SearchNotes extends StatelessWidget {
                         context: context,
                         backgroundColor: Colors.transparent,
                         builder: (BuildContext context) {
-                          return Container(
-                            child: Stack(
-                              children: [
-                                const Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 50,
-                                    ),
-                                    ApplyFiltersSheet(),
-                                  ],
-                                ),
-                                Positioned(
-                                  top: 25,
-                                  right: MediaQuery.sizeOf(context).width * .5 -
-                                      10,
-                                  child: const CircleAvatar(
-                                    backgroundColor: Colors.white,
-                                    radius: 25,
-                                    child: Icon(Icons.clear),
+                          return Stack(
+                            children: [
+                              const Column(
+                                children: [
+                                  SizedBox(
+                                    height: 50,
                                   ),
+                                  ApplyFiltersSheet(),
+                                ],
+                              ),
+                              Positioned(
+                                top: 25,
+                                right:
+                                    MediaQuery.sizeOf(context).width * .5 - 10,
+                                child: const CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  radius: 25,
+                                  child: Icon(Icons.clear),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           );
                         },
                       );
@@ -147,17 +145,17 @@ class _ApplyFiltersSheetState extends State<ApplyFiltersSheet> {
         vertical: 20,
       ),
       child: Column(
-
         crossAxisAlignment: CrossAxisAlignment.start,
-
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Filters',
-                style: textTheme.titleLarge!
-                    .copyWith(fontSize: 28, fontWeight: FontWeight.w600),
+                style: textTheme.titleLarge!.copyWith(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               Text(
                 'Reset',
@@ -209,23 +207,23 @@ class _ApplyFiltersSheetState extends State<ApplyFiltersSheet> {
           Row(
             children: priority
                 .map((e) => Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 18.0,
-                        vertical: 8.0,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(8.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18.0,
+                            vertical: 8.0,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8.0),
+                            ),
+                          ),
+                          child: Text(e),
                         ),
                       ),
-                      child: Text(e),
-                    ),
-                  ),
-                ))
+                    ))
                 .toList(),
           ),
           AppButton(onPressed: () {}, buttonTitle: 'Apply')
