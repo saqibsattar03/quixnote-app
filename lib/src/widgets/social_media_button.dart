@@ -30,16 +30,21 @@ class SocialMediaButton extends StatelessWidget {
           color: AppColors.lightYellow,
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SvgPicture.asset(
               assetIcon,
               height: 32,
               width: 32,
             ),
-            Text(
-              title,
-              style: textTheme.titleLarge!.copyWith(fontSize: 16),
+            const SizedBox(
+              width: 60,
+            ),
+            Expanded(
+              child: Text(
+                title,
+                style: textTheme.titleLarge!.copyWith(fontSize: 16),
+              ),
             )
           ],
         ),

@@ -16,4 +16,8 @@ class AppImages {
   static const successIcon = 'assets/icons/success.svg';
   static const questionMarkIcon = 'assets/icons/question_mark.svg';
   static const chevronRight = 'assets/icons/chevron_right.svg';
+  static const avatarFrame = 'assets/images/avatar_frame.svg';
+  static const editIcon = 'assets/icons/edit_icon.svg';
+  static const changePassword = 'assets/icons/change_password.svg';
+  static const resetEmail = 'assets/icons/reset_email.svg';
 }
