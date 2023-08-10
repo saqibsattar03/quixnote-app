@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:quix_note/src/base/nav.dart';
+import 'package:quix_note/src/components/notes/my_subscription.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
@@ -12,6 +14,7 @@ class AddNote extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(
           'Add Note',
           style: TextStyle(fontSize: 22),
@@ -61,7 +64,10 @@ class AddNote extends StatelessWidget {
             ),
             Column(
               children: [
-                AppButton(onPressed: () {}, buttonTitle: 'Save to Phone'),
+                AppButton(onPressed: () {
+                  AppNavigation.push(const MySubscription());
+
+                }, buttonTitle: 'Save to Phone'),
                 const SizedBox(height: 30)
               ],
             )

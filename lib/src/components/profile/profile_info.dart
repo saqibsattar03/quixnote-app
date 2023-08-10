@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quix_note/src/components/sign_up/verify_email.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
-
 import '../../widgets/app_button.dart';
 import '../../widgets/app_textfield.dart';
 import '../sign_in/sign_in.dart';
-import '../sign_up/auth/verify_email.dart';
 
 class ProfileInfo extends StatelessWidget {
   const ProfileInfo({super.key});

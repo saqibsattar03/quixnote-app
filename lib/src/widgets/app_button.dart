@@ -9,6 +9,7 @@ class AppButton extends StatelessWidget {
     this.buttonSize,
     this.iconData,
     this.radius,
+    this.buttonTitleFontSize,
   }) : super(key: key);
 
   final Function() onPressed;
@@ -16,6 +17,7 @@ class AppButton extends StatelessWidget {
   final Size? buttonSize;
   final IconData? iconData;
   final double? radius;
+  final double? buttonTitleFontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -64,17 +66,17 @@ class AppButton extends StatelessWidget {
                 Text(
                   buttonTitle,
                   style: textTheme.titleLarge!.copyWith(
-                    fontSize: 16,
+                    fontSize:buttonTitleFontSize?? 16,
                     color: Colors.white,
                   ),
                 ),
-                if (iconData != null)
-            ... [   const SizedBox(width: 10),
-
+                if (iconData != null) ...[
+                  const SizedBox(width: 10),
                   Icon(
                     iconData,
                     color: Colors.white,
-                  )]
+                  )
+                ]
               ],
             ),
           ),

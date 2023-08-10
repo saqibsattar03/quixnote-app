@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/notes/notes_page.dart';
+import 'package:quix_note/src/components/sign_in/social_auth.dart';
 import 'package:quix_note/src/components/sign_up/create_account_screen.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
@@ -43,11 +45,8 @@ class SocialAuth extends StatelessWidget {
                   const SizedBox(height: 15),
                   SocialMediaButton(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const CreateAccountScreen()),
-                      );
+                      print('object');
+                      AppNavigation.push(const CreateAccountScreen());
                     },
                     title: 'SignUp with Email',
                     assetIcon: AppImages.gmailSvgIcon,
@@ -66,14 +65,7 @@ class SocialAuth extends StatelessWidget {
                   const SizedBox(height: 10),
                   AppButton(
                     onPressed: () {
-
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const NotesPage()),
-                      );
-
-
+                      AppNavigation.push(const SocialAuthSignIn());
                     },
                     buttonTitle: 'Login',
                     buttonSize: const Size(double.infinity, 46),

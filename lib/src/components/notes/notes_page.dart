@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/notes/add_note.dart';
 import 'package:quix_note/src/components/notes/configure_swipe.dart';
 import 'package:quix_note/src/components/notes/connect_account.dart';
@@ -8,6 +8,10 @@ import 'package:quix_note/src/components/notes/my_subscription.dart';
 import 'package:quix_note/src/components/notes/note_detail.dart';
 import 'package:quix_note/src/components/notes/search_notes.dart';
 import 'package:quix_note/src/components/notes/widgets/single_note.dart';
+import 'package:quix_note/src/components/profile/profile_info.dart';
+import 'package:quix_note/src/components/sign_up/change_password.dart';
+import 'package:quix_note/src/components/sign_up/privacy_policy.dart';
+import 'package:quix_note/src/components/sign_up/terms_conditions.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 
@@ -49,11 +53,7 @@ class _NotesPageState extends State<NotesPage> {
                   children: [
                     InkWell(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SearchNotes()),
-                        );
+                        AppNavigation.push(const SearchNotes());
                       },
                       child: CircleAvatar(
                         backgroundColor: AppColors.lightYellow,
@@ -64,11 +64,7 @@ class _NotesPageState extends State<NotesPage> {
                     const SizedBox(width: 5),
                     InkWell(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AddNote()),
-                        );
+                        AppNavigation.push(const AddNote());
                       },
                       child: CircleAvatar(
                         backgroundColor: AppColors.lightYellow,
@@ -107,11 +103,7 @@ class _NotesPageState extends State<NotesPage> {
               itemBuilder: (context, index) {
                 return InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const NoteDetail()),
-                      );
+                      AppNavigation.push(const NoteDetail());
                     },
                     child: SingleNote(index: index));
               },
@@ -124,8 +116,6 @@ class _NotesPageState extends State<NotesPage> {
         child: Drawer(
           width: double.infinity,
           child: Container(
-            // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 30),
-            //  width: double.infinity,
             color: AppColors.lightYellow,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,10 +134,15 @@ class _NotesPageState extends State<NotesPage> {
                               bottomRight: Radius.circular(40))),
                       child: Row(
                         children: [
-                          const CircleAvatar(
-                            backgroundColor: Colors.black,
-                            radius: 26,
-                            child: Icon(Icons.person),
+                          InkWell(
+                            onTap: () {
+                              AppNavigation.push(const ProfileInfo());
+                            },
+                            child: const CircleAvatar(
+                              backgroundColor: Colors.black,
+                              radius: 26,
+                              child: Icon(Icons.person),
+                            ),
                           ),
                           const SizedBox(width: 10),
                           Column(
@@ -191,33 +186,19 @@ class _NotesPageState extends State<NotesPage> {
                       children: [
                         InkWell(
                             onTap: () {
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const MySubscription()),
-                              );
+                              AppNavigation.push(const ChangePassword());
                             },
                             child: const DrawerItemTitle(
                                 title: 'Change Password')),
                         InkWell(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ConnectAccounts()),
-                              );
+                              AppNavigation.push(const ConnectAccounts());
                             },
                             child: const DrawerItemTitle(
                                 title: 'Connect Account')),
                         InkWell(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const ConfigureSwipe()),
-                            );
+                            AppNavigation.push(const ConfigureSwipe());
                           },
                           child:
                               const DrawerItemTitle(title: 'Configure swipe'),
@@ -247,8 +228,18 @@ class _NotesPageState extends State<NotesPage> {
                             )
                           ],
                         ),
-                        const DrawerItemTitle(title: 'Terma & COnditions'),
-                        const DrawerItemTitle(title: 'Privacy Policy'),
+                        InkWell(
+                            onTap: () {
+                              AppNavigation.push(const TermsAndConditions());
+                            },
+                            child: const DrawerItemTitle(
+                                title: 'Terms & Conditions')),
+                        InkWell(
+                            onTap: () {
+                              AppNavigation.push(const PrivacyPolicy());
+                            },
+                            child:
+                                const DrawerItemTitle(title: 'Privacy Policy')),
                         const DrawerItemTitle(title: 'Contact Us'),
                       ],
                     ),

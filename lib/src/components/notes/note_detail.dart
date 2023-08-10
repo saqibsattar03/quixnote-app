@@ -33,19 +33,32 @@ class NoteDetail extends StatelessWidget {
               color: Colors.black,
             ),
             itemBuilder: (context) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 1,
-                child: Text("Share"),
+                child: Text(
+                  "Share",
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 2,
                 // row has two child icon and text
-                child: Text("About"),
+                child: Text(
+                  "About",
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
               ),
             ],
-            // offset: const Offset(0, 100),
+            offset: const Offset(10, 20),
             color: Colors.white,
             elevation: 2,
+            surfaceTintColor: Colors.white,
           ),
         ],
       ),

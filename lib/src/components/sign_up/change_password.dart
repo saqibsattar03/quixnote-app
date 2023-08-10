@@ -1,13 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:quix_note/src/components/sign_up/auth/privacy_policy.dart';
-import 'package:quix_note/src/components/sign_up/auth/terms_conditions.dart';
-import 'package:quix_note/src/components/sign_up/auth/verify_email.dart';
+
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
+
+import 'verify_email.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({Key? key}) : super(key: key);

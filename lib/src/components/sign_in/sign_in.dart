@@ -1,8 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:quix_note/src/components/sign_up/auth/privacy_policy.dart';
-import 'package:quix_note/src/components/sign_up/auth/terms_conditions.dart';
-import 'package:quix_note/src/components/sign_up/auth/verify_email.dart';
+import 'package:quix_note/src/base/nav.dart';
+import 'package:quix_note/src/components/notes/notes_page.dart';
+import 'package:quix_note/src/components/sign_up/reset_password_email.dart';
+import 'package:quix_note/src/components/sign_up/verify_email.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
@@ -86,11 +87,16 @@ class _SignInScreenState extends State<SignIn> {
                 ),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: Text(
-                    'Forgot Password?',
-                    style: textTheme.bodyMedium!.copyWith(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
+                  child: InkWell(
+                    onTap: () {
+                      AppNavigation.push(const ResetPasswordEmail());
+                    },
+                    child: Text(
+                      'Forgot Password?',
+                      style: textTheme.bodyMedium!.copyWith(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 )
@@ -103,12 +109,7 @@ class _SignInScreenState extends State<SignIn> {
                   child: AppButton(
                     buttonSize: const Size(double.infinity, 50),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                            const VerifyEmailScreen()),
-                      );
+                      AppNavigation.push(const NotesPage());
                     },
                     buttonTitle: 'Login',
                   ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
+import 'package:quix_note/src/utils/app_images.dart';
 
 class MySubscription extends StatelessWidget {
   const MySubscription({Key? key}) : super(key: key);
@@ -36,6 +38,9 @@ class MySubscription extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
           child: Column(
             children: [
+              const SizedBox(height: 10),
+              SvgPicture.asset(AppImages.subscriptionIcon),
+              const SizedBox(height: 20),
               Text(
                 'My Subscription',
                 textAlign: TextAlign.center,

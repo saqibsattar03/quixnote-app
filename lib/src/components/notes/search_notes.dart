@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:quix_note/src/base/data.dart';
+import 'package:quix_note/src/base/nav.dart';
+import 'package:quix_note/src/components/notes/note_detail.dart';
 import 'package:quix_note/src/components/notes/widgets/single_note.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
@@ -71,7 +72,8 @@ class SearchNotes extends StatelessWidget {
                                   right: MediaQuery.sizeOf(context).width * .5 -
                                       10,
                                   child: InkWell(
-                                    borderRadius: const BorderRadius.all(Radius.circular(40.0)),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(40.0)),
                                     onTap: () {
                                       Navigator.pop(context);
                                     },
@@ -115,7 +117,11 @@ class SearchNotes extends StatelessWidget {
                   );
                 },
                 itemBuilder: (context, index) {
-                  return SingleNote(index: index);
+                  return InkWell(
+                      onTap: () {
+                        AppNavigation.push(const NoteDetail());
+                      },
+                      child: SingleNote(index: index));
                 },
                 itemCount: 4,
               ))
@@ -236,8 +242,7 @@ class _ApplyFiltersSheetState extends State<ApplyFiltersSheet> {
                     ))
                 .toList(),
           ),
-
-        const  SizedBox(height: 20),
+          const SizedBox(height: 20),
           AppButton(onPressed: () {}, buttonTitle: 'Apply')
         ],
       ),

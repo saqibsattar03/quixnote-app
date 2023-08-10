@@ -1,8 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:quix_note/src/components/sign_up/auth/privacy_policy.dart';
-import 'package:quix_note/src/components/sign_up/auth/terms_conditions.dart';
-import 'package:quix_note/src/components/sign_up/auth/verify_email.dart';
+import 'package:quix_note/src/base/nav.dart';
+import 'package:quix_note/src/components/sign_up/privacy_policy.dart';
+import 'package:quix_note/src/components/sign_up/terms_conditions.dart';
+import 'package:quix_note/src/components/sign_up/verify_email.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
@@ -263,11 +264,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 child: AppButton(
                   buttonSize: const Size(double.infinity, 50),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const VerifyEmailScreen()),
-                    );
+                    AppNavigation.push(const VerifyEmailScreen());
                   },
                   buttonTitle: 'Create Account',
                 ),

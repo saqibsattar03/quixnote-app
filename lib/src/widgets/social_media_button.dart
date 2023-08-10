@@ -37,9 +37,7 @@ class SocialMediaButton extends StatelessWidget {
               height: 32,
               width: 32,
             ),
-            const SizedBox(
-              width: 60,
-            ),
+            const SizedBox(width: 50),
             Expanded(
               child: Text(
                 title,

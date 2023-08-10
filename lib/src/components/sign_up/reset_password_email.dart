@@ -1,13 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:quix_note/src/components/sign_up/auth/privacy_policy.dart';
-import 'package:quix_note/src/components/sign_up/auth/terms_conditions.dart';
-import 'package:quix_note/src/components/sign_up/auth/verify_email.dart';
+import 'package:quix_note/src/base/nav.dart';
+import 'package:quix_note/src/components/sign_up/reset_password.dart';
+
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
+
+import 'verify_email.dart';
 
 class ResetPasswordEmail extends StatefulWidget {
   const ResetPasswordEmail({Key? key}) : super(key: key);
@@ -45,13 +47,14 @@ class _ResetPasswordEmailScreenState extends State<ResetPasswordEmail> {
                     style: textTheme.titleLarge!.copyWith(
                       fontSize: 34,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 Align(
                   alignment: Alignment.center,
                   child: Text(
                     'We send you the link to @ex***@email.com, '
-                        'please check and click it to reset your password',
+                    'please check and click it to reset your password',
                     style: textTheme.bodyMedium!.copyWith(
                       fontSize: 14,
                     ),
@@ -69,17 +72,19 @@ class _ResetPasswordEmailScreenState extends State<ResetPasswordEmail> {
             Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: AppButton(
                     buttonSize: const Size(double.infinity, 50),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const VerifyEmailScreen()),
-                      );
+                      AppNavigation.push(const ResetPassword());
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => const VerifyEmailScreen()),
+                      // );
                     },
                     buttonTitle: 'Send to jhon****@email.com',
+                    buttonTitleFontSize: 14,
                   ),
                 ),
                 const SizedBox(height: 40)
