@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
+import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 
 class TermsAndConditions extends StatelessWidget {
@@ -10,7 +13,18 @@ class TermsAndConditions extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            AppNavigation.pop();
+          },
+        ),
+        actions: [
+          SvgPicture.asset(AppImages.profileIcon),
+          const SizedBox(width: 30)
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: SingleChildScrollView(

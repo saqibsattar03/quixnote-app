@@ -48,28 +48,32 @@ class SingleNote extends StatelessWidget {
                               .titleLarge!
                               .copyWith(fontSize: 24),
                         ),
-                        // const SizedBox(
-                        //   width: 11,
-                        // ),
-                        Card(
-                          elevation: 5,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadiusDirectional.all(
-                                Radius.circular(20)),
+                        const SizedBox(
+                          width: 7,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 6),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.0),
+                            color: Colors.white,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color.fromRGBO(0, 0, 0, 0.08),
+                                blurRadius: 20.0,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 8),
-                            child: Text(
-                              "Low",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(
-                                      color: AppColors.primaryYellow,
-                                      fontSize: 15,
-                                      fontFamily: AppFonts.urbanistSemiBold),
-                            ),
+                          child: Text(
+                            "Low",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                    color: AppColors.primaryYellow,
+                                    fontSize: 15,
+                                    fontFamily: AppFonts.urbanistSemiBold),
                           ),
                         ),
                       ],

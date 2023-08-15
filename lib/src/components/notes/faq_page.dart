@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:quix_note/src/base/nav.dart';
+import 'package:quix_note/src/components/notes/create_ticket.dart';
 import 'package:quix_note/src/utils/app_fonts.dart';
 
 import '../../utils/app_colors.dart';
@@ -89,11 +91,7 @@ class FaqPage extends StatelessWidget {
                 child: AppButton(
                   buttonSize: const Size(double.infinity, 50),
                   onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) => const VerifyEmailScreen()),
-                    // );
+                    AppNavigation.push(const CreateTicket());
                   },
                   buttonTitle: 'Contact Us',
                 ),

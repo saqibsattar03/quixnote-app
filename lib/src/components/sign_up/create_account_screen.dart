@@ -53,7 +53,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 ),
               ),
               const SizedBox(height: 40),
-              const FieldTitle(title: 'Name'),
+              const FieldTitle(title: 'Full name'),
               const SizedBox(height: 10),
               const AppTextField(
                 fillColor: AppColors.lightYellow,
@@ -285,10 +285,13 @@ class FieldTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Text(
-      title,
-      style: textTheme.bodyMedium!.copyWith(
-        fontSize: 16,
+    return Padding(
+      padding: const EdgeInsets.only(left: 10),
+      child: Text(
+        title,
+        style: textTheme.bodyMedium!.copyWith(
+          fontSize: 16,
+        ),
       ),
     );
   }

@@ -124,18 +124,4 @@ class _SignInScreenState extends State<SignIn> {
   }
 }
 
-class FieldTitle extends StatelessWidget {
-  const FieldTitle({Key? key, required this.title}) : super(key: key);
-  final String title;
 
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    return Text(
-      title,
-      style: textTheme.bodyMedium!.copyWith(
-        fontSize: 16,
-      ),
-    );
-  }
-}

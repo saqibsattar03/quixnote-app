@@ -5,6 +5,7 @@ import 'package:quix_note/src/components/sign_up/verify_email.dart';
 
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
+import 'package:quix_note/src/widgets/app_alert_dialog.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
 
@@ -110,13 +111,12 @@ class _ResetPasswordScreenState extends State<ResetPassword> {
                     padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: AppButton(
                       buttonSize: const Size(double.infinity, 50),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const VerifyEmailScreen()),
-                        );
-                      },
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) => const AppAlertDialog(
+                          message: 'Password is Changed',
+                        ),
+                      ),
                       buttonTitle: 'Save',
                     ),
                   ),

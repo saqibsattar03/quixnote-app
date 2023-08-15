@@ -21,4 +21,5 @@ class AppImages {
   static const changePassword = 'assets/icons/change_password.svg';
   static const resetEmail = 'assets/icons/reset_email.svg';
   static const subscriptionIcon='assets/icons/subs.svg';
+  static const profileIcon='assets/icons/profile_icon.svg';
 }

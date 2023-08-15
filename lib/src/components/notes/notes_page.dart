@@ -4,6 +4,7 @@ import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/notes/add_note.dart';
 import 'package:quix_note/src/components/notes/configure_swipe.dart';
 import 'package:quix_note/src/components/notes/connect_account.dart';
+import 'package:quix_note/src/components/notes/create_ticket.dart';
 import 'package:quix_note/src/components/notes/my_subscription.dart';
 import 'package:quix_note/src/components/notes/note_detail.dart';
 import 'package:quix_note/src/components/notes/search_notes.dart';
@@ -240,7 +241,11 @@ class _NotesPageState extends State<NotesPage> {
                             },
                             child:
                                 const DrawerItemTitle(title: 'Privacy Policy')),
-                        const DrawerItemTitle(title: 'Contact Us'),
+                        InkWell(
+                            onTap: () {
+                              AppNavigation.push(const CreateTicket());
+                            },
+                            child: const DrawerItemTitle(title: 'Contact Us')),
                       ],
                     ),
                   ),

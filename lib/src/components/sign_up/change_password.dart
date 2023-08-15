@@ -1,9 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quix_note/src/components/sign_up/reset_password_email.dart';
 
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
+import 'package:quix_note/src/widgets/app_alert_dialog.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
 
@@ -127,13 +129,12 @@ class _ChangePasswordScreenState extends State<ChangePassword> {
                     padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: AppButton(
                       buttonSize: const Size(double.infinity, 50),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const VerifyEmailScreen()),
-                        );
-                      },
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) => const AppAlertDialog(
+                          message: 'Your Password is changed',
+                        ),
+                      ),
                       buttonTitle: 'Save',
                     ),
                   ),

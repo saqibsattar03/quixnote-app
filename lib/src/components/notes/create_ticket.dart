@@ -49,6 +49,7 @@ class CreateTicket extends StatelessWidget {
                 const AppTextField(
                   maxLines: 5,
                   fillColor: AppColors.lightYellow,
+                  hint: 'My todo',
                 )
               ],
             ),

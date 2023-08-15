@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quix_note/src/components/sign_up/change_password.dart';
 import 'package:quix_note/src/components/sign_up/verify_email.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
@@ -70,7 +71,7 @@ class ProfileInfo extends StatelessWidget {
                   ],
                 ),
               ),
-              const Padding(
+               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 29),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
