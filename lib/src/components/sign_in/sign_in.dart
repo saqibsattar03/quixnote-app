@@ -54,52 +54,55 @@ class _SignInScreenState extends State<SignIn> {
                     ),
                   ),
                 ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const FieldTitle(title: 'Email'),
-                const SizedBox(height: 10),
-                const AppTextField(
-                  hint: 'example@email.com',
-                  fillColor: AppColors.lightYellow,
-                  prefix: Icon(
-                    Icons.email,
-                  ),
+                const SizedBox(
+                  height: 70,
                 ),
-                const FieldTitle(title: 'Password'),
-                const SizedBox(height: 10),
-                AppTextField(
-                  hint: 'password',
-                  obscure: obscure,
-                  suffix: IconButton(
-                    icon: Icon(
-                      obscure ? Icons.visibility_off : Icons.visibility,
-                    ),
-                    onPressed: () {
-                      obscure = !obscure;
-                      setState(() {});
-                    },
-                  ),
-                  fillColor: AppColors.lightYellow,
-                  prefix: const Icon(Icons.lock),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: InkWell(
-                    onTap: () {
-                      AppNavigation.push(const ResetPasswordEmail());
-                    },
-                    child: Text(
-                      'Forgot Password?',
-                      style: textTheme.bodyMedium!.copyWith(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const FieldTitle(title: 'Email'),
+                    const SizedBox(height: 10),
+                    const AppTextField(
+                      hint: 'example@email.com',
+                      fillColor: AppColors.lightYellow,
+                      prefix: Icon(
+                        Icons.email,
                       ),
                     ),
-                  ),
-                )
+                    const FieldTitle(title: 'Password'),
+                    const SizedBox(height: 10),
+                    AppTextField(
+                      hint: 'password',
+                      obscure: obscure,
+                      suffix: IconButton(
+                        icon: Icon(
+                          obscure ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          obscure = !obscure;
+                          setState(() {});
+                        },
+                      ),
+                      fillColor: AppColors.lightYellow,
+                      prefix: const Icon(Icons.lock),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: InkWell(
+                        onTap: () {
+                          AppNavigation.push(const ResetPasswordEmail());
+                        },
+                        child: Text(
+                          'Forgot Password?',
+                          style: textTheme.bodyMedium!.copyWith(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ],
             ),
             Column(
@@ -123,5 +126,3 @@ class _SignInScreenState extends State<SignIn> {
     );
   }
 }
-
-

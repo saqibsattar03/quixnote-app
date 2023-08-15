@@ -18,34 +18,37 @@ class SocialMediaButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return InkWell(
-      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(8.0),
+    return TextButton(
+      onPressed: onTap,
+      style: ButtonStyle(
+        shape: MaterialStateProperty.all<OutlinedBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
           ),
-          color: AppColors.lightYellow,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SvgPicture.asset(
-              assetIcon,
-              height: 32,
-              width: 32,
+        backgroundColor: MaterialStateProperty.all<Color>(
+          AppColors.lightYellow,
+        ),
+        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+          const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SvgPicture.asset(
+            assetIcon,
+            height: 32,
+            width: 32,
+          ),
+          const SizedBox(width: 50),
+          Expanded(
+            child: Text(
+              title,
+              style: textTheme.titleLarge!.copyWith(fontSize: 16),
             ),
-            const SizedBox(width: 50),
-            Expanded(
-              child: Text(
-                title,
-                style: textTheme.titleLarge!.copyWith(fontSize: 16),
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

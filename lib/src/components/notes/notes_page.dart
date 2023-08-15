@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quix_note/src/base/nav.dart';
-import 'package:quix_note/src/components/notes/add_note.dart';
 import 'package:quix_note/src/components/notes/configure_swipe.dart';
 import 'package:quix_note/src/components/notes/connect_account.dart';
 import 'package:quix_note/src/components/notes/create_ticket.dart';
-import 'package:quix_note/src/components/notes/my_subscription.dart';
 import 'package:quix_note/src/components/notes/note_detail.dart';
 import 'package:quix_note/src/components/notes/search_notes.dart';
 import 'package:quix_note/src/components/notes/widgets/single_note.dart';
@@ -15,6 +13,7 @@ import 'package:quix_note/src/components/sign_up/privacy_policy.dart';
 import 'package:quix_note/src/components/sign_up/terms_conditions.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
+import 'package:quix_note/src/widgets/app_circular_button.dart';
 
 class NotesPage extends StatefulWidget {
   const NotesPage({super.key});
@@ -33,46 +32,36 @@ class _NotesPageState extends State<NotesPage> {
     return Scaffold(
       key: _scaffoldKey,
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(25, 60, 25, 0),
+        padding: const EdgeInsets.fromLTRB(29, 60,29, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                InkWell(
-                  onTap: () {
+                AppCircularButton(
+                  onPressed: () {
                     _scaffoldKey.currentState!.openDrawer();
                   },
-                  child: CircleAvatar(
-                    backgroundColor: AppColors.extraLightGrey,
-                    radius: 32,
-                    child: SvgPicture.asset(AppImages.category),
-                  ),
+                  color: AppColors.extraLightGrey,
+                  svg: SvgPicture.asset(AppImages.category),
+                  height: 70,
+                  width: 70,
                 ),
                 Row(
                   children: [
-                    InkWell(
-                      onTap: () {
-                        AppNavigation.push(const SearchNotes());
-                      },
-                      child: CircleAvatar(
-                        backgroundColor: AppColors.lightYellow,
-                        radius: 26,
-                        child: SvgPicture.asset(AppImages.search),
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    InkWell(
-                      onTap: () {
-                        AppNavigation.push(const AddNote());
-                      },
-                      child: CircleAvatar(
-                        backgroundColor: AppColors.lightYellow,
-                        radius: 26,
-                        child: SvgPicture.asset(AppImages.plusIcon),
-                      ),
-                    ),
+                    AppCircularButton(
+                        onPressed: () {
+                          AppNavigation.push(const SearchNotes());
+                        },
+                        color: AppColors.lightYellow,
+                        svg: SvgPicture.asset(AppImages.search)),
+                    AppCircularButton(
+                        onPressed: () {
+                          AppNavigation.push(const ProfileInfo());
+                        },
+                        color: AppColors.lightYellow,
+                        svg: SvgPicture.asset(AppImages.plusIcon)),
                   ],
                 ),
               ],

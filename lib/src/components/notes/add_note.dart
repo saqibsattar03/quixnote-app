@@ -21,12 +21,11 @@ class AddNote extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+        padding: const EdgeInsets.symmetric(horizontal: 29, vertical: 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const SizedBox(height: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -64,10 +63,15 @@ class AddNote extends StatelessWidget {
             ),
             Column(
               children: [
-                AppButton(onPressed: () {
-                  AppNavigation.push(const MySubscription());
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: AppButton(
+                      buttonSize:  const Size(double.infinity, 56),
+                      onPressed: () {
+                    AppNavigation.push(const MySubscription());
 
-                }, buttonTitle: 'Save to Phone'),
+                  }, buttonTitle: 'Save to Phone'),
+                ),
                 const SizedBox(height: 30)
               ],
             )

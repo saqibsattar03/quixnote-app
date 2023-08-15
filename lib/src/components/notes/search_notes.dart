@@ -4,9 +4,12 @@ import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/notes/note_detail.dart';
 import 'package:quix_note/src/components/notes/widgets/single_note.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
+import 'package:quix_note/src/utils/app_fonts.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
+
+import '../../widgets/app_circular_button.dart';
 
 class SearchNotes extends StatelessWidget {
   const SearchNotes({Key? key}) : super(key: key);
@@ -17,7 +20,7 @@ class SearchNotes extends StatelessWidget {
       backgroundColor: const Color(0xfffcfbfc),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 29, vertical: 10),
           child: Column(
             children: [
               Row(
@@ -48,8 +51,8 @@ class SearchNotes extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  InkWell(
-                    onTap: () {
+                  AppCircularButton(
+                    onPressed: () {
                       showModalBottomSheet(
                         context: context,
                         backgroundColor: Colors.transparent,
@@ -90,16 +93,9 @@ class SearchNotes extends StatelessWidget {
                         },
                       );
                     },
-                    child: CircleAvatar(
-                      radius: 25,
-                      backgroundColor: AppColors.lightYellow,
-                      child: SizedBox(
-                        height: 20,
-                        width: 30,
-                        child: SvgPicture.asset(
-                          AppImages.filterIcon,
-                        ),
-                      ),
+                    color: AppColors.lightYellow,
+                    svg: SvgPicture.asset(
+                      AppImages.filterIcon,
                     ),
                   )
                 ],
@@ -160,91 +156,136 @@ class _ApplyFiltersSheetState extends State<ApplyFiltersSheet> {
         horizontal: 40,
         vertical: 20,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Filters',
-                style: textTheme.titleLarge!.copyWith(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              Text(
-                'Reset',
-                style: textTheme.displayMedium!.copyWith(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                  decoration: TextDecoration.underline,
-                ),
-              )
-            ],
-          ),
-          const SizedBox(height: 30),
-          Text(
-            'Date',
-            style: textTheme.displayMedium!.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Wrap(
-            children: date.map((e) {
-              int index = date.indexOf(e);
-              return Padding(
-                padding: const EdgeInsets.only(right: 12.0, bottom: 8.0),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 18.0, vertical: 8.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(8.0),
-                    ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Filters',
+                  style: textTheme.titleLarge!.copyWith(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w600,
                   ),
-                  child: Text(e),
                 ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 30),
-          Text(
-            'Priority',
-            style: textTheme.displayMedium!.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.w400,
+                Text(
+                  'Reset',
+                  style: textTheme.displayMedium!.copyWith(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w400,
+                    decoration: TextDecoration.underline,
+                  ),
+                )
+              ],
             ),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: priority
-                .map((e) => Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 18.0,
-                            vertical: 8.0,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(8.0),
-                            ),
-                          ),
-                          child: Text(e),
+            const SizedBox(height: 30),
+            Text(
+              'Date',
+              style: textTheme.displayMedium!.copyWith(
+                fontSize: 18,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              children: date.map((e) {
+                int index = date.indexOf(e);
+                return Padding(
+                  padding: const EdgeInsets.only(right: 12.0, bottom: 8.0),
+                  child: InkWell(
+                    onTap: () {
+                      selectedDate = index;
+                      setState(() {});
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 18.0, vertical: 8.0),
+                      decoration: BoxDecoration(
+                        color: selectedDate == index
+                            ? const Color(0xfff1c186).withOpacity(0.3)
+                            : Colors.white,
+                        border: Border.all(
+                            color: selectedDate == index
+                                ? const Color(0xfff1c186).withOpacity(0.3)
+                                : AppColors.lightGrey),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8.0),
                         ),
                       ),
-                    ))
-                .toList(),
-          ),
-          const SizedBox(height: 20),
-          AppButton(onPressed: () {}, buttonTitle: 'Apply')
-        ],
+                      child: Text(
+                        e,
+                        style: textTheme.displayMedium!.copyWith(
+                            fontSize: 15,
+                            fontFamily: selectedDate == index
+                                ? AppFonts.urbanistSemiBold
+                                : AppFonts.urbanistRegular,
+                            color: selectedDate == index
+                                ? AppColors.darkTeal
+                                : AppColors.lightGrey),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 30),
+            Text(
+              'Priority',
+              style: textTheme.displayMedium!.copyWith(
+                fontSize: 18,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: priority.map((e) {
+                int index = priority.indexOf(e);
+                return InkWell(
+                  onTap: () {
+                    selectedPriority = index;
+                    setState(() {});
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18.0,
+                        vertical: 8.0,
+                      ),
+                      decoration: BoxDecoration(
+                        color: selectedPriority == index
+                            ? const Color(0xfff1c186).withOpacity(0.3)
+                            : Colors.white,
+                        border: Border.all(
+                            color: selectedPriority == index
+                                ? const Color(0xfff1c186).withOpacity(0.3)
+                                : AppColors.lightGrey),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8.0),
+                        ),
+                      ),
+                      child: Text(
+                        e,
+                        style: textTheme.displayMedium!.copyWith(
+                            fontSize: 15,
+                            fontFamily: selectedPriority == index
+                                ? AppFonts.urbanistSemiBold
+                                : AppFonts.urbanistRegular,
+                            color: selectedPriority == index
+                                ? AppColors.darkTeal
+                                : AppColors.lightGrey),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+            AppButton(onPressed: () {}, buttonTitle: 'Apply')
+          ],
+        ),
       ),
     );
   }

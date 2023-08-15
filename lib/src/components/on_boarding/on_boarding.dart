@@ -94,77 +94,81 @@ class _OnBoardViewState extends State<OnBoardView> {
           ],
         ),
       ),
-      bottomSheet: Padding(
-        padding: const EdgeInsets.fromLTRB(48, 0, 16, 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SmoothPageIndicator(
-                controller: controller,
-                count: 3,
-                effect: ExpandingDotsEffect(
-                  spacing: 10,
-                  dotHeight: 12,
-                  dotWidth: 12,
-                  dotColor: AppColors.darkTeal.withOpacity(0.3),
-                  activeDotColor: AppColors.darkTeal,
+      bottomSheet: Container(
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(48, 0, 16, 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SmoothPageIndicator(
+                  controller: controller,
+                  count: 3,
+                  effect: ExpandingDotsEffect(
+                    spacing: 10,
+                    dotHeight: 12,
+                    dotWidth: 12,
+                    dotColor: AppColors.darkTeal.withOpacity(0.3),
+                    activeDotColor: AppColors.darkTeal,
+                  ),
+                  onDotClicked: (index) => {
+                        controller.animateToPage(index,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeInOut),
+                        pressToAnimate(index: index)
+                      }),
+              TweenAnimationBuilder<double>(
+                tween: Tween<double>(
+                  begin: _animationValues[step > 0 ? step - 1 : 0],
+                  end: _animationValues[step],
                 ),
-                onDotClicked: (index) => {
-                      controller.animateToPage(index,
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeInOut),
-                      pressToAnimate(index: index)
-                    }),
-            TweenAnimationBuilder<double>(
-              tween: Tween<double>(
-                begin: _animationValues[step > 0 ? step - 1 : 0],
-                end: _animationValues[step],
-              ),
-              duration: const Duration(milliseconds: 500),
-              builder: (context, value, child) {
-                return Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Opacity(
-                      opacity: 1.0,
-                      child: SizedBox(
-                        width: 80,
-                        height: 80,
-                        child: CircularProgressIndicator(
-                          value: value,
-                          backgroundColor: AppColors.darkTeal.withOpacity(0.1),
-                          strokeWidth: 6,
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                            AppColors.darkTeal,
+                duration: const Duration(milliseconds: 500),
+                builder: (context, value, child) {
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Opacity(
+                        opacity: 1.0,
+                        child: SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: CircularProgressIndicator(
+                            value: value,
+                            backgroundColor: AppColors.darkTeal.withOpacity(0.1),
+                            strokeWidth: 6,
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                              AppColors.darkTeal,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    FloatingActionButton(
-                      onPressed: () {
-                        controller.nextPage(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeInOut,
-                        );
-                        if (!isLastPage) {
-                          pressToAnimate();
-                        } else {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const SocialAuth()),
-                              (Route<dynamic> route) => false);
-                        }
-                      },
-                      backgroundColor: AppColors.primaryYellow,
-                      child: SvgPicture.asset(AppImages.rightArrow),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
+                      FloatingActionButton(
+                        onPressed: () {
+                          controller.nextPage(
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeInOut,
+                          );
+                          if (!isLastPage) {
+                            pressToAnimate();
+                          } else {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        const SocialAuth()),
+                                (Route<dynamic> route) => false);
+                          }
+                        },
+                        backgroundColor: AppColors.primaryYellow,
+                        shape: const CircleBorder(),
+                        child: SvgPicture.asset(AppImages.rightArrow),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

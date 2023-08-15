@@ -7,7 +7,7 @@ class AppImages {
   static const search = 'assets/icons/search.svg';
   static const plusIcon = 'assets/icons/plus.svg';
   static const noteArrow = 'assets/icons/note_arrow.svg';
-  static const filterIcon = 'assets/icons/settings-sliders.svg';
+  static const filterIcon = 'assets/icons/filter_icon.svg';
   static const googleSvgIcon = 'assets/images/google.svg';
   static const gmailSvgIcon = 'assets/images/gmail.svg';
   static const appleSvgIcon = 'assets/images/apple.svg';
