@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 
 class ConnectAccounts extends StatelessWidget {
@@ -8,6 +9,12 @@ class ConnectAccounts extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              AppNavigation.pop();
+            },
+          ),
           title: Text(
         'Connect Accounts',
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(

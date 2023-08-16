@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/sign_up/reset_password_email.dart';
 
 import 'package:quix_note/src/utils/app_colors.dart';
@@ -29,7 +30,14 @@ class _ChangePasswordScreenState extends State<ChangePassword> {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            AppNavigation.pop();
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 29),
         child: SingleChildScrollView(

@@ -26,7 +26,12 @@ class _SignInScreenState extends State<SignIn> {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {AppNavigation.pop();},
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 29),
         child: Column(

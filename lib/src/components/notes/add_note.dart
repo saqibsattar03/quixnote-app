@@ -15,6 +15,10 @@ class AddNote extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {AppNavigation.pop();},
+        ),
         title: const Text(
           'Add Note',
           style: TextStyle(fontSize: 22),
