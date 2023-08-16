@@ -32,7 +32,7 @@ class _NotesPageState extends State<NotesPage> {
     return Scaffold(
       key: _scaffoldKey,
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(29, 60,29, 0),
+        padding: const EdgeInsets.fromLTRB(29, 60, 29, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -51,17 +51,26 @@ class _NotesPageState extends State<NotesPage> {
                 Row(
                   children: [
                     AppCircularButton(
-                        onPressed: () {
-                          AppNavigation.push(const SearchNotes());
-                        },
-                        color: AppColors.lightYellow,
-                        svg: SvgPicture.asset(AppImages.search)),
+                      onPressed: () {
+                        AppNavigation.push(const SearchNotes());
+                      },
+                      color: AppColors.lightYellow,
+                      svg: SvgPicture.asset(AppImages.search),
+                      height: 50,
+                      width: 50,
+                    ),
+                    const SizedBox(
+                      width: 7,
+                    ),
                     AppCircularButton(
-                        onPressed: () {
-                          AppNavigation.push(const ProfileInfo());
-                        },
-                        color: AppColors.lightYellow,
-                        svg: SvgPicture.asset(AppImages.plusIcon)),
+                      onPressed: () {
+                        AppNavigation.push(const ProfileInfo());
+                      },
+                      color: AppColors.lightYellow,
+                      svg: SvgPicture.asset(AppImages.plusIcon),
+                      height: 50,
+                      width: 50,
+                    ),
                   ],
                 ),
               ],

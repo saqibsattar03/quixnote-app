@@ -97,6 +97,8 @@ class SearchNotes extends StatelessWidget {
                     svg: SvgPicture.asset(
                       AppImages.filterIcon,
                     ),
+                    height: 50,
+                    width: 50,
                   )
                 ],
               ),
