@@ -4,7 +4,7 @@ import 'package:quix_note/src/utils/app_colors.dart';
 class AppButton extends StatelessWidget {
   const AppButton({
     Key? key,
-    required this.onPressed,
+     this.onPressed,
     required this.buttonTitle,
     this.buttonSize,
     this.iconData,
@@ -12,7 +12,7 @@ class AppButton extends StatelessWidget {
     this.buttonTitleFontSize,
   }) : super(key: key);
 
-  final Function() onPressed;
+  final Function()? onPressed;
   final String buttonTitle;
   final Size? buttonSize;
   final IconData? iconData;

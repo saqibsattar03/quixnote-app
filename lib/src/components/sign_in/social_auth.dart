@@ -8,6 +8,8 @@ import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/social_media_button.dart';
 
+import '../../service/api/social_auth_config.dart';
+
 class SocialAuthSignIn extends StatelessWidget {
   const SocialAuthSignIn({super.key});
 
@@ -33,7 +35,8 @@ class SocialAuthSignIn extends StatelessWidget {
                   ),
                   const SizedBox(height: 50),
                   SocialMediaButton(
-                    onTap: () {},
+                    onTap:(){},
+                    // onTap: ()=> SocialAuthService().signInWithGoogle(),
                     title: 'Login with Google',
                     assetIcon: AppImages.googleSvgIcon,
                   ),

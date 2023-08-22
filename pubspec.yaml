@@ -39,8 +39,16 @@ dependencies:
   shared_preferences: ^2.2.0
   flutter_svg: ^2.0.7
   otp_pin_field: ^1.2.2
+  dio: ^5.3.2
+  json_annotation:
+  intl: ^0.17.0
+  firebase_core:
+  firebase_auth: ^4.7.3
+  google_sign_in: ^6.1.4
 
 dev_dependencies:
+  json_serializable:
+  build_runner:
   flutter_test:
     sdk: flutter
 

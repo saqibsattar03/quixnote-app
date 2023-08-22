@@ -119,7 +119,9 @@ class SearchNotes extends StatelessWidget {
                       onTap: () {
                         AppNavigation.push(const NoteDetail());
                       },
-                      child: SingleNote(index: index));
+                  );
+
+                      // child: SingleNote(index: index));
                 },
                 itemCount: 4,
               ))

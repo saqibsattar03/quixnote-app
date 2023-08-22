@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quix_note/src/models/note/note_model.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_fonts.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 
 class SingleNote extends StatelessWidget {
-  const SingleNote({super.key, required this.index});
+  const SingleNote({super.key, required this.index, required this.noteModel});
+
+  final NoteModel noteModel;
 
   final int index;
 
@@ -29,7 +32,7 @@ class SingleNote extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("01/", style: Theme.of(context).textTheme.titleMedium),
+              Text("${noteModel.deadline}", style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(
                 width: 30,
               ),
@@ -39,14 +42,17 @@ class SingleNote extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          "Call Summary",
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge!
-                              .copyWith(fontSize: 24),
+                        Flexible(
+                          child: Text(
+                            "${noteModel.title}",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(fontSize: 24),
+                          ),
                         ),
                         const SizedBox(
                           width: 7,
@@ -66,7 +72,7 @@ class SingleNote extends StatelessWidget {
                             ],
                           ),
                           child: Text(
-                            "Low",
+                            "${noteModel.priority}",
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium!
@@ -80,7 +86,7 @@ class SingleNote extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus...",
+                      "${noteModel.description}",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(

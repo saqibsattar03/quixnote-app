@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quix_note/src/base/nav.dart';
+import 'package:quix_note/src/components/notes/add_note.dart';
 import 'package:quix_note/src/components/notes/configure_swipe.dart';
 import 'package:quix_note/src/components/notes/connect_account.dart';
 import 'package:quix_note/src/components/notes/create_ticket.dart';
@@ -11,6 +13,8 @@ import 'package:quix_note/src/components/profile/profile_info.dart';
 import 'package:quix_note/src/components/sign_up/change_password.dart';
 import 'package:quix_note/src/components/sign_up/privacy_policy.dart';
 import 'package:quix_note/src/components/sign_up/terms_conditions.dart';
+import 'package:quix_note/src/models/note/note_model.dart';
+import 'package:quix_note/src/service/api/note_api_config.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/widgets/app_circular_button.dart';
@@ -25,6 +29,38 @@ class NotesPage extends StatefulWidget {
 class _NotesPageState extends State<NotesPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   bool notifications = true;
+
+  bool isLoading = false;
+  String exception = "";
+  late List<NoteModel> noteModelResponse;
+  final api = NoteApiConfig();
+
+  @override
+  void initState() {
+    super.initState();
+    getAllNotes();
+  }
+
+  Future<void> getAllNotes() async {
+    try {
+      isLoading = true;
+      setState(() {});
+
+      final response = await api.getAllNotes();
+      noteModelResponse = response;
+
+      isLoading = false;
+      setState(() {});
+    } catch (e) {
+      exception = e.toString();
+      isLoading = false;
+      setState(() {});
+    }
+  }
+
+  void logout() async {
+    await FirebaseAuth.instance.signOut();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +100,8 @@ class _NotesPageState extends State<NotesPage> {
                     ),
                     AppCircularButton(
                       onPressed: () {
-                        AppNavigation.push(const ProfileInfo());
+                        // AppNavigation.push(const ProfileInfo());
+                        AppNavigation.push(const AddNote());
                       },
                       color: AppColors.lightYellow,
                       svg: SvgPicture.asset(AppImages.plusIcon),
@@ -88,6 +125,9 @@ class _NotesPageState extends State<NotesPage> {
             const SizedBox(
               height: 60,
             ),
+            if(isLoading)
+            const  Center(child: CircularProgressIndicator())
+            else
             Expanded(
                 child: ListView.separated(
               shrinkWrap: true,
@@ -104,9 +144,12 @@ class _NotesPageState extends State<NotesPage> {
                     onTap: () {
                       AppNavigation.push(const NoteDetail());
                     },
-                    child: SingleNote(index: index));
+                    child: SingleNote(
+                      index: index,
+                      noteModel: noteModelResponse[index],
+                    ));
               },
-              itemCount: 4,
+              itemCount: noteModelResponse.length,
             ))
           ],
         ),
@@ -248,12 +291,15 @@ class _NotesPageState extends State<NotesPage> {
                     ),
                   ),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      DrawerItemTitle(title: 'Logout'),
+                      InkWell(
+                        onTap: logout,
+                        child: DrawerItemTitle(title: 'Logout'),
+                      ),
                       SizedBox(height: 20),
                       DrawerItemTitle(title: 'Version 1.2.2', fontSize: 14),
                       SizedBox(height: 20),
