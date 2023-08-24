@@ -9,7 +9,12 @@ import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/formatted_date.dart';
 
 class PrivacyPolicy extends StatefulWidget {
-  const PrivacyPolicy({Key? key}) : super(key: key);
+  const PrivacyPolicy(
+      {Key? key, required this.callBack, required this.isChecked})
+      : super(key: key);
+
+  final Function(bool val) callBack;
+  final bool isChecked;
 
   @override
   State<PrivacyPolicy> createState() => _PrivacyPolicyState();
@@ -17,20 +22,25 @@ class PrivacyPolicy extends StatefulWidget {
 
 class _PrivacyPolicyState extends State<PrivacyPolicy> {
   bool isLoading = false;
+  bool isUpdated = false;
   String exception = '';
   late DateTime formattedDate;
   late List<PrivacyTerms> privacyTermsResponse;
   final api = PrivacyTermsApiConfig();
 
+
+
   @override
   void initState() {
     super.initState();
     getPrivacyData();
+    isUpdated = widget.isChecked;
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -58,14 +68,14 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                 ),
               ),
               const SizedBox(height: 10),
-
               if (isLoading)
                 const CircularProgressIndicator()
               else
                 Expanded(
                   child: Column(
                     children: [
-                      FormattedDateWidget(dateTime: privacyTermsResponse[0].lastUpdated),
+                      FormattedDateWidget(
+                          dateTime: privacyTermsResponse[0].lastUpdated,),
                       const SizedBox(height: 40),
                       Expanded(
                           child: ListView.builder(
@@ -76,23 +86,38 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                             children: [
                               DetailContainer(
                                 title: privacyTermsResponse[index].clause,
-                                subTitle: privacyTermsResponse[index].description,
+                                subTitle:
+                                    privacyTermsResponse[index].description,
                               ),
                             ],
                           );
                         },
                       )),
-                     // const SizedBox(height: 40),
+                      // const SizedBox(height: 40),
                       AppButton(
                         buttonSize: const Size(double.infinity, 50),
-                        onPressed: () {},
-                        buttonTitle: 'Agree',
+                        onPressed: () {
+                         widget.callBack(!widget.isChecked); // Toggle the value and call the callback
+                          setState(() {
+                            isUpdated = !isUpdated;
+                          });
+                        },
+                        // onPressed: () {
+                        //   print("here ");
+                        //   if (!widget.isChecked) {
+                        //     widget.callBack(true);
+                        //   } else {
+                        //     widget.callBack(false);
+                        //   }
+                        //   print(" widget.value ${widget.isChecked}");
+                        // },
+                        buttonTitle:
+                            isUpdated == true ? 'Disagree' : "Agree",
                       ),
                       const SizedBox(height: 40),
                     ],
                   ),
                 ),
-
             ],
           )
 

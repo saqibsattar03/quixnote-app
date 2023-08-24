@@ -1,18 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:quix_note/src/base/nav.dart';
-import 'package:quix_note/src/components/notes/note_detail.dart';
 import 'package:quix_note/src/components/notes/widgets/single_note.dart';
+import 'package:quix_note/src/models/note/note_model.dart';
+import 'package:quix_note/src/service/api/note_api_config.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_fonts.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
 
+import '../../base/nav.dart';
 import '../../widgets/app_circular_button.dart';
+import 'note_detail.dart';
 
-class SearchNotes extends StatelessWidget {
+class SearchNotes extends StatefulWidget {
   const SearchNotes({Key? key}) : super(key: key);
+
+  @override
+  State<SearchNotes> createState() => _SearchNotesState();
+}
+
+class _SearchNotesState extends State<SearchNotes> {
+  //controllers
+
+  final _filterController = TextEditingController();
+  final api = NoteApiConfig();
+  bool isLoding = false;
+  List<NoteModel> filteredList = <NoteModel>[];
 
   @override
   Widget build(BuildContext context) {
@@ -39,13 +53,14 @@ class SearchNotes extends StatelessWidget {
                         )),
                   ),
                   const SizedBox(width: 10),
-                  const Expanded(
+                  Expanded(
                     child: SizedBox(
                       height: 70,
                       child: AppTextField(
                         label: 'Search',
+                        textEditingController: _filterController,
                         fillColor: Colors.white,
-                        prefix: Icon(Icons.search),
+                        prefix: const Icon(Icons.search),
                         borderRadius: 30,
                       ),
                     ),
@@ -62,12 +77,20 @@ class SearchNotes extends StatelessWidget {
                             height: 456,
                             child: Stack(
                               children: [
-                                const Column(
+                                Column(
                                   children: [
                                     SizedBox(
                                       height: 50,
                                     ),
-                                    ApplyFiltersSheet(),
+                                    ApplyFiltersSheet(
+                                      applyFiltersCallback: (
+                                          {createdAt, priority, searchText}) {
+                                        return applyFilters(
+                                          // createdAt: createdAt,
+                                          priority: 'High',
+                                        );
+                                      },
+                                    ),
                                   ],
                                 ),
                                 Positioned(
@@ -103,38 +126,70 @@ class SearchNotes extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 50),
-              Expanded(
-                  child: ListView.separated(
-                shrinkWrap: true,
-                separatorBuilder: (BuildContext context, int index) {
-                  return const Divider(
-                    thickness: 1,
-                    indent: 10,
-                    endIndent: 10,
-                    color: AppColors.dividerGrey,
-                  );
-                },
-                itemBuilder: (context, index) {
-                  return InkWell(
+              if (isLoding)
+                CircularProgressIndicator()
+              else
+                Expanded(
+                    child: ListView.separated(
+                  shrinkWrap: true,
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const Divider(
+                      thickness: 1,
+                      indent: 10,
+                      endIndent: 10,
+                      color: AppColors.dividerGrey,
+                    );
+                  },
+                  itemBuilder: (context, index) {
+                    return InkWell(
                       onTap: () {
-                        AppNavigation.push(const NoteDetail());
+                        AppNavigation.push(
+                          NoteDetail(
+                            noteModel: filteredList[index],
+                          ),
+                        );
                       },
-                  );
+                      child: SingleNote(
+                        index: index,
+                        noteModel: filteredList[index],
+                      ),
+                    );
 
-                      // child: SingleNote(index: index));
-                },
-                itemCount: 4,
-              ))
+                    // child: SingleNote(index: index));
+                  },
+                  itemCount: filteredList.length,
+                ))
             ],
           ),
         ),
       ),
     );
   }
+
+  applyFilters(
+      {String? createdAt, String? priority, String? searchText}) async {
+    isLoding = true;
+    setState(() {});
+    filteredList.clear();
+    final data = {
+      if (createdAt != null) "createdAt": createdAt,
+      if (priority != null) "priority": priority,
+      if (searchText != null) "projectName": searchText,
+    };
+
+    final response = await api.filterNotes(data: data);
+    filteredList = response;
+    print(filteredList.length);
+    isLoding = false;
+    setState(() {});
+  }
 }
 
 class ApplyFiltersSheet extends StatefulWidget {
-  const ApplyFiltersSheet({Key? key}) : super(key: key);
+  const ApplyFiltersSheet({Key? key, required this.applyFiltersCallback})
+      : super(key: key);
+  final Function({String? createdAt, String? priority, String? searchText})
+      applyFiltersCallback;
 
   @override
   State<ApplyFiltersSheet> createState() => _ApplyFiltersSheetState();
@@ -287,7 +342,13 @@ class _ApplyFiltersSheetState extends State<ApplyFiltersSheet> {
               }).toList(),
             ),
             const SizedBox(height: 20),
-            AppButton(onPressed: () {}, buttonTitle: 'Apply')
+            AppButton(
+                onPressed: () {
+                  widget.applyFiltersCallback();
+                  // print(priority[selectedPriority]);
+                  // print(date[selectedDate]);
+                },
+                buttonTitle: 'Apply')
           ],
         ),
       ),

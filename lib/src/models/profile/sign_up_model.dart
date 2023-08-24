@@ -4,6 +4,8 @@ part 'sign_up_model.g.dart';
 
 @JsonSerializable()
 class SignUpModel {
+  @JsonKey(name: "_id")
+  String? id;
   @JsonKey(name: "fullName")
   String fullName;
   @JsonKey(name: "email")
@@ -15,7 +17,9 @@ class SignUpModel {
   @JsonKey(includeIfNull: false)
   String? loginVia;
   @JsonKey(includeIfNull: false)
-  String? scopes;
+  List? scopes;
+  @JsonKey(includeIfNull: false)
+  String? idToken;
   @JsonKey(includeIfNull: false)
   bool? notificationPreference;
   @JsonKey(includeIfNull: false)
@@ -32,7 +36,9 @@ class SignUpModel {
   SignUpModel({
     required this.fullName,
     required this.email,
+    this.id,
     this.password,
+    this.idToken,
     this.role,
     this.loginVia,
     this.scopes,
@@ -44,7 +50,21 @@ class SignUpModel {
     this.state,
   });
 
-  factory SignUpModel.fromJson(Map<String, dynamic> json) => _$SignUpModelFromJson(json);
+  factory SignUpModel.fromJson(Map<String, dynamic> json) =>
+      _$SignUpModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$SignUpModelToJson(this);
+}
+
+@JsonSerializable()
+class TokenModel {
+  @JsonKey(name: 'access_token')
+  final String accessToken;
+
+  TokenModel({required this.accessToken});
+
+  factory TokenModel.fromJson(Map<String, dynamic> json) =>
+      _$TokenModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TokenModelToJson(this);
 }

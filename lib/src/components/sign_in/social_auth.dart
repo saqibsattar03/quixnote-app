@@ -35,8 +35,8 @@ class SocialAuthSignIn extends StatelessWidget {
                   ),
                   const SizedBox(height: 50),
                   SocialMediaButton(
-                    onTap:(){},
-                    // onTap: ()=> SocialAuthService().signInWithGoogle(),
+                    // onTap:(){},
+                    onTap: ()=> SocialAuthService().signInWithGoogle(),
                     title: 'Login with Google',
                     assetIcon: AppImages.googleSvgIcon,
                   ),

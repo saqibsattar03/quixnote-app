@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:quix_note/src/models/note/note_model.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_fonts.dart';
@@ -14,6 +15,9 @@ class SingleNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // String formattedDate =
+    //      DateFormat('dd/MM/yyyy').format(noteModel.deadline);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(

@@ -10,6 +10,7 @@ import 'package:quix_note/src/models/profile/sign_in_model.dart';
 import 'package:quix_note/src/models/profile/sign_up_model.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_utils.dart';
+import 'package:quix_note/src/utils/error_dialog.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -58,15 +59,20 @@ class _SignInScreenState extends State<SignIn> {
       final response = await api.getUserUsingIdToken(idToken: idToken!);
 
       if (response == 'true') {
-        final userModel = SignInModel(email: userCredential.user!.email);
+        final userModel =
+            SignInModel(email: userCredential.user!.email, password: null);
         final res = await api.signInUser(signInModel: userModel);
-        AppData.saveAccessToken(res['access_token']);
+        AppData.saveAccessToken(res.accessToken);
       }
+      if (!mounted) return;
       Navigator.pop(context);
       AppNavigation.push(const NotesPage());
     } catch (e) {
-      print("-=---------------------------------------");
-      print(e.toString());
+      if (!mounted) return;
+      Navigator.pop(context);
+      ErrorDialog(error: e).show(context);
+      print(
+          "error ${e.toString()}------------------------------------------------------------------------->");
     }
   }
 
@@ -76,12 +82,14 @@ class _SignInScreenState extends State<SignIn> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            AppNavigation.pop();
-          },
-        ),
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  AppNavigation.pop();
+                },
+              )
+            : null,
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -178,14 +186,13 @@ class _SignInScreenState extends State<SignIn> {
                 Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40),
+                      padding: const EdgeInsets.symmetric(horizontal: 40,vertical: 40),
                       child: AppButton(
                         buttonSize: const Size(double.infinity, 50),
 
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             signIn();
-
                           }
                         },
                         // onPressed: () {

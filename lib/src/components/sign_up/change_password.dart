@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quix_note/src/base/data.dart';
 import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/sign_up/reset_password_email.dart';
 
@@ -10,6 +11,8 @@ import 'package:quix_note/src/widgets/app_alert_dialog.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
 
+import '../../service/api/profile_api_config.dart';
+import '../../utils/error_dialog.dart';
 import 'verify_email.dart';
 
 class ChangePassword extends StatefulWidget {
@@ -22,8 +25,57 @@ class ChangePassword extends StatefulWidget {
 class _ChangePasswordScreenState extends State<ChangePassword> {
   bool obscure = true;
   bool obscure1 = true;
-  bool termsCondition = false;
-  bool privacyPolicy = false;
+
+  final _formKey = GlobalKey<FormState>();
+
+  //controllers
+
+
+  final _oldPasswordController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  final api = ProfileApiConfig();
+
+
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required.';
+    }
+
+    if (!RegExp(
+        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*(),.?":{}|<>]).{8,}$')
+        .hasMatch(value)) {
+      return 'Password must be 8 characters long and contain \nat least one uppercase letter, one lowercase letter,\none digit, and one special character.';
+    }
+
+    return null;
+  }
+
+  void changePassword() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+    try{
+      print("here");
+      if(_newPasswordController.text == _confirmPasswordController.text){
+        await api.changePassword(oldPassword: _oldPasswordController.text, newPassword: _newPasswordController.text, id: AppData.loggedUserId);
+        showDialog(
+            context: context,
+            builder: (context) => const AppAlertDialog(
+              message: 'Password changed successfully',
+            ),
+          );
+      }
+    }catch(e){
+      ErrorDialog(error: e).show(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,61 +124,70 @@ class _ChangePasswordScreenState extends State<ChangePassword> {
               const SizedBox(
                 height: 60,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const FieldTitle(title: 'Confirm your password'),
-                  const SizedBox(height: 10),
-                  AppTextField(
-                    hint: '*****************',
-                    obscure: obscure,
-                    suffix: IconButton(
-                      icon: Icon(
-                        obscure ? Icons.visibility_off : Icons.visibility,
+              Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const FieldTitle(title: 'Confirm your password'),
+                    const SizedBox(height: 10),
+                    AppTextField(
+                      textEditingController: _oldPasswordController,
+                      // validator: validatePassword,
+                      hint: '*****************',
+                      obscure: obscure,
+                      suffix: IconButton(
+                        icon: Icon(
+                          obscure ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          obscure = !obscure;
+                          setState(() {});
+                        },
                       ),
-                      onPressed: () {
-                        obscure = !obscure;
-                        setState(() {});
-                      },
+                      fillColor: AppColors.lightYellow,
+                      prefix: const Icon(Icons.lock),
                     ),
-                    fillColor: AppColors.lightYellow,
-                    prefix: const Icon(Icons.lock),
-                  ),
-                  const FieldTitle(title: 'New password'),
-                  const SizedBox(height: 10),
-                  AppTextField(
-                    hint: '*****************',
-                    obscure: obscure,
-                    suffix: IconButton(
-                      icon: Icon(
-                        obscure ? Icons.visibility_off : Icons.visibility,
+                    const FieldTitle(title: 'New password'),
+                    const SizedBox(height: 10),
+                    AppTextField(
+                      textEditingController: _newPasswordController,
+                      validator: validatePassword,
+                      hint: '*****************',
+                      obscure: obscure,
+                      suffix: IconButton(
+                        icon: Icon(
+                          obscure ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          obscure = !obscure;
+                          setState(() {});
+                        },
                       ),
-                      onPressed: () {
-                        obscure = !obscure;
-                        setState(() {});
-                      },
+                      fillColor: AppColors.lightYellow,
+                      prefix: const Icon(Icons.lock),
                     ),
-                    fillColor: AppColors.lightYellow,
-                    prefix: const Icon(Icons.lock),
-                  ),
-                  const FieldTitle(title: 'Confirm new password'),
-                  const SizedBox(height: 10),
-                  AppTextField(
-                    hint: '*****************',
-                    obscure: obscure,
-                    suffix: IconButton(
-                      icon: Icon(
-                        obscure ? Icons.visibility_off : Icons.visibility,
+                    const FieldTitle(title: 'Confirm new password'),
+                    const SizedBox(height: 10),
+                    AppTextField(
+                      textEditingController: _confirmPasswordController,
+                      validator: validatePassword,
+                      hint: '*****************',
+                      obscure: obscure,
+                      suffix: IconButton(
+                        icon: Icon(
+                          obscure ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          obscure = !obscure;
+                          setState(() {});
+                        },
                       ),
-                      onPressed: () {
-                        obscure = !obscure;
-                        setState(() {});
-                      },
+                      fillColor: AppColors.lightYellow,
+                      prefix: const Icon(Icons.lock),
                     ),
-                    fillColor: AppColors.lightYellow,
-                    prefix: const Icon(Icons.lock),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 40,
@@ -137,12 +198,17 @@ class _ChangePasswordScreenState extends State<ChangePassword> {
                     padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: AppButton(
                       buttonSize: const Size(double.infinity, 50),
-                      onPressed: () => showDialog(
-                        context: context,
-                        builder: (context) => const AppAlertDialog(
-                          message: 'Your Password is changed',
-                        ),
-                      ),
+                      onPressed: (){
+                        if(_formKey.currentState!.validate()){
+                          changePassword();
+                        }
+                      },
+                      // onPressed: () => showDialog(
+                      //   context: context,
+                      //   builder: (context) => const AppAlertDialog(
+                      //     message: 'Your Password is changed',
+                      //   ),
+                      // ),
                       buttonTitle: 'Save',
                     ),
                   ),

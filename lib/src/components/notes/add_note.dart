@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:quix_note/src/base/nav.dart';
-import 'package:quix_note/src/components/notes/my_subscription.dart';
-
+import 'package:quix_note/src/components/notes/widgets/app_dorpdown.dart';
 import 'package:quix_note/src/service/api/note_api_config.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
+import 'package:quix_note/src/utils/error_dialog.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
 
 import '../../models/note/note_model.dart';
 import 'notes_page.dart';
+
+enum Priority {
+  high("High"),
+  medium("Medium"),
+  low("Low");
+
+  final String value;
+  const Priority(this.value);
+}
+
+//enum Priority { High, Medium, Low }
 
 class AddNote extends StatefulWidget {
   const AddNote({Key? key}) : super(key: key);
@@ -18,7 +30,6 @@ class AddNote extends StatefulWidget {
 }
 
 class _AddNoteState extends State<AddNote> {
-
   //controllers
 
   final _titleController = TextEditingController();
@@ -26,6 +37,9 @@ class _AddNoteState extends State<AddNote> {
 
   final api = NoteApiConfig();
 
+  final _formKey = GlobalKey<FormState>();
+  DateTime? _selectedDate;
+  String? _selectedPriority;
 
   void createNote() async {
     showDialog(
@@ -36,17 +50,54 @@ class _AddNoteState extends State<AddNote> {
         );
       },
     );
-    try{
-      final createNoteModel = NoteModel(title: _titleController.text, description: _descriptionController.text, priority: "High", projectName: "Test Project", deadline: "12-01-2024");
+    try {
+      final createNoteModel = NoteModel(
+        title: _titleController.text,
+        description: _descriptionController.text,
+        priority: _selectedPriority,
+        projectName: "Test Project",
+        // deadline: _selectedDate!.toString(),
+        deadline: DateFormat('dd/MM/yyyy').format(_selectedDate!),
+      );
       await api.creteNote(createNoteModel: createNoteModel);
+      if (!mounted) return;
       Navigator.pop(context);
       AppNavigation.push(const NotesPage());
-    }catch(e){}
+    } catch (e) {
+      ErrorDialog(
+        error: e,
+      ).show(context);
+    }
+  }
+
+  void datePicker() {
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2020),
+            lastDate: DateTime.now())
+        .then((pickedDate) {
+      if (pickedDate == null) {
+        return;
+      }
+      setState(() {
+        _selectedDate = pickedDate;
+      });
+    });
+  }
+
+  String capitalize(String input) {
+    if (input.isEmpty) return input;
+    return input[0].toUpperCase() + input.substring(1);
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+
+    String formattedDate = _selectedDate != null
+        ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
+        : 'Due Date';
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -54,73 +105,152 @@ class _AddNoteState extends State<AddNote> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {AppNavigation.pop();},
+          onPressed: () {
+            AppNavigation.pop();
+          },
         ),
         title: const Text(
           'Add Note',
           style: TextStyle(fontSize: 22),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 29, vertical: 10.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Title',
-                    style: textTheme.bodyMedium!.copyWith(
-                      fontSize: 16,
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 29, vertical: 10.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Title',
+                      style: textTheme.bodyMedium!.copyWith(
+                        fontSize: 16,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                   AppTextField(
-                    textEditingController: _titleController,
-                    fillColor: AppColors.lightYellow,
-                    hint: 'My To do',
-                  ),
-                  Text(
-                    'Description',
-                    style: textTheme.bodyMedium!.copyWith(
-                      fontSize: 16,
+                    const SizedBox(height: 10),
+                    AppTextField(
+                      textEditingController: _titleController,
+                      fillColor: AppColors.lightYellow,
+                      hint: 'My To do',
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.trim().isEmpty) {
+                          return 'To do is required.';
+                        }
+                        return null;
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                   AppTextField(
-                    textEditingController: _descriptionController,
-                    fillColor: AppColors.lightYellow,
-                    maxLines: 3,
-                    hint:
-                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
-                  ),
-                  const SizedBox(height: 20),
-                  const NoteAction(title: 'Due Date', buttonTitle: 'Set Date'),
-                  const SizedBox(height: 10),
-                  const NoteAction(title: 'Due Date', buttonTitle: 'High'),
-                  const SizedBox(height: 10),
-                  const NoteAction(title: 'Add Media', buttonTitle: 'Add +'),
-                ],
-              ),
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: AppButton(
-                        buttonSize:  const Size(double.infinity, 56),
+                    Text(
+                      'Description',
+                      style: textTheme.bodyMedium!.copyWith(
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    AppTextField(
+                      textEditingController: _descriptionController,
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.trim().isEmpty) {
+                          return 'Description is required.';
+                        }
+                        return null;
+                      },
+                      fillColor: AppColors.lightYellow,
+                      maxLines: 3,
+                      hint:
+                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
+                    ),
+                    const SizedBox(height: 20),
+                    InkWell(
+                      onTap: datePicker,
+                      child: NoteAction(
+                        title: 'Due Date',
+                        buttonTitle: formattedDate,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          flex: 6,
+                          child: Text(
+                            "Priority",
+                            style: textTheme.bodyMedium!.copyWith(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: DropDownFormField(
+                            value: "High",
+                            data: Priority.values
+                                .map((priority) => capitalize(
+                                    priority.toString().split('.')[1]))
+                                .toList(),
+                            onChangeVal: (value) {
+                              _selectedPriority = value;
+                            },
+                            decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.all(8),
+                              filled: true,
+                              fillColor: AppColors.primaryYellow,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                                borderSide:
+                                    BorderSide(color: AppColors.primaryYellow),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    const NoteAction(
+                      title: 'Add Media',
+                      buttonTitle: 'Add +',
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 40),
+                      child: AppButton(
+                        buttonSize: const Size(double.infinity, 56),
                         onPressed: () {
-                          createNote();
-                      // AppNavigation.push(const MySubscription());
-
-                    }, buttonTitle: 'Save to Phone'),
-                  ),
-                  const SizedBox(height: 30)
-                ],
-              )
-            ],
+                          if (_formKey.currentState!.validate()) {
+                            createNote();
+                          }
+                        },
+                        // onPressed: () {
+                        //   createNote();
+                        //   // AppNavigation.push(const MySubscription());
+                        // },
+                        buttonTitle: 'Save to Phone',
+                      ),
+                    ),
+                    const SizedBox(height: 30)
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

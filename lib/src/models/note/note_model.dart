@@ -31,7 +31,7 @@ class NoteModel {
   NoteModel({
     this.id,
     this.userId,
-     this.projectName,
+    this.projectName,
     this.title,
     this.description,
     this.priority,
@@ -42,7 +42,8 @@ class NoteModel {
     this.v,
   });
 
-  factory NoteModel.fromJson(Map<String, dynamic> json) => _$NoteModelFromJson(json);
+  factory NoteModel.fromJson(Map<String, dynamic> json) =>
+      _$NoteModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$NoteModelToJson(this);
 }

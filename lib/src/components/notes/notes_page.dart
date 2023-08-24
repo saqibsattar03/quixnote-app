@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quix_note/src/base/data.dart';
 import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/notes/add_note.dart';
 import 'package:quix_note/src/components/notes/configure_swipe.dart';
@@ -10,14 +11,22 @@ import 'package:quix_note/src/components/notes/note_detail.dart';
 import 'package:quix_note/src/components/notes/search_notes.dart';
 import 'package:quix_note/src/components/notes/widgets/single_note.dart';
 import 'package:quix_note/src/components/profile/profile_info.dart';
+import 'package:quix_note/src/components/sign_in/auth_page.dart';
 import 'package:quix_note/src/components/sign_up/change_password.dart';
 import 'package:quix_note/src/components/sign_up/privacy_policy.dart';
+import 'package:quix_note/src/components/sign_up/social_auth.dart';
 import 'package:quix_note/src/components/sign_up/terms_conditions.dart';
 import 'package:quix_note/src/models/note/note_model.dart';
+import 'package:quix_note/src/models/profile/sign_up_model.dart';
 import 'package:quix_note/src/service/api/note_api_config.dart';
+import 'package:quix_note/src/service/api/profile_api_config.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
+import 'package:quix_note/src/utils/error_dialog.dart';
 import 'package:quix_note/src/widgets/app_circular_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../sign_in/sign_in.dart';
 
 class NotesPage extends StatefulWidget {
   const NotesPage({super.key});
@@ -33,12 +42,35 @@ class _NotesPageState extends State<NotesPage> {
   bool isLoading = false;
   String exception = "";
   late List<NoteModel> noteModelResponse;
+  late SignUpModel signUpModel;
   final api = NoteApiConfig();
+  final userApi = ProfileApiConfig();
 
   @override
   void initState() {
     super.initState();
+    getUserProfile();
     getAllNotes();
+  }
+
+  Future<void> getUserProfile() async{
+    try {
+      isLoading = true;
+      setState(() {});
+
+      final response = await userApi.getUserUsingAccessToken();
+      signUpModel = response;
+      AppData.saveAccessToken(signUpModel.id!);
+      isLoading = false;
+      setState(() {});
+    } catch (e) {
+      ErrorDialog(error: e,).show(context);
+      exception = e.toString();
+      isLoading = false;
+      setState(() {});
+    }
+
+
   }
 
   Future<void> getAllNotes() async {
@@ -52,6 +84,7 @@ class _NotesPageState extends State<NotesPage> {
       isLoading = false;
       setState(() {});
     } catch (e) {
+      ErrorDialog(error: e,).show(context);
       exception = e.toString();
       isLoading = false;
       setState(() {});
@@ -59,7 +92,14 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   void logout() async {
+    await AppData.clearPref();
     await FirebaseAuth.instance.signOut();
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) =>
+            const SocialAuth()),
+            (Route<dynamic> route) => false);
   }
 
   @override
@@ -114,7 +154,7 @@ class _NotesPageState extends State<NotesPage> {
             ),
             const SizedBox(height: 40),
             Text(
-              "Hello, Shea Lewis",
+              "Hello, User",
               style: textTheme.titleLarge!.copyWith(fontSize: 34),
             ),
             const SizedBox(height: 8),
@@ -125,32 +165,32 @@ class _NotesPageState extends State<NotesPage> {
             const SizedBox(
               height: 60,
             ),
-            if(isLoading)
-            const  Center(child: CircularProgressIndicator())
+            if (isLoading)
+              const Center(child: CircularProgressIndicator())
             else
-            Expanded(
-                child: ListView.separated(
-              shrinkWrap: true,
-              separatorBuilder: (BuildContext context, int index) {
-                return const Divider(
-                  thickness: 1,
-                  indent: 10,
-                  endIndent: 10,
-                  color: AppColors.dividerGrey,
-                );
-              },
-              itemBuilder: (context, index) {
-                return InkWell(
-                    onTap: () {
-                      AppNavigation.push(const NoteDetail());
-                    },
-                    child: SingleNote(
-                      index: index,
-                      noteModel: noteModelResponse[index],
-                    ));
-              },
-              itemCount: noteModelResponse.length,
-            ))
+              Expanded(
+                  child: ListView.separated(
+                shrinkWrap: true,
+                separatorBuilder: (BuildContext context, int index) {
+                  return const Divider(
+                    thickness: 1,
+                    indent: 10,
+                    endIndent: 10,
+                    color: AppColors.dividerGrey,
+                  );
+                },
+                itemBuilder: (context, index) {
+                  return InkWell(
+                      onTap: () {
+                        AppNavigation.push( NoteDetail(noteModel: noteModelResponse[index],));
+                      },
+                      child: SingleNote(
+                        index: index,
+                        noteModel: noteModelResponse[index],
+                      ));
+                },
+                itemCount: noteModelResponse.length,
+              ))
           ],
         ),
       ),
@@ -228,7 +268,7 @@ class _NotesPageState extends State<NotesPage> {
                       children: [
                         InkWell(
                             onTap: () {
-                              AppNavigation.push(const ChangePassword());
+                              AppNavigation.push( ChangePassword());
                             },
                             child: const DrawerItemTitle(
                                 title: 'Change Password')),
@@ -272,13 +312,13 @@ class _NotesPageState extends State<NotesPage> {
                         ),
                         InkWell(
                             onTap: () {
-                              AppNavigation.push(const TermsAndConditions());
+                              // AppNavigation.push(const TermsAndConditions());
                             },
                             child: const DrawerItemTitle(
                                 title: 'Terms & Conditions')),
                         InkWell(
                             onTap: () {
-                              AppNavigation.push(const PrivacyPolicy());
+                             // AppNavigation.push(const PrivacyPolicy());
                             },
                             child:
                                 const DrawerItemTitle(title: 'Privacy Policy')),

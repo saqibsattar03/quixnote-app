@@ -11,7 +11,11 @@ import '../../widgets/formatted_date.dart';
 
 
 class TermsAndConditions extends StatefulWidget {
-  const TermsAndConditions({Key? key}) : super(key: key);
+  const TermsAndConditions({Key? key, required this.callBack, required this.isChecked}) : super(key: key);
+
+
+  final Function(bool val) callBack;
+  final bool isChecked;
 
   @override
   State<TermsAndConditions> createState() => _TermsAndConditionsState();
@@ -19,6 +23,7 @@ class TermsAndConditions extends StatefulWidget {
 
 class _TermsAndConditionsState extends State<TermsAndConditions> {
   bool isLoading = false;
+  bool isUpdated = false;
   String exception = "";
   late List<PrivacyTerms> termsAndConditionResponse;
   final api = PrivacyTermsApiConfig();
@@ -27,6 +32,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
   void initState() {
     super.initState();
     getTermsAndConditionData();
+    isUpdated = widget.isChecked;
   }
 
 
@@ -111,8 +117,23 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                 // const SizedBox(height: 40),
                 AppButton(
                   buttonSize: const Size(double.infinity, 50),
-                  onPressed: () {},
-                  buttonTitle: 'Agree',
+                  onPressed: () {
+                    widget.callBack(!widget.isChecked); // Toggle the value and call the callback
+                    setState(() {
+                      isUpdated = !isUpdated;
+                    });
+                  },
+                  // onPressed: () {
+                  //   print("here ");
+                  //   if (!widget.isChecked) {
+                  //     widget.callBack(true);
+                  //   } else {
+                  //     widget.callBack(false);
+                  //   }
+                  //   print(" widget.value ${widget.isChecked}");
+                  // },
+                  buttonTitle:
+                  isUpdated == true ? 'Disagree' : "Agree",
                 ),
                 const SizedBox(height: 40),
               ],

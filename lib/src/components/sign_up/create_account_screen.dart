@@ -1,18 +1,19 @@
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:quix_note/src/base/nav.dart';
+import 'package:quix_note/src/components/sign_in/sign_in.dart';
 import 'package:quix_note/src/components/sign_up/privacy_policy.dart';
+import 'package:quix_note/src/components/sign_up/social_auth.dart';
 import 'package:quix_note/src/components/sign_up/terms_conditions.dart';
-import 'package:quix_note/src/components/sign_up/verify_email.dart';
 import 'package:quix_note/src/models/profile/sign_up_model.dart';
 import 'package:quix_note/src/service/api/profile_api_config.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../utils/app_utils.dart';
+import '../../utils/error_dialog.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({Key? key}) : super(key: key);
@@ -68,18 +69,36 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             .createUserWithEmailAndPassword(
                 email: _emailController.text,
                 password: _passwordController.text);
-        print(userCredential.user?.email);
         final userModel = SignUpModel(
             fullName: _fullNameController.text,
             email: userCredential.user!.email ?? "");
-       api.signUpUser(signUpModel: userModel);
+        api.signUpUser(signUpModel: userModel);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: AppColors.primaryYellow,
+            content: Text('Sign up successful!'),
+            duration: Duration(seconds: 2),
+          ),
+        );
         // pop the circular indicator //
-        Navigator.pop(context);
+        if (!mounted) return;
+        // Navigator.pop(context);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => const SocialAuth()),
+            (Route<dynamic> route) => false);
       } else {
         // show error message
       }
     } catch (e) {
-      print(e.toString());
+      if (!mounted) return;
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => const SocialAuth()),
+          (Route<dynamic> route) => false);
+      ErrorDialog(error: e).show(context);
     }
   }
 
@@ -161,7 +180,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 AppTextField(
                   textEditingController: _passwordController,
                   textInputAction: TextInputAction.next,
-                  // validator: validatePassword,
+                  validator: validatePassword,
                   hint: 'password',
                   obscure: obscure,
                   suffix: IconButton(
@@ -180,7 +199,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 const SizedBox(height: 10),
                 AppTextField(
                   textEditingController: _confirmPasswordController,
-                  // validator: validatePassword,
+                  validator: validatePassword,
                   hint: 'Confirm Password',
                   fillColor: AppColors.lightYellow,
                   obscure: obscure1,
@@ -240,8 +259,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const TermsAndConditions()),
+                                      builder: (context) => TermsAndConditions(
+                                        callBack: (val) {
+                                          termsCondition = val;
+                                          setState(() {});
+                                        },
+                                        isChecked: termsCondition,
+                                      ),
+                                    ),
                                   );
                                 },
                               text: 'Terms',
@@ -257,8 +282,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const TermsAndConditions()),
+                                      builder: (context) => TermsAndConditions(
+                                        callBack: (val) {
+                                          termsCondition = val;
+                                          setState(() {});
+                                        },
+                                        isChecked: termsCondition,
+                                      ),
+                                    ),
                                   );
                                 },
                               text: 'Conditions',
@@ -318,8 +349,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const PrivacyPolicy()),
+                                        builder: (context) => PrivacyPolicy(
+                                              callBack: (val) {
+                                                print("val ${val}");
+                                                privacyPolicy = val;
+                                                setState(() {});
+                                              },
+                                              isChecked: privacyPolicy,
+                                            )),
                                   );
                                 },
                               text: 'Privacy',
@@ -333,10 +370,19 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const PrivacyPolicy()));
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return PrivacyPolicy(
+                                          callBack: (val) {
+                                            privacyPolicy = val;
+                                            setState(() {});
+                                          },
+                                          isChecked: privacyPolicy,
+                                        );
+                                      },
+                                    ),
+                                  );
                                 },
                               text: 'Policy',
                               style: textTheme.bodyMedium!.copyWith(
@@ -352,7 +398,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 ),
                 const SizedBox(height: 40),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 40),
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: AppButton(
                     buttonSize: const Size(double.infinity, 50),
                     // onPressed: privacyPolicy && termsCondition ? signUp : null,
@@ -376,6 +422,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _emailController.dispose();
+    _fullNameController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
   }
 }
 

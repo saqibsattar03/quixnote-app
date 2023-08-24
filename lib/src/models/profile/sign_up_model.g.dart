@@ -9,10 +9,12 @@ part of 'sign_up_model.dart';
 SignUpModel _$SignUpModelFromJson(Map<String, dynamic> json) => SignUpModel(
       fullName: json['fullName'] as String,
       email: json['email'] as String,
+      id: json['_id'] as String?,
       password: json['password'] as String?,
+      idToken: json['idToken'] as String?,
       role: json['role'] as String?,
       loginVia: json['loginVia'] as String?,
-      scopes: json['scopes'] as String?,
+      scopes: json['scopes'] as List<dynamic>?,
       notificationPreference: json['notificationPreference'] as bool?,
       isSubscribed: json['isSubscribed'] as bool?,
       isVerified: json['isVerified'] as bool?,
@@ -23,6 +25,7 @@ SignUpModel _$SignUpModelFromJson(Map<String, dynamic> json) => SignUpModel(
 
 Map<String, dynamic> _$SignUpModelToJson(SignUpModel instance) {
   final val = <String, dynamic>{
+    '_id': instance.id,
     'fullName': instance.fullName,
     'email': instance.email,
   };
@@ -37,6 +40,7 @@ Map<String, dynamic> _$SignUpModelToJson(SignUpModel instance) {
   writeNotNull('role', instance.role);
   writeNotNull('loginVia', instance.loginVia);
   writeNotNull('scopes', instance.scopes);
+  writeNotNull('idToken', instance.idToken);
   writeNotNull('notificationPreference', instance.notificationPreference);
   writeNotNull('isSubscribed', instance.isSubscribed);
   writeNotNull('isVerified', instance.isVerified);
@@ -45,3 +49,12 @@ Map<String, dynamic> _$SignUpModelToJson(SignUpModel instance) {
   writeNotNull('state', instance.state);
   return val;
 }
+
+TokenModel _$TokenModelFromJson(Map<String, dynamic> json) => TokenModel(
+      accessToken: json['access_token'] as String,
+    );
+
+Map<String, dynamic> _$TokenModelToJson(TokenModel instance) =>
+    <String, dynamic>{
+      'access_token': instance.accessToken,
+    };

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:quix_note/src/models/note/note_model.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
 
 class NoteDetail extends StatelessWidget {
-  const NoteDetail({Key? key}) : super(key: key);
-
+  const NoteDetail({Key? key, required this.noteModel}) : super(key: key);
+  final NoteModel noteModel;
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -70,7 +71,8 @@ class NoteDetail extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
             Text(
-              'Low Priority',
+              noteModel.priority.toString(),
+              // 'Low Priority',
               style: textTheme.bodyMedium!.copyWith(
                 color: AppColors.primaryYellow,
                 fontSize: 14,
@@ -78,7 +80,8 @@ class NoteDetail extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             Text(
-              'Redesign Splash Screen',
+              noteModel.title.toString(),
+              // 'Redesign Splash Screen',
               style: textTheme.bodyMedium!.copyWith(
                 color: AppColors.darkTeal,
                 fontWeight: FontWeight.w600,
@@ -147,7 +150,8 @@ class NoteDetail extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Mon,7 March',
+                          noteModel.deadline.toString(),
+                          // 'Mon,7 March',
                           style: textTheme.bodyMedium!.copyWith(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -170,7 +174,8 @@ class NoteDetail extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus interdum mattis fringilla. Sed dolor risus, lacinia vitae euismod in, varius sit amet augue.',
+              noteModel.description.toString(),
+              // 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus interdum mattis fringilla. Sed dolor risus, lacinia vitae euismod in, varius sit amet augue.',
               style: textTheme.bodyMedium!.copyWith(
                 color: AppColors.darkGrey,
                 fontWeight: FontWeight.w400,

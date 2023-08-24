@@ -18,4 +18,9 @@ abstract class AppNavigation {
   static void pop([dynamic data]) {
     navigatorKey.currentState!.pop(data);
   }
+
+  static void pushAndPopAll(Widget page) {
+    navigatorKey.currentState!.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => page), (route) => false);
+  }
 }
