@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:quix_note/src/base/nav.dart';
-import 'package:quix_note/src/components/sign_in/sign_in.dart';
 import 'package:quix_note/src/components/sign_up/privacy_policy.dart';
 import 'package:quix_note/src/components/sign_up/social_auth.dart';
 import 'package:quix_note/src/components/sign_up/terms_conditions.dart';
@@ -27,6 +26,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   bool obscure1 = true;
   bool termsCondition = false;
   bool privacyPolicy = false;
+  bool passwordsMatch = false;
 
   // controllers
 
@@ -36,6 +36,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _confirmPasswordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+  var _autoValidateMode = AutovalidateMode.disabled;
+  final _focusNode = FocusNode();
 
   final api = ProfileApiConfig();
 
@@ -49,7 +51,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         .hasMatch(value)) {
       return 'Password must be 8 characters long and contain \nat least one uppercase letter, one lowercase letter,\none digit, and one special character.';
     }
+    return null;
+  }
 
+  String? matchPassword(String? value) {
+    if (_passwordController.text != _confirmPasswordController.text) {
+      return "Passwords do not match";
+    }
     return null;
   }
 
@@ -105,6 +113,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -116,8 +125,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         ),
       ),
       body: Form(
-        // TODO: start from here
         key: _formKey,
+        autovalidateMode: _autoValidateMode,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SingleChildScrollView(
@@ -177,29 +186,41 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 ),
                 const FieldTitle(title: 'Password'),
                 const SizedBox(height: 10),
-                AppTextField(
-                  textEditingController: _passwordController,
-                  textInputAction: TextInputAction.next,
-                  validator: validatePassword,
-                  hint: 'password',
-                  obscure: obscure,
-                  suffix: IconButton(
-                    icon: Icon(
-                      obscure ? Icons.visibility_off : Icons.visibility,
-                    ),
-                    onPressed: () {
-                      obscure = !obscure;
+                FocusScope(
+                  child: Focus(
+                    focusNode: _focusNode,
+                    onFocusChange: (focus) {
+                      if (_passwordController.text.isEmpty) {
+                        return;
+                      }
+                      _autoValidateMode = AutovalidateMode.always;
                       setState(() {});
                     },
+                    child: AppTextField(
+                      textEditingController: _passwordController,
+                      textInputAction: TextInputAction.next,
+                      validator: validatePassword,
+                      hint: 'Password',
+                      obscure: obscure,
+                      suffix: IconButton(
+                        icon: Icon(
+                          obscure ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          obscure = !obscure;
+                          setState(() {});
+                        },
+                      ),
+                      fillColor: AppColors.lightYellow,
+                      prefix: const Icon(Icons.lock),
+                    ),
                   ),
-                  fillColor: AppColors.lightYellow,
-                  prefix: const Icon(Icons.lock),
                 ),
                 const FieldTitle(title: 'Confirm Password'),
                 const SizedBox(height: 10),
                 AppTextField(
                   textEditingController: _confirmPasswordController,
-                  validator: validatePassword,
+                  validator: matchPassword,
                   hint: 'Confirm Password',
                   fillColor: AppColors.lightYellow,
                   obscure: obscure1,
@@ -404,9 +425,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     // onPressed: privacyPolicy && termsCondition ? signUp : null,
                     onPressed: (privacyPolicy && termsCondition)
                         ? () {
-                            if (_formKey.currentState!.validate()) {
-                              signUp();
+                            if (!_formKey.currentState!.validate()) {
+                              _autoValidateMode = AutovalidateMode.always;
+                              setState(() {});
+                              return;
                             }
+                            signUp();
                           }
                         : null,
                     // onPressed: () {

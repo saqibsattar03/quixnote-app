@@ -41,6 +41,7 @@ class AppTextField extends StatelessWidget {
     this.border,
     this.textCapitalization = TextCapitalization.none,
     this.initialVal,
+    this.onEditingComplete,
   }) : super(key: key);
 
   final Color? cursorColor;
@@ -57,6 +58,7 @@ class AppTextField extends StatelessWidget {
   final Widget? suffix;
   final bool? floatLabel;
   final VoidCallback? onTap;
+  final VoidCallback? onEditingComplete;
   final TextInputType? keyboardType;
   final FormFieldSetter<String>? onSaved;
   final FormFieldSetter<String>? onChanged;
@@ -88,6 +90,7 @@ class AppTextField extends StatelessWidget {
         textAlignVertical: TextAlignVertical.center,
         textCapitalization: textCapitalization,
         onTap: onTap,
+        onEditingComplete: onEditingComplete,
         textAlign: TextAlign.left,
         initialValue: initialVal,
         maxLength: maxLength,
