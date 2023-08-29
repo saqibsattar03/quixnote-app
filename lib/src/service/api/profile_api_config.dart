@@ -1,4 +1,3 @@
-import 'package:dio/src/response.dart';
 import 'package:quix_note/src/models/profile/sign_up_model.dart';
 import 'package:quix_note/src/service/api/base_service.dart';
 
@@ -47,9 +46,7 @@ final class ProfileApiConfig extends BaseApi {
 
   Future<SignUpModel> getUserUsingAccessToken() async {
     try {
-      final response =
-          await getRequest(url: "/auth/person");
-      print(response.data);
+      final response = await getRequest(url: "/auth/person");
       return SignUpModel.fromJson(response.data);
     } catch (_) {
       rethrow;

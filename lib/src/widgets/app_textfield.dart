@@ -30,7 +30,7 @@ class AppTextField extends StatelessWidget {
     this.hintColor,
     this.showBorder = true,
     this.contentPadding = const EdgeInsets.symmetric(
-      horizontal: 30,
+      // horizontal: 30,
       vertical: 17,
     ),
     this.borderRadius,
@@ -80,7 +80,6 @@ class AppTextField extends StatelessWidget {
   final InputBorder? border;
   final String? initialVal;
 
-
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -101,34 +100,34 @@ class AppTextField extends StatelessWidget {
         keyboardType: keyboardType,
         validator: validator,
         obscureText: obscure ?? false,
-        maxLines: maxLines??1,
+        maxLines: maxLines ?? 1,
         controller: textEditingController,
         decoration: InputDecoration(
           filled: true,
           fillColor: fillColor,
           prefixIconColor: AppColors.darkTeal,
-          border:  OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.lightYellow),
+          border: OutlineInputBorder(
+            borderSide: const BorderSide(color: AppColors.lightYellow),
             borderRadius: BorderRadius.all(
-              Radius.circular(  borderRadius??8.0),
+              Radius.circular(borderRadius ?? 8.0),
             ),
           ),
-          errorBorder:  OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.lightYellow),
+          errorBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: AppColors.lightYellow),
             borderRadius: BorderRadius.all(
-              Radius.circular( borderRadius??8.0),
+              Radius.circular(borderRadius ?? 8.0),
             ),
           ),
-          focusedBorder:  OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.lightYellow),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: AppColors.lightYellow),
             borderRadius: BorderRadius.all(
-              Radius.circular( borderRadius??8.0),
+              Radius.circular(borderRadius ?? 8.0),
             ),
           ),
-          enabledBorder:  OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.lightYellow),
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: AppColors.lightYellow),
             borderRadius: BorderRadius.all(
-              Radius.circular( borderRadius??8.0),
+              Radius.circular(borderRadius ?? 8.0),
             ),
           ),
           contentPadding: contentPadding,

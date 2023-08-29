@@ -4,7 +4,7 @@ part 'sign_up_model.g.dart';
 
 @JsonSerializable()
 class SignUpModel {
-  @JsonKey(name: "_id")
+  @JsonKey(includeIfNull: false)
   String? id;
   @JsonKey(name: "fullName")
   String fullName;

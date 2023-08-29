@@ -6,7 +6,7 @@ import 'package:quix_note/firebase_options.dart';
 import 'package:quix_note/src/base/app_theme.dart';
 import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/notes/notes_page.dart';
-import 'package:quix_note/src/components/sign_in/sign_in.dart';
+import 'package:quix_note/src/components/on_boarding/on_boarding.dart';
 import 'package:quix_note/src/components/sign_in/social_auth.dart';
 
 import 'base/data.dart';
@@ -35,9 +35,11 @@ class MyApp extends StatelessWidget {
       title: 'Quix Note',
       navigatorKey: AppNavigation.navigatorKey,
       theme: AppThemes.light,
-      home: FirebaseAuth.instance.currentUser != null
-          ? const NotesPage()
-          : const SocialAuthSignIn(),
+      home: !AppData.getOnBoardingValue()
+          ? const OnBoardView()
+          : FirebaseAuth.instance.currentUser != null
+              ? const NotesPage()
+              : const SocialAuthSignIn(),
     );
   }
 }

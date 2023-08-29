@@ -32,9 +32,9 @@ class AppData {
     await _sharedPreferences.setString(loggedUserIdKey, userId);
   }
 
-  static Future<void> removeAccessToken(String keyName) async {
-    await _sharedPreferences.remove(keyName);
-  }
+  // static Future<void> removeAccessToken(String keyName) async {
+  //   await _sharedPreferences.remove(keyName);
+  // }
 
   static String get accessToken =>
       _sharedPreferences.getString(accessTokenKey) ?? '';

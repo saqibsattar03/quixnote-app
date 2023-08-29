@@ -91,6 +91,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
         else
           Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 FormattedDateWidget(dateTime: termsAndConditionResponse[0].lastUpdated),
                 // Text(
@@ -110,6 +111,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                               title: termsAndConditionResponse[index].clause,
                               subTitle: termsAndConditionResponse[index].description,
                             ),
+                            const Padding(padding: EdgeInsets.symmetric(vertical: 16)),
                           ],
                         );
                       },

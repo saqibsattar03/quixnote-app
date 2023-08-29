@@ -49,6 +49,7 @@ class _DropDownFormFieldState<T> extends State<DropDownFormField<T>> {
     return DropdownButtonFormField(
       value: _value,
       decoration: widget.decoration,
+      icon: null,
       items: widget.data.map((T item) {
         return DropdownMenuItem<T>(
           value: item,

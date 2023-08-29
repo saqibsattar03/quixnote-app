@@ -73,6 +73,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
               else
                 Expanded(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       FormattedDateWidget(
                           dateTime: privacyTermsResponse[0].lastUpdated,),
@@ -89,6 +90,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                                 subTitle:
                                     privacyTermsResponse[index].description,
                               ),
+                              Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                             ],
                           );
                         },

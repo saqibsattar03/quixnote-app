@@ -13,6 +13,7 @@ import 'package:quix_note/src/widgets/app_textfield.dart';
 
 import '../../utils/app_utils.dart';
 import '../../utils/error_dialog.dart';
+import '../sign_in/sign_in.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({Key? key}) : super(key: key);
@@ -46,10 +47,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       return 'Password is required.';
     }
 
-    if (!RegExp(
-            r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*(),.?":{}|<>]).{8,}$')
+    if (!RegExp(r'^.{8}$')
         .hasMatch(value)) {
-      return 'Password must be 8 characters long and contain \nat least one uppercase letter, one lowercase letter,\none digit, and one special character.';
+      return 'Password must be 8 characters long.';
     }
     return null;
   }
@@ -59,6 +59,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       return "Passwords do not match";
     }
     return null;
+  }
+
+  void clearAllController(){
+    _emailController.clear();
+    _fullNameController.clear();
+    _passwordController.clear();
+    _confirmPasswordController.clear();
   }
 
   void signUp() async {
@@ -88,13 +95,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             duration: Duration(seconds: 2),
           ),
         );
+        clearAllController();
         // pop the circular indicator //
         if (!mounted) return;
-        // Navigator.pop(context);
+        Navigator.pop(context);
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => const SocialAuth()),
+                builder: (BuildContext context) => const SignIn()),
             (Route<dynamic> route) => false);
       } else {
         // show error message
@@ -452,10 +460,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _emailController.dispose();
-    _fullNameController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
   }
 }
 

@@ -9,7 +9,7 @@ part of 'sign_up_model.dart';
 SignUpModel _$SignUpModelFromJson(Map<String, dynamic> json) => SignUpModel(
       fullName: json['fullName'] as String,
       email: json['email'] as String,
-      id: json['_id'] as String?,
+      id: json['id'] as String?,
       password: json['password'] as String?,
       idToken: json['idToken'] as String?,
       role: json['role'] as String?,
@@ -24,11 +24,7 @@ SignUpModel _$SignUpModelFromJson(Map<String, dynamic> json) => SignUpModel(
     );
 
 Map<String, dynamic> _$SignUpModelToJson(SignUpModel instance) {
-  final val = <String, dynamic>{
-    '_id': instance.id,
-    'fullName': instance.fullName,
-    'email': instance.email,
-  };
+  final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
     if (value != null) {
@@ -36,6 +32,9 @@ Map<String, dynamic> _$SignUpModelToJson(SignUpModel instance) {
     }
   }
 
+  writeNotNull('id', instance.id);
+  val['fullName'] = instance.fullName;
+  val['email'] = instance.email;
   writeNotNull('password', instance.password);
   writeNotNull('role', instance.role);
   writeNotNull('loginVia', instance.loginVia);

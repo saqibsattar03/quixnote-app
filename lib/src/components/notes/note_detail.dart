@@ -184,6 +184,37 @@ class NoteDetail extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
+              'Media',
+              style: textTheme.bodyMedium!.copyWith(
+                color: AppColors.darkTeal,
+                fontWeight: FontWeight.w600,
+                fontSize: 28,
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              height: 200,
+              width: double.infinity,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 2.0,
+                  ),
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.network(
+                    "http://192.168.1.31:4000/uploads/${noteModel.media}",
+                    fit: BoxFit.fill,
+                  ), // Your image widget goes here
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
               'VA Comments',
               style: textTheme.bodyMedium!.copyWith(
                 color: AppColors.darkTeal,

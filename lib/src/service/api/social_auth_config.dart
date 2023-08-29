@@ -23,7 +23,6 @@ class SocialAuthService {
         final authResult =
             await FirebaseAuth.instance.signInWithCredential(credential);
         final user = authResult.user;
-
         if (user != null) {
           final idToken = await user.getIdToken();
           final userModel = SignUpModel(

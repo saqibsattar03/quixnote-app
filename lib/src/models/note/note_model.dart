@@ -17,8 +17,10 @@ class NoteModel {
   String? description;
   @JsonKey(includeIfNull: false)
   String? priority;
+  // @JsonKey(includeIfNull: false)
+  // List<String>? media;
   @JsonKey(includeIfNull: false)
-  List<String>? media;
+  String? media;
   @JsonKey(includeIfNull: false)
   String? deadline;
   @JsonKey(includeIfNull: false)

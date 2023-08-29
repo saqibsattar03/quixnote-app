@@ -36,7 +36,10 @@ class SingleNote extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("${noteModel.deadline}", style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                "${index + 1}/",
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(
                 width: 30,
               ),
@@ -45,48 +48,51 @@ class SingleNote extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            "${noteModel.title}",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(fontSize: 24),
+                    SizedBox(
+                      width: 230,
+                      child: Row(
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              "${noteModel.title}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(fontSize: 24),
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 7,
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 6),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12.0),
-                            color: Colors.white,
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color.fromRGBO(0, 0, 0, 0.08),
-                                blurRadius: 20.0,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
+                          const SizedBox(
+                            width: 10,
                           ),
-                          child: Text(
-                            "${noteModel.priority}",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(
-                                    color: AppColors.primaryYellow,
-                                    fontSize: 15,
-                                    fontFamily: AppFonts.urbanistSemiBold),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 6),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.0),
+                              color: Colors.white,
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color.fromRGBO(0, 0, 0, 0.08),
+                                  blurRadius: 20.0,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              "${noteModel.priority}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                      color: AppColors.primaryYellow,
+                                      fontSize: 15,
+                                      fontFamily: AppFonts.urbanistSemiBold),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Text(

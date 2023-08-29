@@ -1,21 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:quix_note/src/base/data.dart';
 import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/notes/add_note.dart';
 import 'package:quix_note/src/components/notes/configure_swipe.dart';
 import 'package:quix_note/src/components/notes/connect_account.dart';
 import 'package:quix_note/src/components/notes/create_ticket.dart';
+import 'package:quix_note/src/components/notes/faq_page.dart';
 import 'package:quix_note/src/components/notes/note_detail.dart';
 import 'package:quix_note/src/components/notes/search_notes.dart';
 import 'package:quix_note/src/components/notes/widgets/single_note.dart';
 import 'package:quix_note/src/components/profile/profile_info.dart';
-import 'package:quix_note/src/components/sign_in/auth_page.dart';
 import 'package:quix_note/src/components/sign_up/change_password.dart';
-import 'package:quix_note/src/components/sign_up/privacy_policy.dart';
 import 'package:quix_note/src/components/sign_up/social_auth.dart';
-import 'package:quix_note/src/components/sign_up/terms_conditions.dart';
 import 'package:quix_note/src/models/note/note_model.dart';
 import 'package:quix_note/src/models/profile/sign_up_model.dart';
 import 'package:quix_note/src/service/api/note_api_config.dart';
@@ -24,9 +23,7 @@ import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/utils/error_dialog.dart';
 import 'package:quix_note/src/widgets/app_circular_button.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../sign_in/sign_in.dart';
+import 'package:quix_note/src/widgets/no_data.dart';
 
 class NotesPage extends StatefulWidget {
   const NotesPage({super.key});
@@ -39,67 +36,57 @@ class _NotesPageState extends State<NotesPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   bool notifications = true;
 
-  bool isLoading = false;
-  String exception = "";
-  late List<NoteModel> noteModelResponse;
+  var isLoading = true;
+  var exception = "";
+  var noteModelResponse = <NoteModel>[];
   late SignUpModel signUpModel;
   final api = NoteApiConfig();
   final userApi = ProfileApiConfig();
 
+  Future<void> _init() async {
+    await getUserProfile();
+    await getAllNotes();
+  }
+
   @override
   void initState() {
     super.initState();
-    getUserProfile();
-    getAllNotes();
+    _init();
   }
 
-  Future<void> getUserProfile() async{
+  Future<void> getUserProfile() async {
     try {
-      isLoading = true;
-      setState(() {});
-
-      final response = await userApi.getUserUsingAccessToken();
-      signUpModel = response;
-      AppData.saveAccessToken(signUpModel.id!);
-      isLoading = false;
-      setState(() {});
+      signUpModel = await userApi.getUserUsingAccessToken();
     } catch (e) {
-      ErrorDialog(error: e,).show(context);
+      ErrorDialog(error: e).show(context);
       exception = e.toString();
       isLoading = false;
       setState(() {});
     }
-
-
   }
 
   Future<void> getAllNotes() async {
     try {
-      isLoading = true;
-      setState(() {});
-
-      final response = await api.getAllNotes();
-      noteModelResponse = response;
-
-      isLoading = false;
-      setState(() {});
+      noteModelResponse = await api.getAllNotes();
     } catch (e) {
-      ErrorDialog(error: e,).show(context);
+      ErrorDialog(error: e).show(context);
       exception = e.toString();
-      isLoading = false;
-      setState(() {});
     }
+    isLoading = false;
+    setState(() {});
   }
 
   void logout() async {
     await AppData.clearPref();
+    // await _googleSignIn.disconnect();
     await FirebaseAuth.instance.signOut();
+    await GoogleSignIn().signOut();
+    if (!mounted) return;
     Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) =>
-            const SocialAuth()),
-            (Route<dynamic> route) => false);
+      context,
+      MaterialPageRoute(builder: (context) => const SocialAuth()),
+      (route) => false,
+    );
   }
 
   @override
@@ -107,93 +94,122 @@ class _NotesPageState extends State<NotesPage> {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       key: _scaffoldKey,
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(29, 60, 29, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AppCircularButton(
-                  onPressed: () {
-                    _scaffoldKey.currentState!.openDrawer();
-                  },
-                  color: AppColors.extraLightGrey,
-                  svg: SvgPicture.asset(AppImages.category),
-                  height: 70,
-                  width: 70,
-                ),
-                Row(
-                  children: [
-                    AppCircularButton(
-                      onPressed: () {
-                        AppNavigation.push(const SearchNotes());
-                      },
-                      color: AppColors.lightYellow,
-                      svg: SvgPicture.asset(AppImages.search),
-                      height: 50,
-                      width: 50,
-                    ),
-                    const SizedBox(
-                      width: 7,
-                    ),
-                    AppCircularButton(
-                      onPressed: () {
-                        // AppNavigation.push(const ProfileInfo());
-                        AppNavigation.push(const AddNote());
-                      },
-                      color: AppColors.lightYellow,
-                      svg: SvgPicture.asset(AppImages.plusIcon),
-                      height: 50,
-                      width: 50,
-                    ),
-                  ],
-                ),
-              ],
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.fromLTRB(29, 60, 29, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      AppCircularButton(
+                        onPressed: () {
+                          _scaffoldKey.currentState!.openDrawer();
+                        },
+                        color: AppColors.extraLightGrey,
+                        svg: SvgPicture.asset(AppImages.category),
+                        height: 70,
+                        width: 70,
+                      ),
+                      Row(
+                        children: [
+                          AppCircularButton(
+                            onPressed: () {
+                              AppNavigation.push(const SearchNotes());
+                            },
+                            color: AppColors.lightYellow,
+                            svg: SvgPicture.asset(AppImages.search),
+                            height: 50,
+                            width: 50,
+                          ),
+                          const SizedBox(width: 7),
+                          AppCircularButton(
+                            onPressed: () {
+                              // AppNavigation.push(const ProfileInfo());
+                              AppNavigation.push(const AddNote());
+                            },
+                            color: AppColors.lightYellow,
+                            svg: SvgPicture.asset(AppImages.plusIcon),
+                            height: 50,
+                            width: 50,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 40),
+                  Text(
+                    "Hello, ${signUpModel.fullName}",
+                    style: textTheme.titleLarge!.copyWith(fontSize: 34),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Welcome to your notes",
+                    style: textTheme.titleMedium!.copyWith(),
+                  ),
+                  const SizedBox(height: 60),
+
+                  Expanded(
+                    child: noteModelResponse.isEmpty
+                        ? const NoDataWidget(message: "No notes yet")
+                        : ListView.separated(
+                            shrinkWrap: true,
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return const Divider(
+                                thickness: 1,
+                                indent: 10,
+                                endIndent: 10,
+                                color: AppColors.dividerGrey,
+                              );
+                            },
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () {
+                                  AppNavigation.push(NoteDetail(
+                                    noteModel: noteModelResponse[index],
+                                  ));
+                                },
+                                child: SingleNote(
+                                  index: index,
+                                  noteModel: noteModelResponse[index],
+                                ),
+                              );
+                            },
+                            itemCount: noteModelResponse.length,
+                          ),
+                  )
+
+                  // Expanded(
+                  //     child: ListView.separated(
+                  //   shrinkWrap: true,
+                  //   separatorBuilder: (BuildContext context, int index) {
+                  //     return const Divider(
+                  //       thickness: 1,
+                  //       indent: 10,
+                  //       endIndent: 10,
+                  //       color: AppColors.dividerGrey,
+                  //     );
+                  //   },
+                  //   itemBuilder: (context, index) {
+                  //     return InkWell(
+                  //         onTap: () {
+                  //           AppNavigation.push(NoteDetail(
+                  //             noteModel: noteModelResponse[index],
+                  //           ));
+                  //         },
+                  //         child: SingleNote(
+                  //           index: index,
+                  //           noteModel: noteModelResponse[index],
+                  //         ));
+                  //   },
+                  //   itemCount: noteModelResponse.length,
+                  // ))
+                ],
+              ),
             ),
-            const SizedBox(height: 40),
-            Text(
-              "Hello, User",
-              style: textTheme.titleLarge!.copyWith(fontSize: 34),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              "Welcome to your notes",
-              style: textTheme.titleMedium!.copyWith(),
-            ),
-            const SizedBox(
-              height: 60,
-            ),
-            if (isLoading)
-              const Center(child: CircularProgressIndicator())
-            else
-              Expanded(
-                  child: ListView.separated(
-                shrinkWrap: true,
-                separatorBuilder: (BuildContext context, int index) {
-                  return const Divider(
-                    thickness: 1,
-                    indent: 10,
-                    endIndent: 10,
-                    color: AppColors.dividerGrey,
-                  );
-                },
-                itemBuilder: (context, index) {
-                  return InkWell(
-                      onTap: () {
-                        AppNavigation.push( NoteDetail(noteModel: noteModelResponse[index],));
-                      },
-                      child: SingleNote(
-                        index: index,
-                        noteModel: noteModelResponse[index],
-                      ));
-                },
-                itemCount: noteModelResponse.length,
-              ))
-          ],
-        ),
-      ),
       drawer: SafeArea(
         child: Drawer(
           width: double.infinity,
@@ -230,7 +246,7 @@ class _NotesPageState extends State<NotesPage> {
                           Column(
                             children: [
                               Text(
-                                'Shea Lewis',
+                                "User",
                                 style: textTheme.bodyMedium!.copyWith(
                                   fontSize: 19,
                                   fontWeight: FontWeight.w400,
@@ -263,86 +279,94 @@ class _NotesPageState extends State<NotesPage> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        InkWell(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          InkWell(
+                              onTap: () {
+                                AppNavigation.push(const ChangePassword());
+                              },
+                              child: const DrawerItemTitle(
+                                  title: 'Change Password')),
+                          InkWell(
+                              onTap: () {
+                                AppNavigation.push(const ConnectAccounts());
+                              },
+                              child: const DrawerItemTitle(
+                                  title: 'Connect Account')),
+                          InkWell(
                             onTap: () {
-                              AppNavigation.push( ChangePassword());
-                            },
-                            child: const DrawerItemTitle(
-                                title: 'Change Password')),
-                        InkWell(
-                            onTap: () {
-                              AppNavigation.push(const ConnectAccounts());
-                            },
-                            child: const DrawerItemTitle(
-                                title: 'Connect Account')),
-                        InkWell(
-                          onTap: () {
-                            AppNavigation.push(const ConfigureSwipe());
-                          },
-                          child:
-                              const DrawerItemTitle(title: 'Configure swipe'),
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const DrawerItemTitle(title: 'Notifications'),
-                            const SizedBox(width: 20),
-                            SizedBox(
-                              height: 30,
-                              width: 40,
-                              child: FittedBox(
-                                fit: BoxFit.fill,
-                                child: Switch(
-                                  inactiveThumbColor: Colors.white,
-                                  activeColor: AppColors.darkTeal,
-                                  inactiveTrackColor: AppColors.darkTeal,
-                                  value: notifications,
-                                  onChanged: (bool value) {
-                                    setState(() {
-                                      notifications = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        InkWell(
-                            onTap: () {
-                              // AppNavigation.push(const TermsAndConditions());
-                            },
-                            child: const DrawerItemTitle(
-                                title: 'Terms & Conditions')),
-                        InkWell(
-                            onTap: () {
-                             // AppNavigation.push(const PrivacyPolicy());
+                              AppNavigation.push(const ConfigureSwipe());
                             },
                             child:
-                                const DrawerItemTitle(title: 'Privacy Policy')),
-                        InkWell(
-                            onTap: () {
-                              AppNavigation.push(const CreateTicket());
-                            },
-                            child: const DrawerItemTitle(title: 'Contact Us')),
-                      ],
+                                const DrawerItemTitle(title: 'Configure swipe'),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const DrawerItemTitle(title: 'Notifications'),
+                              const SizedBox(width: 20),
+                              SizedBox(
+                                height: 30,
+                                width: 40,
+                                child: FittedBox(
+                                  fit: BoxFit.fill,
+                                  child: Switch(
+                                    inactiveThumbColor: Colors.white,
+                                    activeColor: AppColors.darkTeal,
+                                    inactiveTrackColor: AppColors.darkTeal,
+                                    value: notifications,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        notifications = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          InkWell(
+                              onTap: () {
+                                // AppNavigation.push(const TermsAndConditions());
+                              },
+                              child: const DrawerItemTitle(
+                                  title: 'Terms & Conditions')),
+                          InkWell(
+                              onTap: () {
+                                // AppNavigation.push(const PrivacyPolicy());
+                              },
+                              child:
+                                  const DrawerItemTitle(title: 'Privacy Policy')),
+                          InkWell(
+                              onTap: () {
+                                AppNavigation.push(const CreateTicket());
+                              },
+                              child: const DrawerItemTitle(title: 'Contact Us')),
+                          InkWell(
+                              onTap: () {
+                                AppNavigation.push(const FaqPage());
+                              },
+                              child: const DrawerItemTitle(title: "FAQ's")),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       InkWell(
                         onTap: logout,
-                        child: DrawerItemTitle(title: 'Logout'),
+                        child: const DrawerItemTitle(title: 'Logout'),
                       ),
-                      SizedBox(height: 20),
-                      DrawerItemTitle(title: 'Version 1.2.2', fontSize: 14),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
+                      const DrawerItemTitle(
+                          title: 'Version 1.2.2', fontSize: 14),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 )

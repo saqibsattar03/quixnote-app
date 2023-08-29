@@ -15,10 +15,9 @@ final class NoteApiConfig extends BaseApi {
   Future<List<NoteModel>> getAllNotes() async {
     try {
       final response = await getRequest(url: "/notes/all-by-userid");
-      final list = response.data
+      return response.data
           .map<NoteModel>((json) => NoteModel.fromJson(json))
           .toList();
-      return list;
     } catch (_) {
       rethrow;
     }

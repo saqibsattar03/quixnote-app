@@ -10,10 +10,9 @@ class AppThemes {
     brightness: Brightness.light,
     appBarTheme: const AppBarTheme(
       elevation: 0.0,
-
+      scrolledUnderElevation: 0,
       color: Colors.white,
       iconTheme: IconThemeData(
-
         color: Colors.black,
       ),
     ),

@@ -1,3 +1,6 @@
+// import 'package:file_picker/file_picker.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:quix_note/src/base/nav.dart';
@@ -5,9 +8,11 @@ import 'package:quix_note/src/components/notes/widgets/app_dorpdown.dart';
 import 'package:quix_note/src/service/api/note_api_config.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/error_dialog.dart';
+import 'package:quix_note/src/utils/image_picker.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
 
+import '../../base/data.dart';
 import '../../models/note/note_model.dart';
 import 'notes_page.dart';
 
@@ -17,6 +22,7 @@ enum Priority {
   low("Low");
 
   final String value;
+
   const Priority(this.value);
 }
 
@@ -40,6 +46,7 @@ class _AddNoteState extends State<AddNote> {
   final _formKey = GlobalKey<FormState>();
   DateTime? _selectedDate;
   String? _selectedPriority;
+  File? _selectedFile;
 
   void createNote() async {
     showDialog(
@@ -51,12 +58,14 @@ class _AddNoteState extends State<AddNote> {
       },
     );
     try {
+      final imageUpload =await api.uploadImage(_selectedFile!);
+      print("image ${imageUpload}");
       final createNoteModel = NoteModel(
         title: _titleController.text,
         description: _descriptionController.text,
         priority: _selectedPriority,
+        media: imageUpload.toString(),
         projectName: "Test Project",
-        // deadline: _selectedDate!.toString(),
         deadline: DateFormat('dd/MM/yyyy').format(_selectedDate!),
       );
       await api.creteNote(createNoteModel: createNoteModel);
@@ -72,11 +81,11 @@ class _AddNoteState extends State<AddNote> {
 
   void datePicker() {
     showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2020),
-            lastDate: DateTime.now())
-        .then((pickedDate) {
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(9999, 12, 31),
+    ).then((pickedDate) {
       if (pickedDate == null) {
         return;
       }
@@ -85,6 +94,26 @@ class _AddNoteState extends State<AddNote> {
       });
     });
   }
+
+  // pickFile() async {
+  //   await FilePickerSheet(
+  //     onSelected: (type) async {
+  //       try {
+  //         FilePickerResult? result = await FilePicker.platform.pickFiles(
+  //           allowMultiple: true,
+  //           type: type,
+  //           // allowedExtensions: ['jpg', 'jpeg', 'png', 'mp4', 'mov'],
+  //         );
+  //         // if (result != null && result.files.first.size > 50000000) {
+  //         //   $showInfoSnackBar('Maximum of 50MBs are allowed');
+  //         //   return;
+  //         // }
+  //         if (result == null) return;
+  //         setState(() {});
+  //       } catch (_) {}
+  //     },
+  //   ).show(context);
+  // }
 
   String capitalize(String input) {
     if (input.isEmpty) return input;
@@ -97,7 +126,7 @@ class _AddNoteState extends State<AddNote> {
 
     String formattedDate = _selectedDate != null
         ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
-        : 'Due Date';
+        : 'Set Due Date';
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -214,6 +243,8 @@ class _AddNoteState extends State<AddNote> {
                               enabledBorder: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5)),
+                                borderSide:
+                                BorderSide(color: AppColors.primaryYellow),
                               ),
                             ),
                           ),
@@ -221,12 +252,26 @@ class _AddNoteState extends State<AddNote> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    const NoteAction(
-                      title: 'Add Media',
-                      buttonTitle: 'Add +',
+                    InkWell(
+                      onTap: () async {
+                        ImagePickerWidget(
+                          callback: (f) async {
+                            _selectedFile = f;
+                            setState(() {});
+                          },
+                        ).show(context);
+                      },
+                      child: const NoteAction(
+                        title: 'Add Media',
+                        buttonTitle: 'Add +',
+                      ),
                     ),
                   ],
                 ),
+                if (_selectedFile != null) ...[
+                const  SizedBox(height: 20,),
+                  Image.file(_selectedFile!),
+                ],
                 Column(
                   children: [
                     Padding(
@@ -236,6 +281,16 @@ class _AddNoteState extends State<AddNote> {
                         buttonSize: const Size(double.infinity, 56),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
+                            if (_selectedDate == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: AppColors.primaryYellow,
+                                  content: Text('Due Date is required!'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                              return;
+                            }
                             createNote();
                           }
                         },

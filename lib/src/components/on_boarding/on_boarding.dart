@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:quix_note/src/components/home/home_page.dart';
 import 'package:quix_note/src/components/on_boarding/widgets/on_boarding_layout.dart';
 import 'package:quix_note/src/components/sign_up/social_auth.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
@@ -18,6 +17,7 @@ class OnBoardView extends StatefulWidget {
 
 class _OnBoardViewState extends State<OnBoardView> {
   final controller = PageController();
+  int currentPage = 0;
   bool isLastPage = false;
   int step = 0;
   final List<double> _animationValues = [
@@ -25,6 +25,27 @@ class _OnBoardViewState extends State<OnBoardView> {
     0.7,
     1.0,
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // controller.addListener(_handlePageChange);
+  }
+
+  // void _handlePageChange({int index = -1}) {
+  //   if (step >= _animationValues.length - 1) {
+  //     if (index != -1) {
+  //       step = index;
+  //       isLastPage = false;
+  //     } else {
+  //       // isLastPage = true;
+  //     }
+  //   } else {
+  //     if (index == -1) step++;
+  //   }
+  //   setState(() {});
+  // }
 
   void pressToAnimate({int index = -1}) {
     setState(() {
@@ -46,6 +67,7 @@ class _OnBoardViewState extends State<OnBoardView> {
   @override
   void dispose() {
     controller.dispose();
+    // controller.removeListener(_handlePageChange);
     super.dispose();
   }
 
@@ -59,10 +81,15 @@ class _OnBoardViewState extends State<OnBoardView> {
           children: [
             Expanded(
               child: PageView(
+                physics:const NeverScrollableScrollPhysics(),
                 controller: controller,
-                onPageChanged: (index) => {
-                  if (index == 2)
-                    {isLastPage = true, AppData.setOnBoardingValue(true)}
+                onPageChanged: (index) {
+                  if (index == 2) {
+                    print("swipe");
+                    isLastPage = true;
+                    AppData.setOnBoardingValue(true);
+                    setState(() {});
+                  }
                 },
                 children: [
                   BoardingLayout(
@@ -124,46 +151,49 @@ class _OnBoardViewState extends State<OnBoardView> {
                 ),
                 duration: const Duration(milliseconds: 500),
                 builder: (context, value, child) {
-                  return Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Opacity(
-                        opacity: 1.0,
-                        child: SizedBox(
-                          width: 80,
-                          height: 80,
-                          child: CircularProgressIndicator(
-                            value: value,
-                            backgroundColor: AppColors.darkTeal.withOpacity(0.1),
-                            strokeWidth: 6,
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              AppColors.darkTeal,
+                  return GestureDetector(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Opacity(
+                          opacity: 1.0,
+                          child: SizedBox(
+                            width: 80,
+                            height: 80,
+                            child: CircularProgressIndicator(
+                              value: value,
+                              backgroundColor:
+                                  AppColors.darkTeal.withOpacity(0.1),
+                              strokeWidth: 6,
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                AppColors.darkTeal,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      FloatingActionButton(
-                        onPressed: () {
-                          controller.nextPage(
-                            duration: const Duration(milliseconds: 500),
-                            curve: Curves.easeInOut,
-                          );
-                          if (!isLastPage) {
-                            pressToAnimate();
-                          } else {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        const SocialAuth()),
-                                (Route<dynamic> route) => false);
-                          }
-                        },
-                        backgroundColor: AppColors.primaryYellow,
-                        shape: const CircleBorder(),
-                        child: SvgPicture.asset(AppImages.rightArrow),
-                      ),
-                    ],
+                        FloatingActionButton(
+                          onPressed: () {
+                            controller.nextPage(
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOut,
+                            );
+                            if (!isLastPage) {
+                              pressToAnimate();
+                            } else {
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          const SocialAuth()),
+                                  (Route<dynamic> route) => false);
+                            }
+                          },
+                          backgroundColor: AppColors.primaryYellow,
+                          shape: const CircleBorder(),
+                          child: SvgPicture.asset(AppImages.rightArrow),
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),
