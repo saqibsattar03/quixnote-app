@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>409344619087-n57abuu06r5gp6njtsrampqc0gpf8ft0.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.409344619087-n57abuu06r5gp6njtsrampqc0gpf8ft0</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBd9CC2a1_aCzXke4VfwIJaQnGPFhui1hM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>409344619087</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.quixNote</string>
+	<key>PROJECT_ID</key>
+	<string>quix-note</string>
+	<key>STORAGE_BUCKET</key>
+	<string>quix-note.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:409344619087:ios:cf54a26d3205a35f0b303a</string>
+</dict>
+</plist>
