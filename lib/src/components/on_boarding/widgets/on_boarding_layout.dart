@@ -44,11 +44,11 @@ class BoardingLayout extends StatelessWidget {
             child: const Text('Skip'),
           ),
           const SizedBox(
-            height: 90,
+            height: 40,
           ),
-          SvgPicture.asset(urlImage),
+         SizedBox(height:220,width:double.infinity,child:  SvgPicture.asset(urlImage),),
           const SizedBox(
-            height: 104,
+            height: 60,
           ),
           Text(
             title,
@@ -58,7 +58,7 @@ class BoardingLayout extends StatelessWidget {
             height: 5,
           ),
           SizedBox(
-            width: 250,
+            width: 350,
             child: Text(
               subtitle,
               textAlign: TextAlign.center,

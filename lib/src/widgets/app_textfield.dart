@@ -30,7 +30,7 @@ class AppTextField extends StatelessWidget {
     this.hintColor,
     this.showBorder = true,
     this.contentPadding = const EdgeInsets.symmetric(
-      // horizontal: 30,
+      horizontal: 20,
       vertical: 17,
     ),
     this.borderRadius,

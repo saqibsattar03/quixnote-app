@@ -6,14 +6,12 @@ import 'package:quix_note/src/base/data.dart';
 import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/notes/add_note.dart';
 import 'package:quix_note/src/components/notes/configure_swipe.dart';
-import 'package:quix_note/src/components/notes/connect_account.dart';
 import 'package:quix_note/src/components/notes/create_ticket.dart';
 import 'package:quix_note/src/components/notes/faq_page.dart';
 import 'package:quix_note/src/components/notes/note_detail.dart';
 import 'package:quix_note/src/components/notes/search_notes.dart';
 import 'package:quix_note/src/components/notes/widgets/single_note.dart';
 import 'package:quix_note/src/components/profile/profile_info.dart';
-import 'package:quix_note/src/components/sign_up/change_password.dart';
 import 'package:quix_note/src/components/sign_up/social_auth.dart';
 import 'package:quix_note/src/models/note/note_model.dart';
 import 'package:quix_note/src/models/profile/sign_up_model.dart';
@@ -24,6 +22,9 @@ import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/utils/error_dialog.dart';
 import 'package:quix_note/src/widgets/app_circular_button.dart';
 import 'package:quix_note/src/widgets/no_data.dart';
+
+import '../sign_up/privacy_policy.dart';
+import '../sign_up/terms_conditions.dart';
 
 class NotesPage extends StatefulWidget {
   const NotesPage({super.key});
@@ -57,6 +58,7 @@ class _NotesPageState extends State<NotesPage> {
   Future<void> getUserProfile() async {
     try {
       signUpModel = await userApi.getUserUsingAccessToken();
+      setState(() {});
     } catch (e) {
       ErrorDialog(error: e).show(context);
       exception = e.toString();
@@ -76,9 +78,22 @@ class _NotesPageState extends State<NotesPage> {
     setState(() {});
   }
 
+  void splitUserFullName() {
+    String fullName = signUpModel.fullName;
+    List<String> nameParts = fullName.split(' ');
+
+    if (nameParts.length >= 2) {
+      signUpModel.fullName = nameParts[0];
+      // String lastName = nameParts[1];
+      // print("First Name: $firstName");
+      // print("Last Name: $lastName");
+    } else {
+      print("Invalid full name format");
+    }
+  }
+
   void logout() async {
     await AppData.clearPref();
-    // await _googleSignIn.disconnect();
     await FirebaseAuth.instance.signOut();
     await GoogleSignIn().signOut();
     if (!mounted) return;
@@ -285,16 +300,16 @@ class _NotesPageState extends State<NotesPage> {
                         children: [
                           InkWell(
                               onTap: () {
-                                AppNavigation.push(const ChangePassword());
+                                // AppNavigation.push(const ChangePassword());
                               },
                               child: const DrawerItemTitle(
                                   title: 'Change Password')),
-                          InkWell(
-                              onTap: () {
-                                AppNavigation.push(const ConnectAccounts());
-                              },
-                              child: const DrawerItemTitle(
-                                  title: 'Connect Account')),
+                          // InkWell(
+                          //     onTap: () {
+                          //       AppNavigation.push(const ConnectAccounts());
+                          //     },
+                          //     child: const DrawerItemTitle(
+                          //         title: 'Connect Account')),
                           InkWell(
                             onTap: () {
                               AppNavigation.push(const ConfigureSwipe());
@@ -329,21 +344,30 @@ class _NotesPageState extends State<NotesPage> {
                           ),
                           InkWell(
                               onTap: () {
-                                // AppNavigation.push(const TermsAndConditions());
+                                AppNavigation.push(TermsAndConditions(
+                                  callBack: (val) {},
+                                  isChecked: true,
+                                  isSignupForm: false,
+                                ));
                               },
                               child: const DrawerItemTitle(
                                   title: 'Terms & Conditions')),
                           InkWell(
                               onTap: () {
-                                // AppNavigation.push(const PrivacyPolicy());
+                                AppNavigation.push(PrivacyPolicy(
+                                  callBack: (val) {},
+                                  isChecked: true,
+                                  isSignupForm: false,
+                                ));
                               },
-                              child:
-                                  const DrawerItemTitle(title: 'Privacy Policy')),
+                              child: const DrawerItemTitle(
+                                  title: 'Privacy Policy')),
                           InkWell(
                               onTap: () {
                                 AppNavigation.push(const CreateTicket());
                               },
-                              child: const DrawerItemTitle(title: 'Contact Us')),
+                              child:
+                                  const DrawerItemTitle(title: 'Contact Us')),
                           InkWell(
                               onTap: () {
                                 AppNavigation.push(const FaqPage());

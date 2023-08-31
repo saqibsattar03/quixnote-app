@@ -9,12 +9,13 @@ part of 'note_model.dart';
 NoteModel _$NoteModelFromJson(Map<String, dynamic> json) => NoteModel(
       id: json['id'] as String?,
       userId: json['userId'] as String?,
-      projectName: json['projectName'] as String?,
       title: json['title'] as String?,
       description: json['description'] as String?,
       priority: json['priority'] as String?,
       media: json['media'] as String?,
-      deadline: json['deadline'] as String?,
+      deadline: json['deadline'] == null
+          ? null
+          : DateTime.parse(json['deadline'] as String),
       createdAt: json['createdAt'] == null
           ? null
           : DateTime.parse(json['createdAt'] as String),
@@ -35,12 +36,11 @@ Map<String, dynamic> _$NoteModelToJson(NoteModel instance) {
 
   writeNotNull('id', instance.id);
   writeNotNull('userId', instance.userId);
-  writeNotNull('projectName', instance.projectName);
   writeNotNull('title', instance.title);
   writeNotNull('description', instance.description);
   writeNotNull('priority', instance.priority);
   writeNotNull('media', instance.media);
-  writeNotNull('deadline', instance.deadline);
+  writeNotNull('deadline', instance.deadline?.toIso8601String());
   writeNotNull('createdAt', instance.createdAt?.toIso8601String());
   writeNotNull('updatedAt', instance.updatedAt?.toIso8601String());
   writeNotNull('v', instance.v);

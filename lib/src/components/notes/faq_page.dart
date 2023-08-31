@@ -15,10 +15,26 @@ class FaqPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            AppNavigation.pop();
+          },
+        ),
+        centerTitle: true,
+        // title: Text(
+        //   'FAQ',
+        //   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+        //     fontSize: 24,
+        //     fontWeight: FontWeight.bold,
+        //   ),
+        // ),
+      ),
       body: SizedBox(
         width: double.infinity,
         child: Padding(
-          padding: const EdgeInsets.only(top: 80),
+          padding: const EdgeInsets.only(top: 10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -35,6 +51,7 @@ class FaqPage extends StatelessWidget {
                 "Frequently asked Questions",
                 style: textTheme.titleLarge!.copyWith(fontSize: 28),
               ),
+              SizedBox(height: 12,),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 43),
                 child: Text(
@@ -47,6 +64,7 @@ class FaqPage extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
+              SizedBox(height: 12,),
               Expanded(
                 child: ListView.separated(
                   itemBuilder: (context, index) => Container(
@@ -61,13 +79,26 @@ class FaqPage extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            " Does Quix Note Lorem Ipsum Dolor Sit ",
-                            style: textTheme.titleMedium!.copyWith(
+                          Flexible(
+                            child: Text(
+                              " Does Quix Note Lorem Ipsum Dolor Sit ",
+                              style: textTheme.titleMedium!.copyWith(
                                 fontSize: 16,
-                                fontFamily: AppFonts.urbanistSemiBold),
+                                fontFamily: AppFonts.urbanistSemiBold,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                          SvgPicture.asset(AppImages.chevronRight)
+                          SvgPicture.asset(AppImages.chevronRight),
+                          // Text(
+                          //   " Does Quix Note Lorem Ipsum Dolor Sit hjskdhhk",
+                          //   style: textTheme.titleMedium!.copyWith(
+                          //       fontSize: 14,
+                          //       fontFamily: AppFonts.urbanistSemiBold,
+                          //     overflow: TextOverflow.ellipsis
+                          //       ),
+                          // ),
+                          // SvgPicture.asset(AppImages.chevronRight)
                         ],
                       ),
                     ),
@@ -78,6 +109,7 @@ class FaqPage extends StatelessWidget {
                   itemCount: 4,
                 ),
               ),
+              const SizedBox(height: 12,),
               Text(
                 'Need More Help?',
                 style: textTheme.bodyMedium!.copyWith(

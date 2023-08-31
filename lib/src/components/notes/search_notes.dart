@@ -344,7 +344,7 @@ class _ApplyFiltersSheetState extends State<ApplyFiltersSheet> {
             const SizedBox(height: 20),
             AppButton(
                 onPressed: () {
-                  widget.applyFiltersCallback();
+                  // widget.applyFiltersCallback();
                   // print(priority[selectedPriority]);
                   // print(date[selectedDate]);
                 },

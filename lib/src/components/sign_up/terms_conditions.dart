@@ -11,11 +11,12 @@ import '../../widgets/formatted_date.dart';
 
 
 class TermsAndConditions extends StatefulWidget {
-  const TermsAndConditions({Key? key, required this.callBack, required this.isChecked}) : super(key: key);
+  const TermsAndConditions({Key? key, required this.callBack, required this.isChecked, required this.isSignupForm}) : super(key: key);
 
 
   final Function(bool val) callBack;
   final bool isChecked;
+  final bool isSignupForm;
 
   @override
   State<TermsAndConditions> createState() => _TermsAndConditionsState();
@@ -117,6 +118,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                       },
                     )),
                 // const SizedBox(height: 40),
+                if(widget.isSignupForm)
                 AppButton(
                   buttonSize: const Size(double.infinity, 50),
                   onPressed: () {

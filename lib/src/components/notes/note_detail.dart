@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:quix_note/src/models/note/note_model.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
@@ -6,6 +7,7 @@ import 'package:quix_note/src/widgets/app_textfield.dart';
 class NoteDetail extends StatelessWidget {
   const NoteDetail({Key? key, required this.noteModel}) : super(key: key);
   final NoteModel noteModel;
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -21,6 +23,7 @@ class NoteDetail extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
+        centerTitle: true,
         title: Text(
           'Note detail',
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -48,7 +51,7 @@ class NoteDetail extends StatelessWidget {
                 value: 2,
                 // row has two child icon and text
                 child: Text(
-                  "About",
+                  "Delete",
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
@@ -72,7 +75,6 @@ class NoteDetail extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               noteModel.priority.toString(),
-              // 'Low Priority',
               style: textTheme.bodyMedium!.copyWith(
                 color: AppColors.primaryYellow,
                 fontSize: 14,
@@ -81,51 +83,51 @@ class NoteDetail extends StatelessWidget {
             const SizedBox(height: 5),
             Text(
               noteModel.title.toString(),
-              // 'Redesign Splash Screen',
               style: textTheme.bodyMedium!.copyWith(
                 color: AppColors.darkTeal,
                 fontWeight: FontWeight.w600,
-                fontSize: 28,
+                fontSize: 20,
               ),
             ),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    const Card(
-                        elevation: 5,
-                        child: Padding(
-                          padding: EdgeInsets.all(12.0),
-                          child: Icon(
-                            Icons.snapchat,
-                            color: Colors.yellow,
-                          ),
-                        )),
-                    const SizedBox(width: 2),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Project',
-                          style: textTheme.bodyMedium!.copyWith(
-                            fontSize: 14,
-                            color: AppColors.darkGrey,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        Text(
-                          'Snapchat',
-                          style: textTheme.bodyMedium!.copyWith(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
+                Container(),
+                // const Row(
+                //   children: [
+                //     Card(
+                //         elevation: 5,
+                //         child: Padding(
+                //           padding: EdgeInsets.all(12.0),
+                //           child: Icon(
+                //             Icons.snapchat,
+                //             color: Colors.yellow,
+                //           ),
+                //         )),
+                //     SizedBox(width: 2),
+                //     // Column(
+                //     //   crossAxisAlignment: CrossAxisAlignment.start,
+                //     //   children: [
+                //     //     Text(
+                //     //       'Project',
+                //     //       style: textTheme.bodyMedium!.copyWith(
+                //     //         fontSize: 14,
+                //     //         color: AppColors.darkGrey,
+                //     //         fontWeight: FontWeight.w400,
+                //     //       ),
+                //     //     ),
+                //     //     Text(
+                //     //       'Snapchat',
+                //     //       style: textTheme.bodyMedium!.copyWith(
+                //     //         fontSize: 16,
+                //     //         fontWeight: FontWeight.w500,
+                //     //       ),
+                //     //     ),
+                //     //   ],
+                //     // )
+                //   ],
+                // ),
                 Row(
                   children: [
                     const Card(
@@ -150,8 +152,7 @@ class NoteDetail extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          noteModel.deadline.toString(),
-                          // 'Mon,7 March',
+                            DateFormat('E, d MMMM').format(noteModel.deadline!).toString(),
                           style: textTheme.bodyMedium!.copyWith(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -169,7 +170,7 @@ class NoteDetail extends StatelessWidget {
               style: textTheme.bodyMedium!.copyWith(
                 color: AppColors.darkTeal,
                 fontWeight: FontWeight.w600,
-                fontSize: 28,
+                fontSize: 20,
               ),
             ),
             const SizedBox(height: 20),
@@ -183,43 +184,82 @@ class NoteDetail extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Text(
-              'Media',
-              style: textTheme.bodyMedium!.copyWith(
-                color: AppColors.darkTeal,
-                fontWeight: FontWeight.w600,
-                fontSize: 28,
-              ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              height: 200,
-              width: double.infinity,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 2.0,
+            if (noteModel.media != "null")
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Media',
+                    style: textTheme.bodyMedium!.copyWith(
+                      color: AppColors.darkTeal,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20,
+                    ),
                   ),
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Image.network(
-                    "http://192.168.1.31:4000/uploads/${noteModel.media}",
-                    fit: BoxFit.fill,
-                  ), // Your image widget goes here
-                ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    height: 200,
+                    width: double.infinity,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 2.0,
+                        ),
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Image.network(
+                          "http://192.168.1.31:4000/uploads/${noteModel.media}",
+                          fit: BoxFit.fill,
+                        ), // Your image widget goes here
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
+
+            // if(noteModel.media != "null")
+            // Text(
+            //   'Media',
+            //   style: textTheme.bodyMedium!.copyWith(
+            //     color: AppColors.darkTeal,
+            //     fontWeight: FontWeight.w600,
+            //     fontSize: 20,
+            //   ),
+            // ),
+            // const SizedBox(height: 20),
+            // if(noteModel.media != "null")
+            // SizedBox(
+            //     height: 200,
+            //     width: double.infinity,
+            //     child: Container(
+            //       decoration: BoxDecoration(
+            //         border: Border.all(
+            //           color: Colors.black,
+            //           width: 2.0,
+            //         ),
+            //         color: Colors.black,
+            //         borderRadius: BorderRadius.circular(10.0),
+            //       ),
+            //       child: ClipRRect(
+            //         borderRadius: BorderRadius.circular(8.0),
+            //         child: Image.network(
+            //           "http://192.168.1.31:4000/uploads/${noteModel.media}",
+            //           fit: BoxFit.fill,
+            //         ), // Your image widget goes here
+            //       ),
+            //     ),
+            //   ),
             const SizedBox(height: 20),
             Text(
               'VA Comments',
               style: textTheme.bodyMedium!.copyWith(
                 color: AppColors.darkTeal,
                 fontWeight: FontWeight.w600,
-                fontSize: 28,
+                fontSize: 22,
               ),
             ),
             const SizedBox(height: 20),

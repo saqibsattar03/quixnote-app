@@ -12,7 +12,6 @@ import 'package:quix_note/src/utils/image_picker.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
 
-import '../../base/data.dart';
 import '../../models/note/note_model.dart';
 import 'notes_page.dart';
 
@@ -45,8 +44,9 @@ class _AddNoteState extends State<AddNote> {
 
   final _formKey = GlobalKey<FormState>();
   DateTime? _selectedDate;
-  String? _selectedPriority;
+  Priority? _selectedPriority = Priority.high;
   File? _selectedFile;
+  var imageUpload;
 
   void createNote() async {
     showDialog(
@@ -58,15 +58,16 @@ class _AddNoteState extends State<AddNote> {
       },
     );
     try {
-      final imageUpload =await api.uploadImage(_selectedFile!);
-      print("image ${imageUpload}");
+      if (_selectedFile != null) {
+        imageUpload = await api.uploadImage(_selectedFile!);
+      }
       final createNoteModel = NoteModel(
         title: _titleController.text,
         description: _descriptionController.text,
-        priority: _selectedPriority,
-        media: imageUpload.toString(),
-        projectName: "Test Project",
-        deadline: DateFormat('dd/MM/yyyy').format(_selectedDate!),
+        priority: _selectedPriority?.name,
+        media: imageUpload.toString() ?? "",
+        // deadline: DateFormat('dd/MM/yyyy').format(_selectedDate!),
+        deadline:_selectedDate,
       );
       await api.creteNote(createNoteModel: createNoteModel);
       if (!mounted) return;
@@ -221,12 +222,21 @@ class _AddNoteState extends State<AddNote> {
                         ),
                         Expanded(
                           flex: 4,
-                          child: DropDownFormField(
-                            value: "High",
-                            data: Priority.values
-                                .map((priority) => capitalize(
-                                    priority.toString().split('.')[1]))
-                                .toList(),
+                          child: DropDownFormField<Priority>(
+                            errorText: "required",
+                            value: _selectedPriority,
+                            items: Priority.values.map((e) {
+                              return DropdownMenuItem<Priority>(
+                                value: e,
+                                child: Text(
+                                  e.value,
+                                  style: textTheme.bodyMedium!.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                             onChangeVal: (value) {
                               _selectedPriority = value;
                             },
@@ -244,7 +254,7 @@ class _AddNoteState extends State<AddNote> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5)),
                                 borderSide:
-                                BorderSide(color: AppColors.primaryYellow),
+                                    BorderSide(color: AppColors.primaryYellow),
                               ),
                             ),
                           ),
@@ -269,7 +279,9 @@ class _AddNoteState extends State<AddNote> {
                   ],
                 ),
                 if (_selectedFile != null) ...[
-                const  SizedBox(height: 20,),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Image.file(_selectedFile!),
                 ],
                 Column(

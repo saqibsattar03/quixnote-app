@@ -55,15 +55,12 @@ class _SignInScreenState extends State<SignIn> {
               email: _emailController.text, password: _passwordController.text);
 
       String? idToken = await userCredential.user?.getIdToken();
-      print("idtoken ${idToken}");
-
       final response = await api.getUserUsingIdToken(idToken: idToken!);
 
       if (response == 'true') {
         final userModel =
             SignInModel(email: userCredential.user!.email, password: null);
         final res = await api.signInUser(signInModel: userModel);
-        print("access token ${res.accessToken}");
         AppData.saveAccessToken(res.accessToken);
       }
       if (!mounted) return;
@@ -72,7 +69,7 @@ class _SignInScreenState extends State<SignIn> {
     } catch (e) {
       if (!mounted) return;
       Navigator.pop(context);
-      ErrorDialog(error: e).show(context);
+      ErrorDialog(error: "Email or password is incorrect.").show(context);
       print(
           "error ${e.toString()}------------------------------------------------------------------------->");
     }

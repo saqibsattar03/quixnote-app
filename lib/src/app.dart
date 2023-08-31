@@ -35,11 +35,14 @@ class MyApp extends StatelessWidget {
       title: 'Quix Note',
       navigatorKey: AppNavigation.navigatorKey,
       theme: AppThemes.light,
+      // home: OnBoardView()
       home: !AppData.getOnBoardingValue()
           ? const OnBoardView()
-          : FirebaseAuth.instance.currentUser != null
-              ? const NotesPage()
-              : const SocialAuthSignIn(),
+          :
+      // FirebaseAuth.instance.currentUser != null
+      //         ? const NotesPage()
+      //         :
+      const SocialAuthSignIn(),
     );
   }
 }

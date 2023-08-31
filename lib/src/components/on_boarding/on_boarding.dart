@@ -30,22 +30,7 @@ class _OnBoardViewState extends State<OnBoardView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // controller.addListener(_handlePageChange);
   }
-
-  // void _handlePageChange({int index = -1}) {
-  //   if (step >= _animationValues.length - 1) {
-  //     if (index != -1) {
-  //       step = index;
-  //       isLastPage = false;
-  //     } else {
-  //       // isLastPage = true;
-  //     }
-  //   } else {
-  //     if (index == -1) step++;
-  //   }
-  //   setState(() {});
-  // }
 
   void pressToAnimate({int index = -1}) {
     setState(() {
@@ -67,7 +52,6 @@ class _OnBoardViewState extends State<OnBoardView> {
   @override
   void dispose() {
     controller.dispose();
-    // controller.removeListener(_handlePageChange);
     super.dispose();
   }
 
@@ -85,7 +69,6 @@ class _OnBoardViewState extends State<OnBoardView> {
                 controller: controller,
                 onPageChanged: (index) {
                   if (index == 2) {
-                    print("swipe");
                     isLastPage = true;
                     AppData.setOnBoardingValue(true);
                     setState(() {});
@@ -94,30 +77,28 @@ class _OnBoardViewState extends State<OnBoardView> {
                 children: [
                   BoardingLayout(
                     urlImage: AppImages.onBoardingOne,
-                    title: "Lorem Ipsum Dolor",
+                    title: "Welcome to Quix Notes!",
                     subtitle:
-                        "Lorem ipsum dolor sit amet, consetetur  sadipscing elitr",
-                    controller: controller,
+                        "We're thrilled to have you join our community of Quix Notes enthusiasts. Get ready to embark on a seamless journey of Quix Notes Main Features right at your fingertips.",
+                    controller: controller
                   ),
                   BoardingLayout(
                     urlImage: AppImages.onBoardingTwo,
-                    title: "Lorem Ipsum Dolor",
+                    title: "Engage and Connect",
                     subtitle:
-                        "Lorem ipsum dolor sit amet, consetetur  sadipscing elitr",
+                        "Connect with fellow users who share your interests. Join [Community/Group Names] to discuss your passions, exchange ideas, and engage in meaningful conversations.",
                     controller: controller,
                   ),
                   BoardingLayout(
                     urlImage: AppImages.onBoardingThree,
-                    title: "Lorem Ipsum Dolor",
+                    title: "Support",
                     subtitle:
-                        "Lorem ipsum dolor sit amet, consetetur  sadipscing elitr",
+                        "Have questions or feedback? Our [Support Team/Help Center] is here to assist you. Don't hesitate to reach out whenever you need assistance.",
                     controller: controller,
-                  )
+                  ),
                 ],
               ),
             ),
-
-            ///
           ],
         ),
       ),
@@ -133,8 +114,8 @@ class _OnBoardViewState extends State<OnBoardView> {
                   count: 3,
                   effect: ExpandingDotsEffect(
                     spacing: 10,
-                    dotHeight: 12,
-                    dotWidth: 12,
+                    dotHeight: 8,
+                    dotWidth: 8,
                     dotColor: AppColors.darkTeal.withOpacity(0.3),
                     activeDotColor: AppColors.darkTeal,
                   ),
@@ -158,20 +139,20 @@ class _OnBoardViewState extends State<OnBoardView> {
                         Opacity(
                           opacity: 1.0,
                           child: SizedBox(
-                            width: 80,
-                            height: 80,
+                            width: 60,
+                            height: 60,
                             child: CircularProgressIndicator(
                               value: value,
                               backgroundColor:
                                   AppColors.darkTeal.withOpacity(0.1),
-                              strokeWidth: 6,
+                              strokeWidth: 2.5,
                               valueColor: const AlwaysStoppedAnimation<Color>(
                                 AppColors.darkTeal,
                               ),
                             ),
                           ),
                         ),
-                        FloatingActionButton(
+                        FloatingActionButton.small(
                           onPressed: () {
                             controller.nextPage(
                               duration: const Duration(milliseconds: 500),

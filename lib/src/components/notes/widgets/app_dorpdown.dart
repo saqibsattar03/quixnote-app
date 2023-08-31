@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/scheduler.dart';
 
 class DropDownFormField<T> extends StatefulWidget {
   const DropDownFormField({
     super.key,
-    required this.data,
     required this.onChangeVal,
     this.icon,
     this.label,
@@ -12,9 +11,9 @@ class DropDownFormField<T> extends StatefulWidget {
     this.labelTextColor,
     this.value,
     required this.decoration,
+    required this.items,
   });
 
-  final List<T> data;
   final IconData? icon;
   final String? label;
   final String? errorText;
@@ -22,6 +21,7 @@ class DropDownFormField<T> extends StatefulWidget {
   final Function(T? value) onChangeVal;
   final T? value;
   final InputDecoration decoration;
+  final List<DropdownMenuItem<T>> items;
 
   @override
   State<DropDownFormField<T>> createState() => _DropDownFormFieldState<T>();
@@ -50,31 +50,15 @@ class _DropDownFormFieldState<T> extends State<DropDownFormField<T>> {
       value: _value,
       decoration: widget.decoration,
       icon: null,
-      items: widget.data.map((T item) {
-        return DropdownMenuItem<T>(
-          value: item,
-          child: Row(
-            children: [
-              // SvgPicture.asset(AppAssets.logoIcon),
-              // const SizedBox(width: 5),
-              Text(
-                item.toString(),
-                style: textTheme.bodyMedium!.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        );
-      }).toList(),
+      items: widget.items,
       onChanged: _onChange,
-      validator: ((value) {
-        if (value.toString().isEmpty) {
+      validator: (value) {
+        if (value == null) {
+          print('Here');
           return widget.errorText ?? "";
         }
         return null;
-      }),
+      },
     );
   }
 

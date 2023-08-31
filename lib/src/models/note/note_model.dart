@@ -9,8 +9,8 @@ class NoteModel {
   String? id;
   @JsonKey(includeIfNull: false)
   String? userId;
-  @JsonKey(includeIfNull: false)
-  String? projectName;
+  // @JsonKey(includeIfNull: false)
+  // String? projectName;
   @JsonKey(includeIfNull: false)
   String? title;
   @JsonKey(includeIfNull: false)
@@ -22,7 +22,7 @@ class NoteModel {
   @JsonKey(includeIfNull: false)
   String? media;
   @JsonKey(includeIfNull: false)
-  String? deadline;
+  DateTime? deadline;
   @JsonKey(includeIfNull: false)
   DateTime? createdAt;
   @JsonKey(includeIfNull: false)
@@ -33,7 +33,7 @@ class NoteModel {
   NoteModel({
     this.id,
     this.userId,
-    this.projectName,
+    // this.projectName,
     this.title,
     this.description,
     this.priority,

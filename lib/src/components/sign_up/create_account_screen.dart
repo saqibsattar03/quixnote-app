@@ -294,6 +294,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                           setState(() {});
                                         },
                                         isChecked: termsCondition,
+                                        isSignupForm: true,
                                       ),
                                     ),
                                   );
@@ -317,6 +318,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                           setState(() {});
                                         },
                                         isChecked: termsCondition,
+                                        isSignupForm: true,
                                       ),
                                     ),
                                   );
@@ -385,6 +387,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                                 setState(() {});
                                               },
                                               isChecked: privacyPolicy,
+                                          isSignupForm: true,
                                             )),
                                   );
                                 },
@@ -408,6 +411,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                             setState(() {});
                                           },
                                           isChecked: privacyPolicy,
+                                          isSignupForm: true,
                                         );
                                       },
                                     ),

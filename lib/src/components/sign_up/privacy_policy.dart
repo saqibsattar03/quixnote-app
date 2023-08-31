@@ -10,11 +10,12 @@ import 'package:quix_note/src/widgets/formatted_date.dart';
 
 class PrivacyPolicy extends StatefulWidget {
   const PrivacyPolicy(
-      {Key? key, required this.callBack, required this.isChecked})
+      {Key? key, required this.callBack, required this.isChecked, required this.isSignupForm})
       : super(key: key);
 
   final Function(bool val) callBack;
   final bool isChecked;
+  final bool isSignupForm;
 
   @override
   State<PrivacyPolicy> createState() => _PrivacyPolicyState();
@@ -90,12 +91,13 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                                 subTitle:
                                     privacyTermsResponse[index].description,
                               ),
-                              Padding(padding: EdgeInsets.symmetric(vertical: 8)),
+                              const Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                             ],
                           );
                         },
                       )),
                       // const SizedBox(height: 40),
+                      if(widget.isSignupForm)
                       AppButton(
                         buttonSize: const Size(double.infinity, 50),
                         onPressed: () {
