@@ -9,10 +9,13 @@ import 'package:quix_note/src/widgets/app_button.dart';
 import '../../models/privacy/privacy.dart';
 import '../../widgets/formatted_date.dart';
 
-
 class TermsAndConditions extends StatefulWidget {
-  const TermsAndConditions({Key? key, required this.callBack, required this.isChecked, required this.isSignupForm}) : super(key: key);
-
+  const TermsAndConditions(
+      {Key? key,
+      required this.callBack,
+      required this.isChecked,
+      required this.isSignupForm})
+      : super(key: key);
 
   final Function(bool val) callBack;
   final bool isChecked;
@@ -36,9 +39,8 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
     isUpdated = widget.isChecked;
   }
 
-
-  Future<void> getTermsAndConditionData() async{
-    try{
+  Future<void> getTermsAndConditionData() async {
+    try {
       isLoading = true;
       setState(() {});
 
@@ -47,12 +49,11 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
 
       isLoading = false;
       setState(() {});
-    }catch(e){
+    } catch (e) {
       exception = e.toString();
       isLoading = false;
       setState(() {});
     }
-
   }
 
   @override
@@ -74,34 +75,30 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-        const SizedBox(height: 20),
-        Text(
-          'Terms & Conditions',
-          style: textTheme.titleLarge!.copyWith(
-            fontSize: 24,
-          ),
-        ),
-        const SizedBox(height: 10),
-
-        if(isLoading)
-          const CircularProgressIndicator()
-        else
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                FormattedDateWidget(dateTime: termsAndConditionResponse[0].lastUpdated),
-                // Text(
-                //   'Last updated on ${termsAndConditionResponse[0].lastUpdated}',
-                //   style: textTheme.bodyMedium!
-                //       .copyWith(fontSize: 18, color: AppColors.lightGrey),
-                // ),
-                const SizedBox(height: 40),
-                Expanded(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20, bottom: 20),
+                child: Text(
+                  'Terms & Conditions',
+                  style: textTheme.titleLarge!.copyWith(
+                    fontSize: 24,
+                  ),
+                ),
+              ),
+              if (isLoading)
+                const Expanded(
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else ...[
+                if (termsAndConditionResponse.isNotEmpty) ...[
+                  FormattedDateWidget(
+                    dateTime: termsAndConditionResponse[0].lastUpdated,
+                  ),
+                  const SizedBox(height: 40),
+                  Expanded(
                     child: ListView.builder(
                       itemCount: termsAndConditionResponse.length,
                       itemBuilder: (context, index) {
@@ -110,57 +107,99 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                           children: [
                             DetailContainer(
                               title: termsAndConditionResponse[index].clause,
-                              subTitle: termsAndConditionResponse[index].description,
+                              subTitle:
+                                  termsAndConditionResponse[index].description,
+                              index: index,
                             ),
-                            const Padding(padding: EdgeInsets.symmetric(vertical: 16)),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                            ),
                           ],
                         );
                       },
-                    )),
-                // const SizedBox(height: 40),
-                if(widget.isSignupForm)
-                AppButton(
-                  buttonSize: const Size(double.infinity, 50),
-                  onPressed: () {
-                    widget.callBack(!widget.isChecked); // Toggle the value and call the callback
-                    setState(() {
-                      isUpdated = !isUpdated;
-                    });
-                  },
-                  // onPressed: () {
-                  //   print("here ");
-                  //   if (!widget.isChecked) {
-                  //     widget.callBack(true);
-                  //   } else {
-                  //     widget.callBack(false);
-                  //   }
-                  //   print(" widget.value ${widget.isChecked}");
-                  // },
-                  buttonTitle:
-                  isUpdated == true ? 'Disagree' : "Agree",
-                ),
+                    ),
+                  ),
+                ] else
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        'No Privacy policy defined yet!',
+                        style: textTheme.titleLarge!.copyWith(
+                          fontSize: 14,
+                          color: AppColors.darkGrey,
+                        ),
+                      ),
+                    ),
+                  ),
+                if (widget.isSignupForm && termsAndConditionResponse.isNotEmpty)
+                  AppButton(
+                    buttonSize: const Size(double.infinity, 50),
+                    onPressed: () {
+                      widget.callBack(!widget.isChecked);
+                      setState(() {
+                        isUpdated = !isUpdated;
+                      });
+                    },
+                    buttonTitle: isUpdated ? 'Disagree' : 'Agree',
+                  ),
                 const SizedBox(height: 40),
               ],
-            ),
-          ),
 
-
-
-        // DetailContainer(
-        //   title: 'Clause 1',
-        //   subTitle:
-        //       'Lorem ipsum dolor sit amet consectetur. At sit tellus vel tortor egestas velit luctus arcu. Lacus quam aliquam ac massa natoque gravida justo. Neque aliquam potenti leo mi sit lobortis sed. Aliquam ut a ultricies lacus nullam nisl sem. Non accumsan etiam vitae neque sit massa at cras. Donec quisque lacus venenatis lectus aliquam eget.',
-        // ),
-        // SizedBox(height: 10),
-        // DetailContainer(
-        //   title: 'Clause 2',
-        //   subTitle:
-        //       'Lorem ipsum dolor sit amet consectetur. At sit tellus vel tortor egestas velit luctus arcu. Lacus quam aliquam ac massa natoque gravida justo. Neque aliquam potenti leo mi sit lobortis sed. Aliquam ut a ultricies lacus nullam nisl sem. Non accumsan etiam vitae neque sit massa at cras. Donec quisque lacus venenatis lectus aliquam eget.',
-        // ),
-
-          ],
-        ),
-      ),
+              // Expanded(
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       FormattedDateWidget(
+              //         dateTime: privacyTermsResponse[0].lastUpdated,
+              //       ),
+              //       const SizedBox(height: 40),
+              //       if (privacyTermsResponse.isNotEmpty)
+              //         Expanded(
+              //             child: ListView.builder(
+              //           itemCount: privacyTermsResponse.length,
+              //           itemBuilder: (context, index) {
+              //             return Column(
+              //               crossAxisAlignment: CrossAxisAlignment.start,
+              //               children: [
+              //                 DetailContainer(
+              //                   title: privacyTermsResponse[index].clause,
+              //                   subTitle:
+              //                       privacyTermsResponse[index].description,
+              //                 ),
+              //                 const Padding(
+              //                     padding: EdgeInsets.symmetric(vertical: 8)),
+              //               ],
+              //             );
+              //           },
+              //         ))
+              //       else
+              //         Center(
+              //           child: Text(
+              //             'No Privacy policy defined yet!',
+              //             style: textTheme.titleLarge!.copyWith(
+              //               fontSize: 24,
+              //               color: AppColors.darkGrey,
+              //             ),
+              //           ),
+              //         ),
+              //       if (widget.isSignupForm)
+              //         AppButton(
+              //           buttonSize: const Size(double.infinity, 50),
+              //           onPressed: () {
+              //             widget.callBack(!widget
+              //                 .isChecked); // Toggle the value and call the callback
+              //             setState(() {
+              //               isUpdated = !isUpdated;
+              //             });
+              //           },
+              //           buttonTitle: isUpdated == true ? 'Disagree' : "Agree",
+              //         ),
+              //       const SizedBox(height: 40),
+              //     ],
+              //   ),
+              // ),
+            ],
+          )),
     );
   }
 }
@@ -170,34 +209,59 @@ class DetailContainer extends StatelessWidget {
     Key? key,
     required this.title,
     required this.subTitle,
+    required this.index,
   }) : super(key: key);
 
   final String title;
   final String subTitle;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: textTheme.titleLarge!.copyWith(
-            fontSize: 24,
-            color: AppColors.darkGrey,
+        Padding(
+          padding: const EdgeInsets.only(top: 2),
+          child: Text(
+            "${index + 1}.",
+            style: textTheme.titleLarge!.copyWith(
+              fontSize: 22,
+              color: AppColors.darkGrey,
+            ),
           ),
         ),
-        const SizedBox(height: 10),
-        Text(
-          subTitle,
-          style: textTheme.bodyMedium!.copyWith(
-              fontSize: 14, color: AppColors.lightGrey, letterSpacing: 0.2),
-        )
+        const SizedBox(
+          width: 12,
+        ),
+        Expanded(
+          child: Column(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: textTheme.titleLarge!.copyWith(
+                      fontSize: 24,
+                      color: AppColors.darkGrey,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    subTitle,
+                    style: textTheme.bodyMedium!.copyWith(
+                        fontSize: 14,
+                        color: AppColors.lightGrey,
+                        letterSpacing: 0.2),
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
       ],
     );
   }
 }
-
-
-
