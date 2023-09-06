@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quix_note/firebase_options.dart';
 import 'package:quix_note/src/base/app_theme.dart';
 import 'package:quix_note/src/base/nav.dart';
+import 'package:quix_note/src/components/notes/notes_page.dart';
 import 'package:quix_note/src/components/on_boarding/on_boarding.dart';
 import 'package:quix_note/src/components/sign_in/social_auth.dart';
 
@@ -17,13 +19,15 @@ class MyApp extends StatelessWidget {
   static Future<void> initializeAndRun() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     await AppData.initiate();
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        systemNavigationBarColor: Colors.white, // navigation bar color
-        statusBarColor: Colors.white, // status bar color
-        statusBarIconBrightness: Brightness.dark));
-    return runApp(const MyApp());
+      systemNavigationBarColor: Colors.white,
+      statusBarColor: Colors.white,
+      statusBarIconBrightness: Brightness.dark,
+    ));
+    runApp(const MyApp());
   }
 
   @override
@@ -36,11 +40,9 @@ class MyApp extends StatelessWidget {
       // home: OnBoardView()
       home: !AppData.getOnBoardingValue()
           ? const OnBoardView()
-          :
-      // FirebaseAuth.instance.currentUser != null
-      //         ? const NotesPage()
-      //         :
-      const SocialAuthSignIn(),
+          : FirebaseAuth.instance.currentUser != null
+              ? const NotesPage()
+              : const SocialAuthSignIn(),
     );
   }
 }

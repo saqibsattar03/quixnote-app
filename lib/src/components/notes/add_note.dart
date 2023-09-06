@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/notes/widgets/app_dorpdown.dart';
 import 'package:quix_note/src/service/api/note_api_config.dart';
+import 'package:quix_note/src/service/upload_service.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/error_dialog.dart';
 import 'package:quix_note/src/utils/image_picker.dart';
@@ -24,8 +25,6 @@ enum Priority {
 
   const Priority(this.value);
 }
-
-//enum Priority { High, Medium, Low }
 
 class AddNote extends StatefulWidget {
   const AddNote({Key? key}) : super(key: key);
@@ -46,7 +45,6 @@ class _AddNoteState extends State<AddNote> {
   DateTime? _selectedDate;
   Priority? _selectedPriority = Priority.high;
   File? _selectedFile;
-  var imageUpload;
 
   void createNote() async {
     showDialog(
@@ -58,22 +56,23 @@ class _AddNoteState extends State<AddNote> {
       },
     );
     try {
+      var imageUrl = '';
       if (_selectedFile != null) {
-        imageUpload = await api.uploadImage(_selectedFile!);
+        imageUrl = await UploadService.uploadImage(_selectedFile!);
       }
       final createNoteModel = NoteModel(
         title: _titleController.text,
         description: _descriptionController.text,
         priority: _selectedPriority?.name,
-        media: imageUpload.toString() ?? "",
-        // deadline: DateFormat('dd/MM/yyyy').format(_selectedDate!),
-        deadline:_selectedDate,
+        media: imageUrl,
+        deadline: _selectedDate,
       );
       await api.creteNote(createNoteModel: createNoteModel);
       if (!mounted) return;
       Navigator.pop(context);
       AppNavigation.push(const NotesPage());
     } catch (e) {
+      print('exception => $e');
       ErrorDialog(
         error: e,
       ).show(context);
@@ -95,26 +94,6 @@ class _AddNoteState extends State<AddNote> {
       });
     });
   }
-
-  // pickFile() async {
-  //   await FilePickerSheet(
-  //     onSelected: (type) async {
-  //       try {
-  //         FilePickerResult? result = await FilePicker.platform.pickFiles(
-  //           allowMultiple: true,
-  //           type: type,
-  //           // allowedExtensions: ['jpg', 'jpeg', 'png', 'mp4', 'mov'],
-  //         );
-  //         // if (result != null && result.files.first.size > 50000000) {
-  //         //   $showInfoSnackBar('Maximum of 50MBs are allowed');
-  //         //   return;
-  //         // }
-  //         if (result == null) return;
-  //         setState(() {});
-  //       } catch (_) {}
-  //     },
-  //   ).show(context);
-  // }
 
   String capitalize(String input) {
     if (input.isEmpty) return input;

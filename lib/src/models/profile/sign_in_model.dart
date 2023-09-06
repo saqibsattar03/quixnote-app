@@ -3,11 +3,10 @@ import 'dart:convert';
 
 part 'sign_in_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class SignInModel {
   @JsonKey(name: "email")
   String? email;
-  @JsonKey(includeIfNull: false)
   String? password;
 
   SignInModel({

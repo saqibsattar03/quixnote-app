@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quix_note/src/base/data.dart';
 import 'package:quix_note/src/base/nav.dart';
+import 'package:quix_note/src/components/notes/notes_page.dart';
 import 'package:quix_note/src/components/sign_up/reset_password_email.dart';
 
 import 'package:quix_note/src/utils/app_colors.dart';
@@ -25,11 +27,13 @@ class ChangePassword extends StatefulWidget {
 class _ChangePasswordScreenState extends State<ChangePassword> {
   bool obscure = true;
   bool obscure1 = true;
+  bool obscure2 = true;
 
   final _formKey = GlobalKey<FormState>();
+  var _autoValidateMode = AutovalidateMode.disabled;
+  final _focusNode = FocusNode();
 
   //controllers
-
 
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
@@ -37,18 +41,23 @@ class _ChangePasswordScreenState extends State<ChangePassword> {
 
   final api = ProfileApiConfig();
 
-
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password is required.';
     }
 
-    if (!RegExp(
-        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*(),.?":{}|<>]).{8,}$')
-        .hasMatch(value)) {
-      return 'Password must be 8 characters long and contain \nat least one uppercase letter, one lowercase letter,\none digit, and one special character.';
+    if (!RegExp(r'^.{8}$').hasMatch(value)) {
+      return 'Password must be 8 characters long.';
     }
 
+    return null;
+  }
+
+
+  String? matchPassword(String? value) {
+    if (_newPasswordController.text != _confirmPasswordController.text) {
+      return "Passwords do not match";
+    }
     return null;
   }
 
@@ -61,19 +70,27 @@ class _ChangePasswordScreenState extends State<ChangePassword> {
         );
       },
     );
-    try{
-      print("here");
-      if(_newPasswordController.text == _confirmPasswordController.text){
-        await api.changePassword(oldPassword: _oldPasswordController.text, newPassword: _newPasswordController.text, id: AppData.loggedUserId);
-        showDialog(
-            context: context,
-            builder: (context) => const AppAlertDialog(
-              message: 'Password changed successfully',
-            ),
-          );
+    try {
+      var user = FirebaseAuth.instance.currentUser!;
+      var cred = EmailAuthProvider.credential(
+          email: user.email!, password: _oldPasswordController.text);
+      var authenticated = await user.reauthenticateWithCredential(cred);
+      if (_newPasswordController.text == _confirmPasswordController.text) {
+        await user.updatePassword(_newPasswordController.text).then((_) => {
+              Navigator.pop(context),
+              AppNavigation.push(const NotesPage()),
+              showDialog(
+                context: context,
+                builder: (context) => const AppAlertDialog(
+                  message: 'Password changed successfully',
+                ),
+              ),
+            });
       }
-    }catch(e){
-      ErrorDialog(error: e).show(context);
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.pop(context);
+      const ErrorDialog(error: "Old Password is not correct").show(context);
     }
   }
 
@@ -133,7 +150,6 @@ class _ChangePasswordScreenState extends State<ChangePassword> {
                     const SizedBox(height: 10),
                     AppTextField(
                       textEditingController: _oldPasswordController,
-                      // validator: validatePassword,
                       hint: '*****************',
                       obscure: obscure,
                       suffix: IconButton(
@@ -150,36 +166,49 @@ class _ChangePasswordScreenState extends State<ChangePassword> {
                     ),
                     const FieldTitle(title: 'New password'),
                     const SizedBox(height: 10),
-                    AppTextField(
-                      textEditingController: _newPasswordController,
-                      validator: validatePassword,
-                      hint: '*****************',
-                      obscure: obscure,
-                      suffix: IconButton(
-                        icon: Icon(
-                          obscure ? Icons.visibility_off : Icons.visibility,
-                        ),
-                        onPressed: () {
-                          obscure = !obscure;
+                    FocusScope(
+                      child: Focus(
+                        focusNode: _focusNode,
+                        onFocusChange: (focus) {
+                          if (_newPasswordController.text.isEmpty) {
+                            return;
+                          }
+                          _autoValidateMode = AutovalidateMode.always;
                           setState(() {});
                         },
+                        child: AppTextField(
+                          textEditingController: _newPasswordController,
+                          textInputAction: TextInputAction.next,
+                          validator: validatePassword,
+                          hint: '*****************',
+                          obscure: obscure1,
+                          suffix: IconButton(
+                            icon: Icon(
+                              obscure1 ? Icons.visibility_off : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              obscure1 = !obscure1;
+                              setState(() {});
+                            },
+                          ),
+                          fillColor: AppColors.lightYellow,
+                          prefix: const Icon(Icons.lock),
+                        ),
                       ),
-                      fillColor: AppColors.lightYellow,
-                      prefix: const Icon(Icons.lock),
                     ),
                     const FieldTitle(title: 'Confirm new password'),
                     const SizedBox(height: 10),
                     AppTextField(
                       textEditingController: _confirmPasswordController,
-                      validator: validatePassword,
+                      validator: matchPassword,
                       hint: '*****************',
-                      obscure: obscure,
+                      obscure: obscure2,
                       suffix: IconButton(
                         icon: Icon(
-                          obscure ? Icons.visibility_off : Icons.visibility,
+                          obscure2 ? Icons.visibility_off : Icons.visibility,
                         ),
                         onPressed: () {
-                          obscure = !obscure;
+                          obscure2 = !obscure2;
                           setState(() {});
                         },
                       ),
@@ -198,17 +227,14 @@ class _ChangePasswordScreenState extends State<ChangePassword> {
                     padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: AppButton(
                       buttonSize: const Size(double.infinity, 50),
-                      onPressed: (){
-                        if(_formKey.currentState!.validate()){
-                          changePassword();
+                      onPressed: () {
+                        if (!_formKey.currentState!.validate()) {
+                          _autoValidateMode = AutovalidateMode.always;
+                          setState(() {});
+                          return;
                         }
+                        changePassword();
                       },
-                      // onPressed: () => showDialog(
-                      //   context: context,
-                      //   builder: (context) => const AppAlertDialog(
-                      //     message: 'Your Password is changed',
-                      //   ),
-                      // ),
                       buttonTitle: 'Save',
                     ),
                   ),

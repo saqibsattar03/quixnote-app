@@ -62,6 +62,10 @@ class _SignInScreenState extends State<SignIn> {
             SignInModel(email: userCredential.user!.email, password: null);
         final res = await api.signInUser(signInModel: userModel);
         AppData.saveAccessToken(res.accessToken);
+        final user = await api.getUserUsingAccessToken();
+        AppData.saveUserId(user.id!);
+
+        print("${user.id} -------------------------------------------------------------------------------");
       }
       if (!mounted) return;
       Navigator.pop(context);
@@ -69,9 +73,7 @@ class _SignInScreenState extends State<SignIn> {
     } catch (e) {
       if (!mounted) return;
       Navigator.pop(context);
-      ErrorDialog(error: "Email or password is incorrect.").show(context);
-      print(
-          "error ${e.toString()}------------------------------------------------------------------------->");
+      const ErrorDialog(error: "Email or password is incorrect.").show(context);
     }
   }
 

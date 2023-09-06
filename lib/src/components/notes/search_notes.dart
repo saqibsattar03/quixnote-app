@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quix_note/src/components/notes/widgets/single_note.dart';
 import 'package:quix_note/src/models/note/note_model.dart';
+import 'package:quix_note/src/models/note/search_and_filter_model.dart';
 import 'package:quix_note/src/service/api/note_api_config.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_fonts.dart';
@@ -22,11 +23,17 @@ class SearchNotes extends StatefulWidget {
 
 class _SearchNotesState extends State<SearchNotes> {
   //controllers
-
   final _filterController = TextEditingController();
   final api = NoteApiConfig();
-  bool isLoding = false;
+  bool isLoading = false;
   List<NoteModel> filteredList = <NoteModel>[];
+
+  Future<void> searchNotes() async {
+    filteredList = await api.filterNotes(
+      model: SearchAndFilterModel(title: _filterController.text),
+    );
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +65,11 @@ class _SearchNotesState extends State<SearchNotes> {
                       height: 70,
                       child: AppTextField(
                         label: 'Search',
+                        textInputAction: TextInputAction.done,
                         textEditingController: _filterController,
+                        onEditingComplete: () {
+                          searchNotes();
+                        },
                         fillColor: Colors.white,
                         prefix: const Icon(Icons.search),
                         borderRadius: 30,
@@ -79,15 +90,16 @@ class _SearchNotesState extends State<SearchNotes> {
                               children: [
                                 Column(
                                   children: [
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 50,
                                     ),
                                     ApplyFiltersSheet(
                                       applyFiltersCallback: (
                                           {createdAt, priority, searchText}) {
                                         return applyFilters(
-                                          // createdAt: createdAt,
-                                          priority: 'High',
+                                          createdAt: createdAt,
+                                          priority: priority,
+                                          // searchText: _filterController.text
                                         );
                                       },
                                     ),
@@ -126,8 +138,8 @@ class _SearchNotesState extends State<SearchNotes> {
                 ],
               ),
               const SizedBox(height: 50),
-              if (isLoding)
-                CircularProgressIndicator()
+              if (isLoading)
+                const CircularProgressIndicator()
               else
                 Expanded(
                     child: ListView.separated(
@@ -155,7 +167,6 @@ class _SearchNotesState extends State<SearchNotes> {
                       ),
                     );
 
-                    // child: SingleNote(index: index));
                   },
                   itemCount: filteredList.length,
                 ))
@@ -168,19 +179,19 @@ class _SearchNotesState extends State<SearchNotes> {
 
   applyFilters(
       {String? createdAt, String? priority, String? searchText}) async {
-    isLoding = true;
+    isLoading = true;
     setState(() {});
     filteredList.clear();
-    final data = {
-      if (createdAt != null) "createdAt": createdAt,
-      if (priority != null) "priority": priority,
-      if (searchText != null) "projectName": searchText,
-    };
 
-    final response = await api.filterNotes(data: data);
+    final response = await api.filterNotes(
+      model: SearchAndFilterModel(
+        createdAt: createdAt,
+        priority: priority,
+        title: searchText,
+      ),
+    );
     filteredList = response;
-    print(filteredList.length);
-    isLoding = false;
+    isLoading = false;
     setState(() {});
   }
 }
@@ -198,7 +209,7 @@ class ApplyFiltersSheet extends StatefulWidget {
 class _ApplyFiltersSheetState extends State<ApplyFiltersSheet> {
   int selectedDate = 0;
   int selectedPriority = 0;
-  final priority = ['Low', 'High', 'Urgent'];
+  final priority = ['Low', 'High', 'Medium'];
   final date = [
     'Today',
     'Last Week',
@@ -344,9 +355,10 @@ class _ApplyFiltersSheetState extends State<ApplyFiltersSheet> {
             const SizedBox(height: 20),
             AppButton(
                 onPressed: () {
-                  // widget.applyFiltersCallback();
-                  // print(priority[selectedPriority]);
-                  // print(date[selectedDate]);
+                  Navigator.pop(context);
+                  widget.applyFiltersCallback(
+                      priority: priority[selectedPriority],
+                      createdAt: date[selectedDate]);
                 },
                 buttonTitle: 'Apply')
           ],

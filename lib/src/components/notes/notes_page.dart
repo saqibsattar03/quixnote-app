@@ -17,12 +17,14 @@ import 'package:quix_note/src/models/note/note_model.dart';
 import 'package:quix_note/src/models/profile/sign_up_model.dart';
 import 'package:quix_note/src/service/api/note_api_config.dart';
 import 'package:quix_note/src/service/api/profile_api_config.dart';
+import 'package:quix_note/src/utils/api_errors.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/utils/error_dialog.dart';
 import 'package:quix_note/src/widgets/app_circular_button.dart';
 import 'package:quix_note/src/widgets/no_data.dart';
 
+import '../sign_up/change_password.dart';
 import '../sign_up/privacy_policy.dart';
 import '../sign_up/terms_conditions.dart';
 
@@ -54,14 +56,14 @@ class _NotesPageState extends State<NotesPage> {
     super.initState();
     _init();
   }
-
   Future<void> getUserProfile() async {
     try {
       signUpModel = await userApi.getUserUsingAccessToken();
       setState(() {});
     } catch (e) {
-      ErrorDialog(error: e).show(context);
-      exception = e.toString();
+      //ErrorDialog(error: e).show(context);
+      exception = ApiError.withDioError(e).title;
+      print("<-------------------------------- exception ------------------------------------>${exception}");
       isLoading = false;
       setState(() {});
     }
@@ -71,8 +73,9 @@ class _NotesPageState extends State<NotesPage> {
     try {
       noteModelResponse = await api.getAllNotes();
     } catch (e) {
-      ErrorDialog(error: e).show(context);
-      exception = e.toString();
+      // ErrorDialog(error: e).show(context);
+      exception = ApiError.withDioError(e).title;
+      print("<-------------------------------- exception ------------------------------------>${exception}");
     }
     isLoading = false;
     setState(() {});
@@ -107,124 +110,149 @@ class _NotesPageState extends State<NotesPage> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    // Adjust the width as needed
     return Scaffold(
       key: _scaffoldKey,
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.fromLTRB(29, 60, 29, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      AppCircularButton(
-                        onPressed: () {
-                          _scaffoldKey.currentState!.openDrawer();
-                        },
-                        color: AppColors.extraLightGrey,
-                        svg: SvgPicture.asset(AppImages.category),
-                        height: 70,
-                        width: 70,
+          : exception.isNotEmpty
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Image.asset(
+                        AppImages
+                            .noInternet, // Replace with your image file path
+                        width: 300,
+                        height: 300, // Adjust the height as needed
                       ),
+                    ),
+                    const Padding(
+                      padding:
+                          EdgeInsets.only(top: 24.0), // Add padding for spacing
+                      child: Text(
+                        "Oops no internet connection!",
+                        style: TextStyle(
+                          fontSize: 18, // Adjust the font size as needed
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              : Padding(
+                  padding: const EdgeInsets.fromLTRB(29, 60, 29, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           AppCircularButton(
                             onPressed: () {
-                              AppNavigation.push(const SearchNotes());
+                              _scaffoldKey.currentState!.openDrawer();
                             },
-                            color: AppColors.lightYellow,
-                            svg: SvgPicture.asset(AppImages.search),
-                            height: 50,
-                            width: 50,
+                            color: AppColors.extraLightGrey,
+                            svg: SvgPicture.asset(AppImages.category),
+                            height: 70,
+                            width: 70,
                           ),
-                          const SizedBox(width: 7),
-                          AppCircularButton(
-                            onPressed: () {
-                              // AppNavigation.push(const ProfileInfo());
-                              AppNavigation.push(const AddNote());
-                            },
-                            color: AppColors.lightYellow,
-                            svg: SvgPicture.asset(AppImages.plusIcon),
-                            height: 50,
-                            width: 50,
+                          Row(
+                            children: [
+                              AppCircularButton(
+                                onPressed: () {
+                                  AppNavigation.push(const SearchNotes());
+                                },
+                                color: AppColors.lightYellow,
+                                svg: SvgPicture.asset(AppImages.search),
+                                height: 50,
+                                width: 50,
+                              ),
+                              const SizedBox(width: 7),
+                              AppCircularButton(
+                                onPressed: () {
+                                  // AppNavigation.push(const ProfileInfo());
+                                  AppNavigation.push(const AddNote());
+                                },
+                                color: AppColors.lightYellow,
+                                svg: SvgPicture.asset(AppImages.plusIcon),
+                                height: 50,
+                                width: 50,
+                              ),
+                            ],
                           ),
                         ],
                       ),
+                      const SizedBox(height: 40),
+                      Text(
+                        "Hello, ${signUpModel.fullName}",
+                        style: textTheme.titleLarge!.copyWith(fontSize: 34),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "Welcome to your notes",
+                        style: textTheme.titleMedium!.copyWith(),
+                      ),
+                      const SizedBox(height: 60),
+
+                      Expanded(
+                        child: noteModelResponse.isEmpty
+                            ? const NoDataWidget(message: "No notes yet")
+                            : ListView.separated(
+                                shrinkWrap: true,
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return const Divider(
+                                    thickness: 1,
+                                    indent: 10,
+                                    endIndent: 10,
+                                    color: AppColors.dividerGrey,
+                                  );
+                                },
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      AppNavigation.push(NoteDetail(
+                                        noteModel: noteModelResponse[index],
+                                      ));
+                                    },
+                                    child: SingleNote(
+                                      index: index,
+                                      noteModel: noteModelResponse[index],
+                                    ),
+                                  );
+                                },
+                                itemCount: noteModelResponse.length,
+                              ),
+                      )
+
+                      // Expanded(
+                      //     child: ListView.separated(
+                      //   shrinkWrap: true,
+                      //   separatorBuilder: (BuildContext context, int index) {
+                      //     return const Divider(
+                      //       thickness: 1,
+                      //       indent: 10,
+                      //       endIndent: 10,
+                      //       color: AppColors.dividerGrey,
+                      //     );
+                      //   },
+                      //   itemBuilder: (context, index) {
+                      //     return InkWell(
+                      //         onTap: () {
+                      //           AppNavigation.push(NoteDetail(
+                      //             noteModel: noteModelResponse[index],
+                      //           ));
+                      //         },
+                      //         child: SingleNote(
+                      //           index: index,
+                      //           noteModel: noteModelResponse[index],
+                      //         ));
+                      //   },
+                      //   itemCount: noteModelResponse.length,
+                      // ))
                     ],
                   ),
-                  const SizedBox(height: 40),
-                  Text(
-                    "Hello, ${signUpModel.fullName}",
-                    style: textTheme.titleLarge!.copyWith(fontSize: 34),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Welcome to your notes",
-                    style: textTheme.titleMedium!.copyWith(),
-                  ),
-                  const SizedBox(height: 60),
-
-                  Expanded(
-                    child: noteModelResponse.isEmpty
-                        ? const NoDataWidget(message: "No notes yet")
-                        : ListView.separated(
-                            shrinkWrap: true,
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return const Divider(
-                                thickness: 1,
-                                indent: 10,
-                                endIndent: 10,
-                                color: AppColors.dividerGrey,
-                              );
-                            },
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                onTap: () {
-                                  AppNavigation.push(NoteDetail(
-                                    noteModel: noteModelResponse[index],
-                                  ));
-                                },
-                                child: SingleNote(
-                                  index: index,
-                                  noteModel: noteModelResponse[index],
-                                ),
-                              );
-                            },
-                            itemCount: noteModelResponse.length,
-                          ),
-                  )
-
-                  // Expanded(
-                  //     child: ListView.separated(
-                  //   shrinkWrap: true,
-                  //   separatorBuilder: (BuildContext context, int index) {
-                  //     return const Divider(
-                  //       thickness: 1,
-                  //       indent: 10,
-                  //       endIndent: 10,
-                  //       color: AppColors.dividerGrey,
-                  //     );
-                  //   },
-                  //   itemBuilder: (context, index) {
-                  //     return InkWell(
-                  //         onTap: () {
-                  //           AppNavigation.push(NoteDetail(
-                  //             noteModel: noteModelResponse[index],
-                  //           ));
-                  //         },
-                  //         child: SingleNote(
-                  //           index: index,
-                  //           noteModel: noteModelResponse[index],
-                  //         ));
-                  //   },
-                  //   itemCount: noteModelResponse.length,
-                  // ))
-                ],
-              ),
-            ),
+                ),
       drawer: SafeArea(
         child: Drawer(
           width: double.infinity,
@@ -300,7 +328,7 @@ class _NotesPageState extends State<NotesPage> {
                         children: [
                           InkWell(
                               onTap: () {
-                                // AppNavigation.push(const ChangePassword());
+                                AppNavigation.push(const ChangePassword());
                               },
                               child: const DrawerItemTitle(
                                   title: 'Change Password')),

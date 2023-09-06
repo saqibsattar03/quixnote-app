@@ -2,35 +2,23 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'sign_up_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class SignUpModel {
-  @JsonKey(includeIfNull: false)
+  @JsonKey(name: '_id')
   String? id;
-  @JsonKey(name: "fullName")
   String fullName;
-  @JsonKey(name: "email")
   String email;
-  @JsonKey(includeIfNull: false)
   String? password;
-  @JsonKey(includeIfNull: false)
   String? role;
-  @JsonKey(includeIfNull: false)
   String? loginVia;
-  @JsonKey(includeIfNull: false)
   List? scopes;
-  @JsonKey(includeIfNull: false)
   String? idToken;
-  @JsonKey(includeIfNull: false)
   bool? notificationPreference;
-  @JsonKey(includeIfNull: false)
   bool? isSubscribed;
-  @JsonKey(includeIfNull: false)
   bool? isVerified;
-  @JsonKey(includeIfNull: false)
   String? city;
-  @JsonKey(includeIfNull: false)
   String? country;
-  @JsonKey(includeIfNull: false)
+  String? status;
   String? state;
 
   SignUpModel({
@@ -40,6 +28,7 @@ class SignUpModel {
     this.password,
     this.idToken,
     this.role,
+    this.status,
     this.loginVia,
     this.scopes,
     this.notificationPreference,

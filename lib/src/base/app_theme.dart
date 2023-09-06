@@ -6,7 +6,9 @@ import '../utils/app_fonts.dart';
 class AppThemes {
   static final light = ThemeData(
     useMaterial3: true,
-
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
+      color: AppColors.primaryYellow,
+    ),
     brightness: Brightness.light,
     appBarTheme: const AppBarTheme(
       elevation: 0.0,

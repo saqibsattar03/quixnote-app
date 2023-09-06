@@ -14,7 +14,7 @@ class AppData {
     _sharedPreferences = await SharedPreferences.getInstance();
   }
 
-  static bool getOnBoardingValue() =>
+  static bool   getOnBoardingValue() =>
       _sharedPreferences.getBool(_onBoardingKey) ?? false;
 
   static Future<void> setOnBoardingValue(value) =>

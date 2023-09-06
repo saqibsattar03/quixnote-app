@@ -1,4 +1,5 @@
 import 'package:quix_note/src/models/note/note_model.dart';
+import 'package:quix_note/src/models/note/search_and_filter_model.dart';
 import 'package:quix_note/src/service/api/base_service.dart';
 
 final class NoteApiConfig extends BaseApi {
@@ -23,10 +24,14 @@ final class NoteApiConfig extends BaseApi {
     }
   }
 
-  Future<List<NoteModel>> filterNotes(
-      {required Map<String, String> data}) async {
+  Future<List<NoteModel>> filterNotes({
+    required SearchAndFilterModel model,
+  }) async {
     try {
-      final response = await postRequest(url: "/notes/filter", data: data);
+      final response = await postRequest(
+        url: "/notes/filter",
+        data: model.toJson(),
+      );
       final list = response.data
           .map<NoteModel>((json) => NoteModel.fromJson(json))
           .toList();

@@ -1,7 +1,6 @@
-
 import 'package:json_annotation/json_annotation.dart';
-part 'privacy.g.dart';
 
+part 'privacy.g.dart';
 
 @JsonSerializable()
 class PrivacyTerms {
@@ -30,7 +29,8 @@ class PrivacyTerms {
     required this.v,
   });
 
-  factory PrivacyTerms.fromJson(Map<String, dynamic> json) => _$PrivacyTermsFromJson(json);
+  factory PrivacyTerms.fromJson(Map<String, dynamic> json) =>
+      _$PrivacyTermsFromJson(json);
 
- Map<String, dynamic> toJson() => _$PrivacyTermsToJson(this);
+  Map<String, dynamic> toJson() => _$PrivacyTermsToJson(this);
 }

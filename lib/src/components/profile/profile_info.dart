@@ -4,9 +4,9 @@ import 'package:quix_note/src/components/sign_up/change_password.dart';
 import 'package:quix_note/src/components/sign_up/verify_email.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
+
 import '../../widgets/app_button.dart';
 import '../../widgets/app_textfield.dart';
-import '../sign_in/sign_in.dart';
 
 class ProfileInfo extends StatelessWidget {
   const ProfileInfo({super.key});
@@ -71,12 +71,14 @@ class ProfileInfo extends StatelessWidget {
                   ],
                 ),
               ),
-               const Padding(
+              const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 29),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 45,),
+                    SizedBox(
+                      height: 45,
+                    ),
                     FieldTitle(title: 'Full Name'),
                     SizedBox(height: 10),
                     AppTextField(
@@ -131,3 +133,5 @@ class ProfileInfo extends StatelessWidget {
     );
   }
 }
+
+
