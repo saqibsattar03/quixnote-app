@@ -48,7 +48,7 @@ class ApiError implements Exception {
         //   description = newMessage;
         // }
 
-           description = _handleStatusCode(statusCode, message);
+        description = _handleStatusCode(statusCode, message);
         break;
       case DioErrorType.connectionError:
         description = 'Connectivity issue';

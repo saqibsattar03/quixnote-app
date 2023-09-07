@@ -32,7 +32,7 @@ class SocialAuthService {
           );
           final api = ProfileApiConfig();
           final response = await api.socialSignIn(signUpModel: userModel);
-          AppData .saveAccessToken(response.accessToken);
+          AppData.saveAccessToken(response.accessToken);
           AppNavigation.pushAndPopAll(const NotesPage());
         }
       } else {}

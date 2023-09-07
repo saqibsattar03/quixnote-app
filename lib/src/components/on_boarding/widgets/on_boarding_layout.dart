@@ -4,8 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/app_fonts.dart';
 
-
-
 class BoardingLayout extends StatelessWidget {
   const BoardingLayout({
     Key? key,
@@ -46,7 +44,11 @@ class BoardingLayout extends StatelessWidget {
           const SizedBox(
             height: 40,
           ),
-         SizedBox(height:220,width:double.infinity,child:  SvgPicture.asset(urlImage),),
+          SizedBox(
+            height: 220,
+            width: double.infinity,
+            child: SvgPicture.asset(urlImage),
+          ),
           const SizedBox(
             height: 60,
           ),

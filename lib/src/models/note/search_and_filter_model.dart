@@ -18,4 +18,3 @@ class SearchAndFilterModel {
 
   Map<String, dynamic> toJson() => _$SearchAndFilterModelToJson(this);
 }
-

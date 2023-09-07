@@ -166,7 +166,6 @@ class _SearchNotesState extends State<SearchNotes> {
                         noteModel: filteredList[index],
                       ),
                     );
-
                   },
                   itemCount: filteredList.length,
                 ))

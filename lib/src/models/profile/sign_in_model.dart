@@ -14,7 +14,8 @@ class SignInModel {
     this.password,
   });
 
-  factory SignInModel.fromJson(Map<String, dynamic> json) => _$SignInModelFromJson(json);
+  factory SignInModel.fromJson(Map<String, dynamic> json) =>
+      _$SignInModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$SignInModelToJson(this);
 }

@@ -4,7 +4,11 @@ part 'comment_response_model.g.dart';
 @JsonSerializable(includeIfNull: false)
 class CommentResponseModel {
   CommentResponseModel(
-  {required this.id, required this.noteId, required this.comment, this.createdAt, required this.fullName});
+      {required this.id,
+      required this.noteId,
+      required this.comment,
+      this.createdAt,
+      required this.fullName});
 
   @JsonKey(name: "_id")
   final String id;

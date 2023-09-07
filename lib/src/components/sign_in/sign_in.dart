@@ -65,7 +65,8 @@ class _SignInScreenState extends State<SignIn> {
         final user = await api.getUserUsingAccessToken();
         AppData.saveUserId(user.id!);
 
-        print("${user.id} -------------------------------------------------------------------------------");
+        print(
+            "${user.id} -------------------------------------------------------------------------------");
       }
       if (!mounted) return;
       Navigator.pop(context);
@@ -188,7 +189,8 @@ class _SignInScreenState extends State<SignIn> {
                 Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40,vertical: 40),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 40),
                       child: AppButton(
                         buttonSize: const Size(double.infinity, 50),
 

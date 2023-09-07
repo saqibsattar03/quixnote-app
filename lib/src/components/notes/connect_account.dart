@@ -16,12 +16,12 @@ class ConnectAccounts extends StatelessWidget {
             },
           ),
           title: Text(
-        'Connect Accounts',
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-      )),
+            'Connect Accounts',
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+          )),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40),
         child: Column(

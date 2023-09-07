@@ -53,7 +53,6 @@ class _ChangePasswordScreenState extends State<ChangePassword> {
     return null;
   }
 
-
   String? matchPassword(String? value) {
     if (_newPasswordController.text != _confirmPasswordController.text) {
       return "Passwords do not match";
@@ -184,7 +183,9 @@ class _ChangePasswordScreenState extends State<ChangePassword> {
                           obscure: obscure1,
                           suffix: IconButton(
                             icon: Icon(
-                              obscure1 ? Icons.visibility_off : Icons.visibility,
+                              obscure1
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
                             ),
                             onPressed: () {
                               obscure1 = !obscure1;

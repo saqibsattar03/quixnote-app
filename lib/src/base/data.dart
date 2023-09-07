@@ -14,7 +14,7 @@ class AppData {
     _sharedPreferences = await SharedPreferences.getInstance();
   }
 
-  static bool   getOnBoardingValue() =>
+  static bool getOnBoardingValue() =>
       _sharedPreferences.getBool(_onBoardingKey) ?? false;
 
   static Future<void> setOnBoardingValue(value) =>
@@ -39,8 +39,7 @@ class AppData {
   static String get accessToken =>
       _sharedPreferences.getString(accessTokenKey) ?? '';
 
-  static String get userName =>
-      _sharedPreferences.getString(userNameKey) ?? '';
+  static String get userName => _sharedPreferences.getString(userNameKey) ?? '';
 
   // static Future<void> saveUserId(String id) async {
   //   await _sharedPreferences.setString(loggedUserIdKey, id);
@@ -49,8 +48,7 @@ class AppData {
   static String get loggedUserId =>
       _sharedPreferences.getString(loggedUserIdKey) ?? '';
 
-
-  static Future<void> clearPref()async{
+  static Future<void> clearPref() async {
     await _sharedPreferences.clear();
   }
 }

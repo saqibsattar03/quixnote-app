@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-abstract class AppUtils{
+abstract class AppUtils {
   static final _emailRegExp = RegExp(
     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
   );

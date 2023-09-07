@@ -8,6 +8,7 @@ import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/notes/notes_page.dart';
 import 'package:quix_note/src/components/on_boarding/on_boarding.dart';
 import 'package:quix_note/src/components/sign_in/social_auth.dart';
+import 'package:quix_note/src/utils/dynamic_link.dart';
 
 import 'base/data.dart';
 
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    DynamicLinkProvide().initDynamicLink();
     await AppData.initiate();
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.white,

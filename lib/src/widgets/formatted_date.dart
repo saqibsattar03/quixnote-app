@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../utils/app_colors.dart';
+
 class FormattedDateWidget extends StatelessWidget {
   final DateTime dateTime;
 

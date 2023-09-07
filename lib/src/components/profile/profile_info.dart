@@ -1,18 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quix_note/src/base/data.dart';
 import 'package:quix_note/src/components/sign_up/change_password.dart';
 import 'package:quix_note/src/components/sign_up/verify_email.dart';
+import 'package:quix_note/src/service/api/profile_api_config.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 
+import '../../base/nav.dart';
+import '../../models/profile/sign_up_model.dart';
+import '../../utils/error_dialog.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_textfield.dart';
 
-class ProfileInfo extends StatelessWidget {
+class ProfileInfo extends StatefulWidget {
   const ProfileInfo({super.key});
 
   @override
+  State<ProfileInfo> createState() => _ProfileInfoState();
+}
+
+class _ProfileInfoState extends State<ProfileInfo> {
+  @override
   Widget build(BuildContext context) {
+    //controllers
+
+    final fullNameController = TextEditingController();
+    final countryController = TextEditingController();
+    final stateController = TextEditingController();
+    final cityController = TextEditingController();
+
+    final api = ProfileApiConfig();
+
+    void clearAllControllers() {
+      fullNameController.clear();
+      countryController.clear();
+      stateController.clear();
+      cityController.clear();
+    }
+
+    void editProfile() async {
+      try {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        );
+        final userModel = SignUpModel(
+          fullName: fullNameController.text,
+          country: countryController.text,
+          state: stateController.text,
+          city: cityController.text,
+        );
+        await api.editProfile(model: userModel, id: AppData.loggedUserId);
+        // clearAllControllers();
+        if (!mounted) return;
+        Navigator.pop(context);
+        AppNavigation.pop();
+      } catch (e) {
+        ErrorDialog(
+          error: e,
+        ).show(context);
+      }
+    }
+
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
@@ -71,35 +125,39 @@ class ProfileInfo extends StatelessWidget {
                   ],
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 29),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 29),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 45,
                     ),
-                    FieldTitle(title: 'Full Name'),
-                    SizedBox(height: 10),
+                    const FieldTitle(title: 'Full Name'),
+                    const SizedBox(height: 10),
                     AppTextField(
+                      textEditingController: fullNameController,
                       hint: 'John Doe',
                       fillColor: AppColors.lightYellow,
                     ),
-                    FieldTitle(title: 'Country'),
-                    SizedBox(height: 10),
+                    const FieldTitle(title: 'Country'),
+                    const SizedBox(height: 10),
                     AppTextField(
+                      textEditingController: countryController,
                       hint: 'United States America',
                       fillColor: AppColors.lightYellow,
                     ),
-                    FieldTitle(title: 'City'),
-                    SizedBox(height: 10),
+                    const FieldTitle(title: 'City'),
+                    const SizedBox(height: 10),
                     AppTextField(
+                      textEditingController: stateController,
                       hint: 'New York',
                       fillColor: AppColors.lightYellow,
                     ),
-                    FieldTitle(title: 'State'),
-                    SizedBox(height: 10),
+                    const FieldTitle(title: 'State'),
+                    const SizedBox(height: 10),
                     AppTextField(
+                      textEditingController: cityController,
                       hint: 'Great street 01',
                       fillColor: AppColors.lightYellow,
                     ),
@@ -114,13 +172,14 @@ class ProfileInfo extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: AppButton(
                     buttonSize: const Size(double.infinity, 50),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const VerifyEmailScreen()),
-                      );
-                    },
+                    onPressed: editProfile,
+                    // onPressed: () {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => const VerifyEmailScreen()),
+                    //   );
+                    // },
                     buttonTitle: 'Next',
                   ),
                 ),
@@ -133,5 +192,3 @@ class ProfileInfo extends StatelessWidget {
     );
   }
 }
-
-

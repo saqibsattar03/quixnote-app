@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '409344619087',
     projectId: 'quix-note',
     storageBucket: 'quix-note.appspot.com',
-    iosClientId: '409344619087-n57abuu06r5gp6njtsrampqc0gpf8ft0.apps.googleusercontent.com',
+    iosClientId:
+        '409344619087-n57abuu06r5gp6njtsrampqc0gpf8ft0.apps.googleusercontent.com',
     iosBundleId: 'com.example.quixNote',
   );
 }

@@ -51,7 +51,9 @@ class FaqPage extends StatelessWidget {
                 "Frequently asked Questions",
                 style: textTheme.titleLarge!.copyWith(fontSize: 28),
               ),
-              SizedBox(height: 12,),
+              SizedBox(
+                height: 12,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 43),
                 child: Text(
@@ -64,7 +66,9 @@ class FaqPage extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
-              SizedBox(height: 12,),
+              SizedBox(
+                height: 12,
+              ),
               Expanded(
                 child: ListView.separated(
                   itemBuilder: (context, index) => Container(
@@ -109,7 +113,9 @@ class FaqPage extends StatelessWidget {
                   itemCount: 4,
                 ),
               ),
-              const SizedBox(height: 12,),
+              const SizedBox(
+                height: 12,
+              ),
               Text(
                 'Need More Help?',
                 style: textTheme.bodyMedium!.copyWith(

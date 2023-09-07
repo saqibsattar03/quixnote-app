@@ -6,8 +6,8 @@ part 'sign_up_model.g.dart';
 class SignUpModel {
   @JsonKey(name: '_id')
   String? id;
-  String fullName;
-  String email;
+  String? fullName;
+  String? email;
   String? password;
   String? role;
   String? loginVia;
@@ -22,8 +22,8 @@ class SignUpModel {
   String? state;
 
   SignUpModel({
-    required this.fullName,
-    required this.email,
+    this.fullName,
+    this.email,
     this.id,
     this.password,
     this.idToken,

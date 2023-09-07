@@ -47,7 +47,8 @@ final class ProfileApiConfig extends BaseApi {
   Future<SignUpModel> getUserUsingAccessToken() async {
     try {
       final response = await getRequest(url: "/auth/person");
-      print("${response.data} --------------------------------------------------------------------");
+      print(
+          "${response.data} --------------------------------------------------------------------");
       return SignUpModel.fromJson(response.data);
     } catch (_) {
       rethrow;
@@ -65,6 +66,19 @@ final class ProfileApiConfig extends BaseApi {
       final response =
           await patchRequest(url: "/person/update-password/$id", data: data);
       return response.data;
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<SignUpModel> editProfile(
+      {required SignUpModel model, required String id}) async {
+    try {
+      final response =
+          await patchRequest(url: "/person/$id", data: model.toJson());
+      print(
+          '<------------------------------------${response.data}-------------------->');
+      return SignUpModel.fromJson(response.data);
     } catch (_) {
       rethrow;
     }

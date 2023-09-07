@@ -47,8 +47,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       return 'Password is required.';
     }
 
-    if (!RegExp(r'^.{8}$')
-        .hasMatch(value)) {
+    if (!RegExp(r'^.{8}$').hasMatch(value)) {
       return 'Password must be 8 characters long.';
     }
     return null;
@@ -61,7 +60,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     return null;
   }
 
-  void clearAllController(){
+  void clearAllController() {
     _emailController.clear();
     _fullNameController.clear();
     _passwordController.clear();
@@ -387,7 +386,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                                 setState(() {});
                                               },
                                               isChecked: privacyPolicy,
-                                          isSignupForm: true,
+                                              isSignupForm: true,
                                             )),
                                   );
                                 },

@@ -16,11 +16,11 @@ class ErrorDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   late FirebaseAuthException convertedException;
-    if(error is FirebaseException){
-       convertedException = FirebaseExceptionConverter.convertErrorCodeToException(error.code);
+    late FirebaseAuthException convertedException;
+    if (error is FirebaseException) {
+      convertedException =
+          FirebaseExceptionConverter.convertErrorCodeToException(error.code);
     }
-
 
     return AlertDialog(
       shape: const RoundedRectangleBorder(

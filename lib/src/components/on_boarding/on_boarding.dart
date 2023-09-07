@@ -65,7 +65,7 @@ class _OnBoardViewState extends State<OnBoardView> {
           children: [
             Expanded(
               child: PageView(
-                physics:const NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 controller: controller,
                 onPageChanged: (index) {
                   if (index == 2) {
@@ -76,12 +76,11 @@ class _OnBoardViewState extends State<OnBoardView> {
                 },
                 children: [
                   BoardingLayout(
-                    urlImage: AppImages.onBoardingOne,
-                    title: "Welcome to Quix Notes!",
-                    subtitle:
-                        "We're thrilled to have you join our community of Quix Notes enthusiasts. Get ready to embark on a seamless journey of Quix Notes Main Features right at your fingertips.",
-                    controller: controller
-                  ),
+                      urlImage: AppImages.onBoardingOne,
+                      title: "Welcome to Quix Notes!",
+                      subtitle:
+                          "We're thrilled to have you join our community of Quix Notes enthusiasts. Get ready to embark on a seamless journey of Quix Notes Main Features right at your fingertips.",
+                      controller: controller),
                   BoardingLayout(
                     urlImage: AppImages.onBoardingTwo,
                     title: "Engage and Connect",

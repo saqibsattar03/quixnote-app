@@ -24,10 +24,11 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {AppNavigation.pop();},
+          onPressed: () {
+            AppNavigation.pop();
+          },
         ),
       ),
       body: Padding(
