@@ -24,6 +24,18 @@ final class NoteApiConfig extends BaseApi {
     }
   }
 
+  Future<NoteModel> getNotesById({required String id}) async {
+    try {
+      final response = await getRequest(url: "/notes/get-by-id/$id");
+      return NoteModel.fromJson(response.data);
+      // return response.data
+      //     .map<NoteModel>((json) => NoteModel.fromJson(json))
+      //     .toList();
+    } catch (_) {
+      rethrow;
+    }
+  }
+
   Future<List<NoteModel>> filterNotes({
     required SearchAndFilterModel model,
   }) async {

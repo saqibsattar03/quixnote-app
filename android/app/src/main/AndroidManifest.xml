@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="quix_note"
         android:name="${applicationName}"
@@ -29,11 +30,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="quixnote.page.link"
                     android:scheme="https" />
+                    android:host="https://quixnote.page.link"
                 <data
-                    android:host="quixnote.page.link"
                     android:scheme="http" />
+                    android:host="https://quixnote.page.link"
             </intent-filter>
         </activity>
 

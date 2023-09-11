@@ -16,39 +16,51 @@ import 'package:quix_note/src/components/sign_up/social_auth.dart';
 import 'package:quix_note/src/models/note/note_model.dart';
 import 'package:quix_note/src/models/profile/sign_up_model.dart';
 import 'package:quix_note/src/service/api/note_api_config.dart';
-import 'package:quix_note/src/service/api/profile_api_config.dart';
 import 'package:quix_note/src/utils/api_errors.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/widgets/app_circular_button.dart';
 import 'package:quix_note/src/widgets/no_data.dart';
+import 'package:reusables/reusables.dart';
 
+import '../../utils/profile_utils.dart';
 import '../sign_up/change_password.dart';
 import '../sign_up/privacy_policy.dart';
 import '../sign_up/terms_conditions.dart';
 
-class NotesPage extends StatefulWidget {
-  const NotesPage({super.key});
+class NotesPage extends ControlledWidget {
+  NotesPage({super.key}) : super(controller: ProfileController.instance);
 
   @override
   State<NotesPage> createState() => _NotesPageState();
 }
 
-class _NotesPageState extends State<NotesPage> {
+class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   bool notifications = true;
 
   var isLoading = true;
   var exception = "";
   var noteModelResponse = <NoteModel>[];
-  late SignUpModel signUpModel;
+
+  // late SignUpModel signUpModel;
   final api = NoteApiConfig();
-  final userApi = ProfileApiConfig();
+
+  // final userApi = ProfileApiConfig();
 
   Future<void> _init() async {
-    await getUserProfile();
-    await getAllNotes();
+    // await getUserProfile();
+    await ProfileController.instance.getUser();
+    if (!ProfileController.instance.hasError) {
+      await getAllNotes();
+    } else {
+      exception = ProfileController.instance.error.title;
+      isLoading = false;
+      setState(() {});
+    }
   }
+
+  SignUpModel? get _user => ProfileController.instance.user;
 
   @override
   void initState() {
@@ -56,39 +68,34 @@ class _NotesPageState extends State<NotesPage> {
     _init();
   }
 
-  Future<void> getUserProfile() async {
-    try {
-      signUpModel = await userApi.getUserUsingAccessToken();
-      setState(() {});
-    } catch (e) {
-      //ErrorDialog(error: e).show(context);
-      exception = ApiError.withDioError(e).title;
-      print(
-          "<-------------------------------- exception ------------------------------------>${exception}");
-      isLoading = false;
-      setState(() {});
-    }
-  }
+  // Future<void> getUserProfile() async {
+  //   try {
+  //     signUpModel = await userApi.getUserUsingAccessToken();
+  //     setState(() {});
+  //   } catch (e) {
+  //     //ErrorDialog(error: e).show(context);
+  //     exception = ApiError.withDioError(e).title;
+  //     isLoading = false;
+  //     setState(() {});
+  //   }
+  // }
 
   Future<void> getAllNotes() async {
     try {
       noteModelResponse = await api.getAllNotes();
     } catch (e) {
-      // ErrorDialog(error: e).show(context);
       exception = ApiError.withDioError(e).title;
-      print(
-          "<-------------------------------- exception ------------------------------------>${exception}");
     }
     isLoading = false;
     setState(() {});
   }
 
   void splitUserFullName() {
-    String? fullName = signUpModel.fullName;
-    List<String>? nameParts = fullName?.split(' ');
+    String? fullName = _user?.fullName ?? '';
+    List<String>? nameParts = fullName.split(' ');
 
-    if (nameParts!.length >= 2) {
-      signUpModel.fullName = nameParts[0];
+    if (nameParts.length >= 2) {
+      _user?.fullName = nameParts[0];
       // String lastName = nameParts[1];
       // print("First Name: $firstName");
       // print("Last Name: $lastName");
@@ -187,7 +194,7 @@ class _NotesPageState extends State<NotesPage> {
                       ),
                       const SizedBox(height: 40),
                       Text(
-                        "Hello, ${signUpModel.fullName}",
+                        "Hello, ${_user?.fullName ?? ''}",
                         style: textTheme.titleLarge!.copyWith(fontSize: 34),
                       ),
                       const SizedBox(height: 8),
@@ -232,185 +239,186 @@ class _NotesPageState extends State<NotesPage> {
       drawer: isLoading
           ? null
           : Padding(
-            padding:  EdgeInsets.only(top: padding.top, bottom: padding.bottom),
-            child: Drawer(
-              width: double.infinity,
-              child: Container(
-                color: AppColors.lightYellow,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 30,
-                            vertical: 20,
-                          ),
-                          decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(40))),
-                          child: Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  AppNavigation.push(const ProfileInfo());
-                                },
-                                child: const CircleAvatar(
-                                  backgroundColor: Colors.black,
-                                  radius: 26,
-                                  child: Icon(Icons.person),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Column(
-                                children: [
-                                  Text(
-                                    "${signUpModel.fullName}",
-                                    style: textTheme.bodyMedium!.copyWith(
-                                      fontSize: 19,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+              padding:
+                  EdgeInsets.only(top: padding.top, bottom: padding.bottom),
+              child: Drawer(
+                width: double.infinity,
+                child: Container(
+                  color: AppColors.lightYellow,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 30,
+                              vertical: 20,
+                            ),
+                            decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(40))),
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    AppNavigation.push(const ProfileInfo());
+                                  },
+                                  child: const CircleAvatar(
+                                    backgroundColor: Colors.black,
+                                    radius: 26,
+                                    child: Icon(Icons.person),
                                   ),
-                                  Text(
-                                    '${signUpModel.state},${signUpModel.country}',
-                                    style: textTheme.bodyMedium!.copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(
-                            Icons.clear,
-                            color: Colors.black,
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 30),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  AppNavigation.push(const ChangePassword());
-                                },
-                                child: const DrawerItemTitle(
-                                  title: 'Change Password',
                                 ),
-                              ),
-                              // InkWell(
-                              //     onTap: () {
-                              //       AppNavigation.push(const ConnectAccounts());
-                              //     },
-                              //     child: const DrawerItemTitle(
-                              //         title: 'Connect Account')),
-                              InkWell(
-                                onTap: () {
-                                  AppNavigation.push(const ConfigureSwipe());
-                                },
-                                child: const DrawerItemTitle(
-                                    title: 'Configure swipe'),
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const DrawerItemTitle(
-                                      title: 'Notifications'),
-                                  const SizedBox(width: 20),
-                                  SizedBox(
-                                    height: 30,
-                                    width: 40,
-                                    child: FittedBox(
-                                      fit: BoxFit.fill,
-                                      child: Switch(
-                                        inactiveThumbColor: Colors.white,
-                                        activeColor: AppColors.darkTeal,
-                                        inactiveTrackColor:
-                                            AppColors.darkTeal,
-                                        value: notifications,
-                                        onChanged: (bool value) {
-                                          setState(() {
-                                            notifications = value;
-                                          });
-                                        },
+                                const SizedBox(width: 10),
+                                Column(
+                                  children: [
+                                    Text(
+                                      _user?.fullName ?? '',
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.w400,
                                       ),
                                     ),
-                                  )
-                                ],
-                              ),
-                              InkWell(
+                                    Text(
+                                      '${_user?.state ?? ''},${_user?.country ?? ''}',
+                                      style: textTheme.bodyMedium!.copyWith(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(
+                              Icons.clear,
+                              color: Colors.black,
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                InkWell(
                                   onTap: () {
-                                    AppNavigation.push(TermsAndConditions(
-                                      callBack: (val) {},
-                                      isChecked: true,
-                                      isSignupForm: false,
-                                    ));
+                                    AppNavigation.push(const ChangePassword());
                                   },
                                   child: const DrawerItemTitle(
-                                      title: 'Terms & Conditions')),
-                              InkWell(
+                                    title: 'Change Password',
+                                  ),
+                                ),
+                                // InkWell(
+                                //     onTap: () {
+                                //       AppNavigation.push(const ConnectAccounts());
+                                //     },
+                                //     child: const DrawerItemTitle(
+                                //         title: 'Connect Account')),
+                                InkWell(
                                   onTap: () {
-                                    AppNavigation.push(PrivacyPolicy(
-                                      callBack: (val) {},
-                                      isChecked: true,
-                                      isSignupForm: false,
-                                    ));
+                                    AppNavigation.push(const ConfigureSwipe());
                                   },
                                   child: const DrawerItemTitle(
-                                      title: 'Privacy Policy')),
-                              InkWell(
-                                  onTap: () {
-                                    AppNavigation.push(const CreateTicket());
-                                  },
-                                  child: const DrawerItemTitle(
-                                      title: 'Contact Us')),
-                              InkWell(
-                                  onTap: () {
-                                    AppNavigation.push(const FaqPage());
-                                  },
-                                  child:
-                                      const DrawerItemTitle(title: "FAQ's")),
-                            ],
+                                      title: 'Configure swipe'),
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const DrawerItemTitle(
+                                        title: 'Notifications'),
+                                    const SizedBox(width: 20),
+                                    SizedBox(
+                                      height: 30,
+                                      width: 40,
+                                      child: FittedBox(
+                                        fit: BoxFit.fill,
+                                        child: Switch(
+                                          inactiveThumbColor: Colors.white,
+                                          activeColor: AppColors.darkTeal,
+                                          inactiveTrackColor:
+                                              AppColors.darkTeal,
+                                          value: notifications,
+                                          onChanged: (bool value) {
+                                            setState(() {
+                                              notifications = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                InkWell(
+                                    onTap: () {
+                                      AppNavigation.push(TermsAndConditions(
+                                        callBack: (val) {},
+                                        isChecked: true,
+                                        isSignupForm: false,
+                                      ));
+                                    },
+                                    child: const DrawerItemTitle(
+                                        title: 'Terms & Conditions')),
+                                InkWell(
+                                    onTap: () {
+                                      AppNavigation.push(PrivacyPolicy(
+                                        callBack: (val) {},
+                                        isChecked: true,
+                                        isSignupForm: false,
+                                      ));
+                                    },
+                                    child: const DrawerItemTitle(
+                                        title: 'Privacy Policy')),
+                                InkWell(
+                                    onTap: () {
+                                      AppNavigation.push(const CreateTicket());
+                                    },
+                                    child: const DrawerItemTitle(
+                                        title: 'Contact Us')),
+                                InkWell(
+                                    onTap: () {
+                                      AppNavigation.push(const FaqPage());
+                                    },
+                                    child:
+                                        const DrawerItemTitle(title: "FAQ's")),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          InkWell(
-                            onTap: logout,
-                            child: const DrawerItemTitle(title: 'Logout'),
-                          ),
-                          const SizedBox(height: 20),
-                          const DrawerItemTitle(
-                              title: 'Version 1.2.2', fontSize: 14),
-                          const SizedBox(height: 20),
-                        ],
-                      ),
-                    )
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            InkWell(
+                              onTap: logout,
+                              child: const DrawerItemTitle(title: 'Logout'),
+                            ),
+                            const SizedBox(height: 20),
+                            const DrawerItemTitle(
+                                title: 'Version 1.2.2', fontSize: 14),
+                            const SizedBox(height: 20),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
     );
   }
 }

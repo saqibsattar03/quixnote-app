@@ -20,6 +20,8 @@ class SignUpModel {
   String? country;
   String? status;
   String? state;
+  String? profileImage;
+
 
   SignUpModel({
     this.fullName,
@@ -30,6 +32,7 @@ class SignUpModel {
     this.role,
     this.status,
     this.loginVia,
+    this.profileImage,
     this.scopes,
     this.notificationPreference,
     this.isSubscribed,

@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAqC-TWnK3gpWgts4Mc6pRWWygb3_lZgbI',
-    appId: '1:409344619087:android:823cd7aa1cab28b60b303a',
+    appId: '1:409344619087:android:701d4c90f766562f0b303a',
     messagingSenderId: '409344619087',
     projectId: 'quix-note',
     storageBucket: 'quix-note.appspot.com',
@@ -59,12 +59,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBd9CC2a1_aCzXke4VfwIJaQnGPFhui1hM',
-    appId: '1:409344619087:ios:cf54a26d3205a35f0b303a',
+    appId: '1:409344619087:ios:ef35958c2b71fb240b303a',
     messagingSenderId: '409344619087',
     projectId: 'quix-note',
     storageBucket: 'quix-note.appspot.com',
-    iosClientId:
-        '409344619087-n57abuu06r5gp6njtsrampqc0gpf8ft0.apps.googleusercontent.com',
+    androidClientId: '409344619087-fiedgjn8s4rfm7bqqf0spg7agvd4poev.apps.googleusercontent.com',
+    iosClientId: '409344619087-n57abuu06r5gp6njtsrampqc0gpf8ft0.apps.googleusercontent.com',
     iosBundleId: 'com.example.quixNote',
   );
 }

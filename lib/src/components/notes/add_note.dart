@@ -70,9 +70,8 @@ class _AddNoteState extends State<AddNote> {
       await api.creteNote(createNoteModel: createNoteModel);
       if (!mounted) return;
       Navigator.pop(context);
-      AppNavigation.push(const NotesPage());
+      AppNavigation.push(NotesPage());
     } catch (e) {
-      print('exception => $e');
       ErrorDialog(
         error: e,
       ).show(context);

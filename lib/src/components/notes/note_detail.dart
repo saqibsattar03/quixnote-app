@@ -22,8 +22,9 @@ class NoteDetail extends StatefulWidget {
 
 class _NoteDetailState extends State<NoteDetail> {
   //controllers
-
   final _commentController = TextEditingController();
+
+
   final api = CommentApiConfig();
 
   void postComment() async {
@@ -42,6 +43,7 @@ class _NoteDetailState extends State<NoteDetail> {
           comment: _commentController.text);
       await api.postComment(commentModel: commentModel);
       await api.getAllCommentByNoteId(noteId: widget.noteModel.id!);
+      _commentController.clear();
       if (!mounted) return;
       Navigator.pop(context);
       // AppNavigation.pop();
@@ -50,6 +52,13 @@ class _NoteDetailState extends State<NoteDetail> {
         error: e,
       ).show(context);
     }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _commentController.clear();
   }
 
   Widget wrapWithSliver(Widget child) {
@@ -87,8 +96,8 @@ class _NoteDetailState extends State<NoteDetail> {
             itemBuilder: (context) => [
               PopupMenuItem(
                 onTap: (){
-                  DynamicLinkProvide().createLink("hsdgjhsdggd").then((value){
-                    print("${value}-----------------------------------------------------------------");
+                  DynamicLinkProvide().createLink(widget.noteModel.id.toString()).then((value){
+                    print("${value}");
                     Share.share(value);
                   });
                 },
@@ -279,7 +288,7 @@ class _NoteDetailState extends State<NoteDetail> {
               },
               hint: 'Comment',
               suffix: IconButton(
-                icon: const Icon(Icons.attachment_outlined),
+                icon: const Icon(Icons.send),
                 onPressed: () {
                   postComment();
                   setState(() {});

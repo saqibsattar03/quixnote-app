@@ -47,8 +47,6 @@ final class ProfileApiConfig extends BaseApi {
   Future<SignUpModel> getUserUsingAccessToken() async {
     try {
       final response = await getRequest(url: "/auth/person");
-      print(
-          "${response.data} --------------------------------------------------------------------");
       return SignUpModel.fromJson(response.data);
     } catch (_) {
       rethrow;

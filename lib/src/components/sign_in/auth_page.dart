@@ -17,7 +17,7 @@ class AuthPage extends StatelessWidget {
 
           if (snapshot.hasData) {
             print("here");
-            return const NotesPage();
+            return NotesPage();
           } else {
             print("here 1");
             return const SocialAuthSignIn();

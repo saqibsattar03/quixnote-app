@@ -1,12 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:quix_note/src/base/data.dart';
 import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/notes/notes_page.dart';
-import 'package:quix_note/src/components/sign_up/reset_password_email.dart';
-
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/widgets/app_alert_dialog.dart';
@@ -15,7 +11,6 @@ import 'package:quix_note/src/widgets/app_textfield.dart';
 
 import '../../service/api/profile_api_config.dart';
 import '../../utils/error_dialog.dart';
-import 'verify_email.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({Key? key}) : super(key: key);
@@ -77,7 +72,7 @@ class _ChangePasswordScreenState extends State<ChangePassword> {
       if (_newPasswordController.text == _confirmPasswordController.text) {
         await user.updatePassword(_newPasswordController.text).then((_) => {
               Navigator.pop(context),
-              AppNavigation.push(const NotesPage()),
+              AppNavigation.push(NotesPage()),
               showDialog(
                 context: context,
                 builder: (context) => const AppAlertDialog(

@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    DynamicLinkProvide().initDynamicLink();
+    await DynamicLinkProvide().initDynamicLink();
     await AppData.initiate();
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.white,
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
       home: !AppData.getOnBoardingValue()
           ? const OnBoardView()
           : FirebaseAuth.instance.currentUser != null
-              ? const NotesPage()
+              ? NotesPage()
               : const SocialAuthSignIn(),
     );
   }

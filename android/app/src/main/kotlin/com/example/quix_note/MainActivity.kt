@@ -1,4 +1,4 @@
-package com.example.quix_note
+package com.sparkosol.quixnote
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:409344619087:android:823cd7aa1cab28b60b303a",
+        "mobilesdk_app_id": "1:409344619087:android:701d4c90f766562f0b303a",
         "android_client_info": {
-          "package_name": "com.example.quix_note"
+          "package_name": "com.sparkosol.quixnote"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "409344619087-fiedgjn8s4rfm7bqqf0spg7agvd4poev.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sparkosol.quixnote",
+            "certificate_hash": "1fbff4da618761b39d7027d6ee3d58c747848ea6"
+          }
+        },
         {
           "client_id": "409344619087-l0g1og6rd9cg7r0eeqcv047qr1mfua5h.apps.googleusercontent.com",
           "client_type": 3
@@ -29,6 +37,13 @@
             {
               "client_id": "409344619087-bm2jf9ec88uentk7q7dth9jdsddk5hcm.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "409344619087-n57abuu06r5gp6njtsrampqc0gpf8ft0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.quixNote"
+              }
             }
           ]
         }

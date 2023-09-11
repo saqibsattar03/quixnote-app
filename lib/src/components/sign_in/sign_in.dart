@@ -1,20 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:quix_note/src/base/data.dart';
 import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/notes/notes_page.dart';
 import 'package:quix_note/src/components/sign_up/reset_password_email.dart';
-import 'package:quix_note/src/components/sign_up/verify_email.dart';
 import 'package:quix_note/src/models/profile/sign_in_model.dart';
-import 'package:quix_note/src/models/profile/sign_up_model.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_utils.dart';
 import 'package:quix_note/src/utils/error_dialog.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../service/api/profile_api_config.dart';
 
@@ -70,7 +65,7 @@ class _SignInScreenState extends State<SignIn> {
       }
       if (!mounted) return;
       Navigator.pop(context);
-      AppNavigation.push(const NotesPage());
+      AppNavigation.push(NotesPage());
     } catch (e) {
       if (!mounted) return;
       Navigator.pop(context);
