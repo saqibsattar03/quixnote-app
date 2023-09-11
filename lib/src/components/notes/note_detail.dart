@@ -256,7 +256,7 @@ class _NoteDetailState extends State<NoteDetail> {
                                 child: const CircularProgressIndicator(),
                               );
                             },
-                          ), // Your image widget goes here
+                          ),
                         ),
                       ),
                     ),

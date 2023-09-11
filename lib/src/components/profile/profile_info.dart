@@ -36,6 +36,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
   final api = ProfileApiConfig();
 
   var isLoading = true;
+  var image;
   var exception = "";
   File? _selectedFile;
 
@@ -46,6 +47,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
       countryController.text = user.country!;
       stateController.text = user.state!;
       cityController.text = user.city!;
+      image = user.profileImage!;
     } catch (e) {
       exception = ApiError.withDioError(e).title;
     }
@@ -73,7 +75,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
       },
     );
     try {
-      var imageUrl = '';
+      var imageUrl;
       if (_selectedFile != null) {
         imageUrl = await UploadService.uploadImage(_selectedFile!);
       }
@@ -82,7 +84,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
         country: countryController.text,
         state: stateController.text,
         city: cityController.text,
-        profileImage: imageUrl,
+        profileImage: imageUrl ?? image,
       );
       await api.editProfile(model: userModel, id: AppData.loggedUserId);
       await ProfileController.instance.refresh();
@@ -127,11 +129,71 @@ class _ProfileInfoState extends State<ProfileInfo> {
                       width: 135,
                       child: Stack(
                         children: [
-                          SvgPicture.asset(
-                            AppImages.avatarFrame,
-                            height: 127,
-                            width: 127,
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(14.0),
+                            child: _selectedFile != null
+                                ? Image.file(
+                              _selectedFile!,
+                              height: 127,
+                              width: 127,
+                              fit: BoxFit.fill,
+                            )
+                                : image.isNotEmpty
+                                ? Image.network(
+                              image,
+                              height: 127,
+                              width: 127,
+                              fit: BoxFit.fill,
+                              loadingBuilder: (_, child, loadingProgress) =>
+                              loadingProgress == null
+                                  ? child
+                                  : Container(
+                                alignment: Alignment.center,
+                                child: const CircularProgressIndicator(),
+                              ),
+                            )
+                                : SvgPicture.asset(
+                              AppImages.avatarFrame,
+                              height: 127,
+                              width: 127,
+                            ),
                           ),
+
+                          // if (_selectedFile != null)
+                          //   ClipRRect(
+                          //       borderRadius: BorderRadius.circular(14.0),
+                          //       child: Image.asset(
+                          //         _selectedFile!.path,
+                          //         height: 127,
+                          //         width: 127,
+                          //         fit: BoxFit.fill,
+                          //       ))
+                          // else
+                          //   image != ''
+                          //       ? ClipRRect(
+                          //           borderRadius: BorderRadius.circular(14.0),
+                          //           child: Image.network(
+                          //             image,
+                          //             height: 127,
+                          //             width: 127,
+                          //             fit: BoxFit.fill,
+                          //             loadingBuilder:
+                          //                 (_, child, loadingProgress) {
+                          //               if (loadingProgress == null) {
+                          //                 return child;
+                          //               }
+                          //               return Container(
+                          //                 alignment: Alignment.center,
+                          //                 child:
+                          //                     const CircularProgressIndicator(),
+                          //               );
+                          //             },
+                          //           ))
+                          //       : SvgPicture.asset(
+                          //           AppImages.avatarFrame,
+                          //           height: 127,
+                          //           width: 127,
+                          //         ),
                           Positioned(
                             bottom: 0,
                             right: 0,

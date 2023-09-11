@@ -43,13 +43,9 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
   var exception = "";
   var noteModelResponse = <NoteModel>[];
 
-  // late SignUpModel signUpModel;
   final api = NoteApiConfig();
 
-  // final userApi = ProfileApiConfig();
-
   Future<void> _init() async {
-    // await getUserProfile();
     await ProfileController.instance.getUser();
     if (!ProfileController.instance.hasError) {
       await getAllNotes();
@@ -67,18 +63,6 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
     super.initState();
     _init();
   }
-
-  // Future<void> getUserProfile() async {
-  //   try {
-  //     signUpModel = await userApi.getUserUsingAccessToken();
-  //     setState(() {});
-  //   } catch (e) {
-  //     //ErrorDialog(error: e).show(context);
-  //     exception = ApiError.withDioError(e).title;
-  //     isLoading = false;
-  //     setState(() {});
-  //   }
-  // }
 
   Future<void> getAllNotes() async {
     try {
@@ -264,12 +248,16 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
                               children: [
                                 InkWell(
                                   onTap: () {
+                                    _scaffoldKey.currentState!.closeDrawer();
                                     AppNavigation.push(const ProfileInfo());
                                   },
-                                  child: const CircleAvatar(
+                                  child: CircleAvatar(
                                     backgroundColor: Colors.black,
                                     radius: 26,
-                                    child: Icon(Icons.person),
+                                    backgroundImage: NetworkImage(
+                                      _user!.profileImage!,
+                                    ),
+                                    // child: Icon(Icons.person),
                                   ),
                                 ),
                                 const SizedBox(width: 10),
