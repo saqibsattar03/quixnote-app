@@ -84,7 +84,9 @@ class _ChangePasswordScreenState extends State<ChangePassword> {
     } catch (e) {
       if (!mounted) return;
       Navigator.pop(context);
+
       const ErrorDialog(error: "Old Password is not correct").show(context);
+      print("---------------------------${e.toString()}");
     }
   }
 

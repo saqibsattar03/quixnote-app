@@ -1,15 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:quix_note/src/base/data.dart';
 import 'package:quix_note/src/models/comment/comment_model.dart';
-import 'package:quix_note/src/models/comment/comment_response_model.dart';
 import 'package:quix_note/src/models/note/note_model.dart';
 import 'package:quix_note/src/service/api/comment_api_config.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/dynamic_link.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
+import 'package:reusables/reusables.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../controllers/note_controller.dart';
+import '../../service/upload_service.dart';
+import '../../utils/api_errors.dart';
+import '../../utils/app_images.dart';
 import '../../utils/error_dialog.dart';
 
 class NoteDetail extends StatefulWidget {
@@ -23,9 +30,10 @@ class NoteDetail extends StatefulWidget {
 class _NoteDetailState extends State<NoteDetail> {
   //controllers
   final _commentController = TextEditingController();
-
-
+  final _formKey = GlobalKey<FormState>();
   final api = CommentApiConfig();
+  File? _selectedFile;
+  final notesController = NotesController();
 
   void postComment() async {
     try {
@@ -37,16 +45,28 @@ class _NoteDetailState extends State<NoteDetail> {
           );
         },
       );
+      var imageUrl = '';
+      if (_selectedFile != null) {
+        imageUrl = await UploadService.uploadImage(_selectedFile!);
+      }
       final commentModel = CommentModel(
-          userId: AppData.loggedUserId,
-          noteId: widget.noteModel.id!,
-          comment: _commentController.text);
+        userId: AppData.loggedUserId,
+        noteId: widget.noteModel.id!,
+        comment: _commentController.text,
+        media: imageUrl,
+      );
       await api.postComment(commentModel: commentModel);
-      await api.getAllCommentByNoteId(noteId: widget.noteModel.id!);
+
+      await notesController.getAllComment(widget.noteModel!.id!);
+      // await api.getAllCommentByNoteId(noteId: widget.noteModel.id!);
       _commentController.clear();
+
       if (!mounted) return;
       Navigator.pop(context);
       // AppNavigation.pop();
+      setState(() {
+        setState(() {});
+      });
     } catch (e) {
       ErrorDialog(
         error: e,
@@ -95,8 +115,10 @@ class _NoteDetailState extends State<NoteDetail> {
             ),
             itemBuilder: (context) => [
               PopupMenuItem(
-                onTap: (){
-                  DynamicLinkProvide().createLink(widget.noteModel.id.toString()).then((value){
+                onTap: () {
+                  DynamicLinkProvide()
+                      .createLink(widget.noteModel.id.toString())
+                      .then((value) {
                     print("${value}");
                     Share.share(value);
                   });
@@ -236,10 +258,10 @@ class _NoteDetailState extends State<NoteDetail> {
                       child: Container(
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: Colors.black,
+                            color: Colors.white,
                             width: 2.0,
                           ),
-                          color: Colors.black,
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                         child: ClipRRect(
@@ -253,6 +275,7 @@ class _NoteDetailState extends State<NoteDetail> {
                               }
                               return Container(
                                 alignment: Alignment.center,
+                                color: Colors.white,
                                 child: const CircularProgressIndicator(),
                               );
                             },
@@ -276,28 +299,34 @@ class _NoteDetailState extends State<NoteDetail> {
                 ),
               )),
             ),
-            wrapWithSliver(AppTextField(
-              maxLines: 1,
-              textEditingController: _commentController,
-              // textInputAction: TextInputAction.done,
-              validator: (value) {
-                if (value == null || value.isEmpty || value.trim().isEmpty) {
-                  return 'Comment Text is required.';
-                }
-                return null;
-              },
-              hint: 'Comment',
-              suffix: IconButton(
-                icon: const Icon(Icons.send),
-                onPressed: () {
-                  postComment();
-                  setState(() {});
+            wrapWithSliver(Form(
+              key: _formKey,
+              child: AppTextField(
+                minLines: 1,
+                maxLines: 3,
+                textEditingController: _commentController,
+                // textInputAction: TextInputAction.done,
+                validator: (value) {
+                  if (value == null || value.isEmpty || value.trim().isEmpty) {
+                    return 'Comment Text is required.';
+                  }
+                  return null;
                 },
+                hint: 'Comment',
+                suffix: IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: () {
+                    if (_formKey.currentState?.validate() ?? false) {
+                      postComment();
+                      setState(() {});
+                    }
+                  },
+                ),
+                fillColor: const Color(0xffefefef),
               ),
-              fillColor: const Color(0xffefefef),
             )),
             wrapWithSliver(const SizedBox(height: 20)),
-            CommentItem(noteId: widget.noteModel.id!),
+            CommentItem(notesController, noteId: widget.noteModel.id!)
           ],
         ),
       ),
@@ -305,8 +334,11 @@ class _NoteDetailState extends State<NoteDetail> {
   }
 }
 
-class CommentItem extends StatefulWidget {
-  const CommentItem({Key? key, required this.noteId}) : super(key: key);
+class CommentItem extends ControlledWidget<NotesController> {
+  final NotesController notesController;
+
+  const CommentItem(this.notesController, {Key? key, required this.noteId})
+      : super(key: key, controller: notesController);
 
   final String noteId;
 
@@ -314,140 +346,227 @@ class CommentItem extends StatefulWidget {
   State<CommentItem> createState() => _CommentItemState();
 }
 
-class _CommentItemState extends State<CommentItem> {
-  final api = CommentApiConfig();
-  var isLoading = true;
-  var commentResponseModel = <CommentResponseModel>[];
+class _CommentItemState extends State<CommentItem> with ControlledStateMixin {
+  // final api = CommentApiConfig();
+  // var isLoading = true;
+  // var commentResponseModel = <CommentResponseModel>[];
+
+  ApiError? _error;
+  bool get _hasError => _error != null;
 
   @override
   void initState() {
     super.initState();
-    getAllComments();
+    widget.controller.getAllComment(widget.noteId);
+    //getAllComments();
   }
 
-  void getAllComments() async {
-    try {
-      commentResponseModel =
-          await api.getAllCommentByNoteId(noteId: widget.noteId);
-    } catch (e) {
-      ErrorDialog(error: e).show(context);
-    }
-    isLoading = false;
-    setState(() {});
-  }
+  // void getAllComments() async {
+  //   try {
+  //     commentResponseModel =
+  //         await api.getAllCommentByNoteId(noteId: widget.noteId);
+  //   } catch (e) {
+  //     ErrorDialog(error: e).show(context);
+  //   }
+  //   isLoading = false;
+  //   setState(() {});
+  // }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    if (isLoading) {
+    if (widget.controller.isLoading) {
       return const SliverToBoxAdapter(
         child: Center(child: CircularProgressIndicator()),
       );
-    } else {
-      return SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (_, i) {
-            final comment = commentResponseModel[i];
-            return Column(
-              children: [
-                Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 25,
-                      foregroundColor: AppColors.primaryYellow,
-                      child: Icon(Icons.person),
-                    ),
-                    const SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          comment.fullName,
-                          style: textTheme.bodyMedium!.copyWith(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.darkGrey,
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          comment.comment,
-                          style: textTheme.bodyMedium!.copyWith(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.darkGrey,
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-                const Divider(
-                  height: 10,
-                  thickness: 1,
-                  indent: 10,
-                  endIndent: 10,
-                  color: AppColors.dividerGrey,
-                ),
-              ],
-            );
-          },
-          childCount: commentResponseModel.length,
-        ),
+    } else if (widget.controller.hasError) {
+      return SliverToBoxAdapter(
+        child:Center(child: Text(widget.controller.error.description ?? '')),
       );
+    } else {
+      if (widget.controller.comment!.isEmpty) {
+        return const SliverToBoxAdapter(
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("No comments yet!"),
+                Icon(Icons.message), // Add the message icon here
+              ],
+            ),
+          ),
+        );
+      } else {
+        return SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (_, i) {
+              final comment = widget.controller.comment![i];
+              return widget.controller.comment!.isNotEmpty
+                  ? Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            (comment.role == "ADMIN")
+                                ? Stack(
+                                    children: [
+                                      ClipOval(
+                                        child: SvgPicture.asset(
+                                          AppImages.avatarFrame,
+                                          height: 52,
+                                          width: 52,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(2),
+                                          decoration: const BoxDecoration(
+                                            color: Colors.blue,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.verified,
+                                            color: Colors.white,
+                                            size: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : (comment.profileImage != null &&
+                                        comment.profileImage != "")
+                                    ? CircleAvatar(
+                                        backgroundColor: Colors.black,
+                                        radius: 26,
+                                        backgroundImage:
+                                            NetworkImage(comment.profileImage!),
+                                      )
+                                    : const CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                        radius: 26,
+                                        child: Icon(Icons.person),
+                                      ),
+
+// : const CircleAvatar(
+//     backgroundColor: Colors.black,
+//     radius: 26,
+//     child: Icon(Icons.person),
+//   ),
+// (comment.profileImage != null)
+//     ? Stack(
+//   children: [
+//     CircleAvatar(
+//       backgroundColor: Colors.black,
+//       radius: 26,
+//       backgroundImage: NetworkImage(
+//         comment.profileImage!,
+//       ),
+//     ),
+//     if (comment.role =="ADMIN") // Check if the comment is from an admin
+//       Positioned(
+//         bottom: 0,
+//         right: 0,
+//         child: Container(
+//           padding: EdgeInsets.all(2),
+//           decoration: BoxDecoration(
+//             color: Colors.blue,
+//             shape: BoxShape.circle,
+//           ),
+//           child: Icon(
+//             Icons.verified,
+//             color: Colors.white,
+//             size: 16,
+//           ),
+//         ),
+//       ),
+//   ],
+// )
+//     : const CircleAvatar(
+//   backgroundColor: Colors.black,
+//   radius: 26,
+//   child: Icon(Icons.person),
+// ),
+
+// comment.profileImage != null
+//     ? CircleAvatar(
+//         backgroundColor: Colors.black,
+//         radius: 26,
+//         backgroundImage: NetworkImage(
+//           comment.profileImage!,
+//         ),
+//       )
+//     : const CircleAvatar(
+//         backgroundColor: Colors.black,
+//         radius: 26,
+//         child: Icon(Icons.person),
+//       ),
+                            const SizedBox(width: 10),
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    comment.fullName,
+                                    style: textTheme.bodyMedium!.copyWith(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.darkGrey,
+                                    ),
+                                  ),
+
+                                  ///*** add image in comment ***//
+// if (comment.media!.isNotEmpty)
+//   Image.network(
+//     comment.media!,
+//     height: 100,
+//     width: 150,
+//     fit: BoxFit.fill,
+//     loadingBuilder: (_, child, loadingProgress) {
+//       if (loadingProgress == null) {
+//         return child;
+//       }
+//       return Center(
+//         child: Container(
+//             alignment: Alignment.center,
+//             color: Colors.white,
+//             height: 30,
+//             width: 30,
+//             child: const CircularProgressIndicator()),
+//       );
+//     },
+//   ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    // maxLines: 4,
+                                    comment.comment,
+                                    style: textTheme.bodyMedium!.copyWith(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.darkGrey,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Divider(
+                          height: 10,
+                          thickness: 1,
+                          indent: 10,
+                          endIndent: 10,
+                          color: AppColors.dividerGrey,
+                        ),
+                      ],
+                    )
+                  : Container();
+            },
+            childCount: widget.controller.comment!.length,
+          ),
+        );
+      }
     }
   }
 }
-
-// @override
-// Widget build(BuildContext context) {
-//   final textTheme = Theme.of(context).textTheme;
-//   return commentResponseModel.isEmpty
-//       ? const NoDataWidget(message: "No notes yet")
-//       : ListView.separated(
-//           shrinkWrap: true,
-//           itemCount: commentResponseModel.length,
-//           separatorBuilder: (BuildContext context, int index) {
-//             return const Divider(
-//               height: 10,
-//               thickness: 1,
-//               indent: 10,
-//               endIndent: 10,
-//               color: AppColors.dividerGrey,
-//             );
-//           },
-//           itemBuilder: (context, index) {
-//             return Row(
-//               children: [
-//                 const CircleAvatar(
-//                   radius: 25,
-//                   foregroundColor: AppColors.primaryYellow,
-//                   child: Icon(Icons.person),
-//                 ),
-//                 const SizedBox(width: 10),
-//                 Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Text(
-//                       commentResponseModel[index].fullName,
-//                       style: textTheme.bodyMedium!.copyWith(
-//                         fontSize: 14,
-//                         fontWeight: FontWeight.w500,
-//                         color: AppColors.darkGrey,
-//                       ),
-//                     ),
-//                     const SizedBox(width: 5),
-//                     Text(
-//                       commentResponseModel[index].comment,
-//                       style: textTheme.bodyMedium!.copyWith(
-//                           fontSize: 12,
-//                           fontWeight: FontWeight.w500,
-//                           color: AppColors.darkGrey),
-//                     )
-//                   ],
-//                 ),
-//               ],
-//             );
-//           },
-//         );
-// }

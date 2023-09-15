@@ -1,9 +1,8 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/material.dart';
 import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/components/notes/note_detail.dart';
-import 'package:quix_note/src/components/notes/widgets/single_note.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:flutter/material.dart';
+import 'package:quix_note/src/components/sign_up/social_auth.dart';
 
 import '../base/data.dart';
 import '../service/api/note_api_config.dart';
@@ -54,23 +53,23 @@ class DynamicLinkProvide {
   }
 
   /// handle dynamic link
-///
-Future<void> _handleClick(PendingDynamicLinkData pendingDynamicLinkData) async {
-  final Uri deepLink = pendingDynamicLinkData.link;
+  ///
+  Future<void> _handleClick(
+      PendingDynamicLinkData pendingDynamicLinkData) async {
+    final Uri deepLink = pendingDynamicLinkData.link;
 
-  var noteId = deepLink.queryParameters["ref"];
-  print("note Id -----------------${noteId}----------------------------");
-  if(noteId != null){
-    if(AppData.accessToken.isNotEmpty){
-      try{
-        final api = NoteApiConfig();
-        final result =await api.getNotesById(id: noteId);
-        print('result -----------------------${result}--------------------------------');
-        AppNavigation.push(NoteDetail(noteModel: result));
-      }catch(_){
-        print('------------------------------error------------------------------------');
+    var noteId = deepLink.queryParameters["ref"];
+    if (noteId != null) {
+      if (AppData.accessToken.isNotEmpty) {
+        try {
+          final api = NoteApiConfig();
+          final result = await api.getNotesById(id: noteId);
+          print("--------------------------------${result}");
+          AppNavigation.push(NoteDetail(noteModel: result));
+        } catch (_) {}
+      } else {
+        AppNavigation.push(const SocialAuth());
       }
     }
   }
-}
 }

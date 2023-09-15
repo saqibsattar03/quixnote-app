@@ -11,6 +11,7 @@ import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
 
 import '../../base/nav.dart';
+import '../../utils/error_dialog.dart';
 import '../../widgets/app_circular_button.dart';
 import 'note_detail.dart';
 
@@ -29,10 +30,16 @@ class _SearchNotesState extends State<SearchNotes> {
   List<NoteModel> filteredList = <NoteModel>[];
 
   Future<void> searchNotes() async {
-    filteredList = await api.filterNotes(
-      model: SearchAndFilterModel(title: _filterController.text),
-    );
-    setState(() {});
+    try {
+      filteredList = await api.filterNotes(
+        model: SearchAndFilterModel(title: _filterController.text),
+      );
+      setState(() {});
+    }catch(e){
+      ErrorDialog(
+        error: e,
+      ).show(context);
+    }
   }
 
   @override
@@ -158,6 +165,7 @@ class _SearchNotesState extends State<SearchNotes> {
                         AppNavigation.push(
                           NoteDetail(
                             noteModel: filteredList[index],
+
                           ),
                         );
                       },

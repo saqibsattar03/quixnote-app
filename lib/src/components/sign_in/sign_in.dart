@@ -45,9 +45,11 @@ class _SignInScreenState extends State<SignIn> {
       },
     );
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-              email: _emailController.text, password: _passwordController.text);
+      final userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
 
       String? idToken = await userCredential.user?.getIdToken();
       final response = await api.getUserUsingIdToken(idToken: idToken!);
@@ -56,12 +58,9 @@ class _SignInScreenState extends State<SignIn> {
         final userModel =
             SignInModel(email: userCredential.user!.email, password: null);
         final res = await api.signInUser(signInModel: userModel);
-        AppData.saveAccessToken(res.accessToken);
+        await AppData.saveAccessToken(res.accessToken);
         final user = await api.getUserUsingAccessToken();
-        AppData.saveUserId(user.id!);
-
-        print(
-            "${user.id} -------------------------------------------------------------------------------");
+        await AppData.saveUserId(user.id!);
       }
       if (!mounted) return;
       Navigator.pop(context);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:quix_note/src/base/nav.dart';
 import 'package:quix_note/src/service/api/privacy_terms_api_config.dart';
+import 'package:quix_note/src/utils/api_errors.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
@@ -26,11 +27,15 @@ class TermsAndConditions extends StatefulWidget {
 }
 
 class _TermsAndConditionsState extends State<TermsAndConditions> {
-  bool isLoading = false;
-  bool isUpdated = false;
-  String exception = "";
-  late List<PrivacyTerms> termsAndConditionResponse;
+  var isLoading = true;
+  var isUpdated = false;
+  var exception = "";
+  var termsAndConditionResponse = <PrivacyTerms>[];
   final api = PrivacyTermsApiConfig();
+
+  ApiError? _error;
+
+  bool get _hasError => _error != null;
 
   @override
   void initState() {
@@ -41,19 +46,12 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
 
   Future<void> getTermsAndConditionData() async {
     try {
-      isLoading = true;
-      setState(() {});
-
-      final response = await api.getTermsAndConditions();
-      termsAndConditionResponse = response;
-
-      isLoading = false;
-      setState(() {});
+      termsAndConditionResponse = await api.getTermsAndConditions();
     } catch (e) {
-      exception = e.toString();
-      isLoading = false;
-      setState(() {});
+      _error = ApiError.withDioError(e);
     }
+    isLoading = false;
+    setState(() {});
   }
 
   @override
@@ -64,7 +62,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
             AppNavigation.pop();
           },
@@ -92,31 +90,35 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                 const Expanded(
                   child: Center(child: CircularProgressIndicator()),
                 )
-              else ...[
+              else if (_hasError) ...[
+                Expanded(child: Center(child: Text(_error?.description ?? ''))),
+              ] else ...[
                 if (termsAndConditionResponse.isNotEmpty) ...[
                   FormattedDateWidget(
                     dateTime: termsAndConditionResponse[0].lastUpdated,
                   ),
                   const SizedBox(height: 40),
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: termsAndConditionResponse.length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            DetailContainer(
-                              title: termsAndConditionResponse[index].clause,
-                              subTitle:
-                                  termsAndConditionResponse[index].description,
-                              index: index,
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8),
-                            ),
-                          ],
-                        );
-                      },
+                    child: Scrollbar(
+                      child: ListView.builder(
+                        itemCount: termsAndConditionResponse.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              DetailContainer(
+                                title: termsAndConditionResponse[index].clause,
+                                subTitle: termsAndConditionResponse[index]
+                                    .description,
+                                index: index,
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ] else
@@ -144,60 +146,6 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                   ),
                 const SizedBox(height: 40),
               ],
-
-              // Expanded(
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     children: [
-              //       FormattedDateWidget(
-              //         dateTime: privacyTermsResponse[0].lastUpdated,
-              //       ),
-              //       const SizedBox(height: 40),
-              //       if (privacyTermsResponse.isNotEmpty)
-              //         Expanded(
-              //             child: ListView.builder(
-              //           itemCount: privacyTermsResponse.length,
-              //           itemBuilder: (context, index) {
-              //             return Column(
-              //               crossAxisAlignment: CrossAxisAlignment.start,
-              //               children: [
-              //                 DetailContainer(
-              //                   title: privacyTermsResponse[index].clause,
-              //                   subTitle:
-              //                       privacyTermsResponse[index].description,
-              //                 ),
-              //                 const Padding(
-              //                     padding: EdgeInsets.symmetric(vertical: 8)),
-              //               ],
-              //             );
-              //           },
-              //         ))
-              //       else
-              //         Center(
-              //           child: Text(
-              //             'No Privacy policy defined yet!',
-              //             style: textTheme.titleLarge!.copyWith(
-              //               fontSize: 24,
-              //               color: AppColors.darkGrey,
-              //             ),
-              //           ),
-              //         ),
-              //       if (widget.isSignupForm)
-              //         AppButton(
-              //           buttonSize: const Size(double.infinity, 50),
-              //           onPressed: () {
-              //             widget.callBack(!widget
-              //                 .isChecked); // Toggle the value and call the callback
-              //             setState(() {
-              //               isUpdated = !isUpdated;
-              //             });
-              //           },
-              //           buttonTitle: isUpdated == true ? 'Disagree' : "Agree",
-              //         ),
-              //       const SizedBox(height: 40),
-              //     ],
-              //   ),
-              // ),
             ],
           )),
     );

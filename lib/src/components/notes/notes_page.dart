@@ -23,7 +23,8 @@ import 'package:quix_note/src/widgets/app_circular_button.dart';
 import 'package:quix_note/src/widgets/no_data.dart';
 import 'package:reusables/reusables.dart';
 
-import '../../utils/profile_utils.dart';
+import '../../controllers/profile_controller.dart';
+import '../../utils/error_dialog.dart';
 import '../sign_up/change_password.dart';
 import '../sign_up/privacy_policy.dart';
 import '../sign_up/terms_conditions.dart';
@@ -68,7 +69,9 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
     try {
       noteModelResponse = await api.getAllNotes();
     } catch (e) {
-      exception = ApiError.withDioError(e).title;
+      ErrorDialog(
+        error: e,
+      ).show(context);
     }
     isLoading = false;
     setState(() {});
@@ -122,8 +125,7 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
                       ),
                     ),
                     const Padding(
-                      padding:
-                          EdgeInsets.only(top: 24.0), // Add padding for spacing
+                      padding: EdgeInsets.only(top: 24.0),
                       child: Text(
                         "Oops no internet connection!",
                         style: TextStyle(
@@ -192,8 +194,7 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
                             ? const NoDataWidget(message: "No notes yet")
                             : ListView.separated(
                                 shrinkWrap: true,
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
+                                separatorBuilder: (_, __) {
                                   return const Divider(
                                     thickness: 1,
                                     indent: 10,
@@ -201,16 +202,17 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
                                     color: AppColors.dividerGrey,
                                   );
                                 },
-                                itemBuilder: (context, index) {
+                                itemBuilder: (_, index) {
+                                  final note = noteModelResponse[index];
                                   return InkWell(
                                     onTap: () {
                                       AppNavigation.push(NoteDetail(
-                                        noteModel: noteModelResponse[index],
+                                        noteModel: note,
                                       ));
                                     },
                                     child: SingleNote(
                                       index: index,
-                                      noteModel: noteModelResponse[index],
+                                      noteModel: note,
                                     ),
                                   );
                                 },
@@ -232,66 +234,73 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 30,
-                              vertical: 20,
-                            ),
-                            decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(40))),
-                            child: Row(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    _scaffoldKey.currentState!.closeDrawer();
-                                    AppNavigation.push(const ProfileInfo());
-                                  },
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.black,
-                                    radius: 26,
-                                    backgroundImage: NetworkImage(
-                                      _user!.profileImage!,
-                                    ),
-                                    // child: Icon(Icons.person),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Column(
-                                  children: [
-                                    Text(
-                                      _user?.fullName ?? '',
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.w400,
+                      InkWell(
+                        onTap: () {
+                          _scaffoldKey.currentState!.closeDrawer();
+                          AppNavigation.push(const ProfileInfo());
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 30,
+                                vertical: 20,
+                              ),
+                              decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                      bottomRight: Radius.circular(40))),
+                              child: Row(
+                                children: [
+                                  // InkWell(
+                                  //   onTap: () {
+                                  //     _scaffoldKey.currentState!.closeDrawer();
+                                  //     AppNavigation.push(const ProfileInfo());
+                                  //   },
+                                  //   child:
+                                    _user?.profileImage == null
+                                        ? const Icon(Icons.person)
+                                        : CircleAvatar(
+                                            backgroundColor: Colors.black,
+                                            radius: 26,
+                                            backgroundImage: NetworkImage(
+                                              _user?.profileImage ?? '',
+                                            ),
+                                          ),
+                                  const SizedBox(width: 10),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        _user?.fullName ?? '',
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      '${_user?.state ?? ''},${_user?.country ?? ''}',
-                                      style: textTheme.bodyMedium!.copyWith(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    )
-                                  ],
-                                )
-                              ],
+                                      Text(
+                                        '${_user?.state ?? ''},${_user?.country ?? ''}',
+                                        style: textTheme.bodyMedium!.copyWith(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: const Icon(
-                              Icons.clear,
-                              color: Colors.black,
-                            ),
-                          )
-                        ],
+                            IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(
+                                Icons.clear,
+                                color: Colors.black,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 30),
                       Expanded(

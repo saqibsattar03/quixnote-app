@@ -21,6 +21,7 @@ class AppTextField extends StatelessWidget {
     this.textEditingController,
     this.isBold = false,
     this.maxLines = 1,
+    this.minLines = 1,
     this.textInputAction = TextInputAction.next,
     this.fillColor,
     this.style,
@@ -65,6 +66,7 @@ class AppTextField extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final TextEditingController? textEditingController;
   final int? maxLines;
+  final int? minLines;
   final Color? fillColor;
   final TextInputAction? textInputAction;
 
@@ -93,6 +95,7 @@ class AppTextField extends StatelessWidget {
         textAlign: TextAlign.left,
         initialValue: initialVal,
         maxLength: maxLength,
+        minLines: minLines,
         onSaved: onSaved,
         focusNode: focusNode,
         onChanged: onChanged,

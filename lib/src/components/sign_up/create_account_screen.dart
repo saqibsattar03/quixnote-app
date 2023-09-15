@@ -79,14 +79,18 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
     try {
       if (_passwordController.text == _confirmPasswordController.text) {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: _emailController.text,
-                password: _passwordController.text);
+        final auth = FirebaseAuth.instance;
+        final userCredential = await auth.createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
         final userModel = SignUpModel(
-            fullName: _fullNameController.text,
-            email: userCredential.user!.email ?? "");
-        api.signUpUser(signUpModel: userModel);
+          fullName: _fullNameController.text,
+          email: userCredential.user!.email ?? "",
+        );
+        await api.signUpUser(signUpModel: userModel);
+        if (!mounted) return;
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: AppColors.primaryYellow,
@@ -95,14 +99,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           ),
         );
         clearAllController();
+        await auth.signOut();
         // pop the circular indicator //
         if (!mounted) return;
         Navigator.pop(context);
         Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => const SignIn()),
-            (Route<dynamic> route) => false);
+          context,
+          MaterialPageRoute(builder: (context) => const SignIn()),
+          (route) => false,
+        );
       } else {
         // show error message
       }

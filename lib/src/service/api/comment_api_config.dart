@@ -17,8 +17,6 @@ final class CommentApiConfig extends BaseApi {
       {required String noteId}) async {
     try {
       final response = await getRequest(url: "/comment/all/$noteId");
-      print(
-          "${response.data}------------------------------------------------------------");
       return response.data
           .map<CommentResponseModel>(
               (json) => CommentResponseModel.fromJson(json))

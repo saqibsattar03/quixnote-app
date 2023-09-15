@@ -6,7 +6,7 @@ abstract class AppNavigation {
   static bool canPop() => navigatorKey.currentState!.canPop();
 
   static Future<dynamic> push(Widget page) async {
-    return await navigatorKey.currentState!.push(
+    return await navigatorKey.currentState?.push(
       MaterialPageRoute(builder: (context) => page),
     );
   }

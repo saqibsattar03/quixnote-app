@@ -72,6 +72,8 @@ class _AddNoteState extends State<AddNote> {
       Navigator.pop(context);
       AppNavigation.push(NotesPage());
     } catch (e) {
+      if (!mounted) return;
+      Navigator.pop(context);
       ErrorDialog(
         error: e,
       ).show(context);
@@ -103,9 +105,7 @@ class _AddNoteState extends State<AddNote> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    String formattedDate = _selectedDate != null
-        ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
-        : 'Set Due Date';
+
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -181,7 +181,9 @@ class _AddNoteState extends State<AddNote> {
                       onTap: datePicker,
                       child: NoteAction(
                         title: 'Due Date',
-                        buttonTitle: formattedDate,
+                        buttonTitle:  _selectedDate != null
+                      ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
+                          : 'Set Due Date',
                       ),
                     ),
                     const SizedBox(height: 10),
