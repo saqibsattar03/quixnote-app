@@ -88,6 +88,18 @@ base class BaseApi {
       rethrow;
     }
   }
+
+  Future<Response> deleteRequest({
+    required String url,
+    dynamic data,
+  }) async {
+    try {
+      final response = await _dio.delete(url, data: data);
+      return response;
+    } catch (_) {
+      rethrow;
+    }
+  }
 }
 
 class AuthorizationInterceptor extends InterceptorsWrapper {

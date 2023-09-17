@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:quix_note/src/base/nav.dart';
-import 'package:quix_note/src/components/notes/notes_page.dart';
 import 'package:quix_note/src/components/sign_in/sign_in.dart';
-import 'package:quix_note/src/components/sign_up/create_account_screen.dart';
 import 'package:quix_note/src/components/sign_up/social_auth.dart';
+import 'package:quix_note/src/utils/api_errors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
+import 'package:quix_note/src/utils/error_dialog.dart';
 import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/social_media_button.dart';
 
@@ -36,7 +36,15 @@ class SocialAuthSignIn extends StatelessWidget {
                   const SizedBox(height: 50),
                   SocialMediaButton(
                     // onTap:(){},
-                    onTap: () => SocialAuthService().signInWithGoogle(),
+                    onTap: () async {
+                      try {
+                        await SocialAuthService().signInWithGoogle();
+                      } catch (e) {
+                        ErrorDialog(
+                          error: ApiError.withDioError(e),
+                        ).show(context);
+                      }
+                    },
                     title: 'Login with Google',
                     assetIcon: AppImages.googleSvgIcon,
                   ),

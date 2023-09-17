@@ -71,8 +71,7 @@ class _ChangePasswordScreenState extends State<ChangePassword> {
       var authenticated = await user.reauthenticateWithCredential(cred);
       if (_newPasswordController.text == _confirmPasswordController.text) {
         await user.updatePassword(_newPasswordController.text).then((_) => {
-              Navigator.pop(context),
-              AppNavigation.push(NotesPage()),
+              AppNavigation.pushAndPopAll(NotesPage()),
               showDialog(
                 context: context,
                 builder: (context) => const AppAlertDialog(

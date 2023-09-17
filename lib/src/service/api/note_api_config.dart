@@ -52,4 +52,14 @@ final class NoteApiConfig extends BaseApi {
       rethrow;
     }
   }
+
+  Future<NoteModel> deleteNotesById({required String id}) async {
+    try {
+      final response = await deleteRequest(url: "/notes/$id");
+      return NoteModel.fromJson(response.data);
+
+    } catch (_) {
+      rethrow;
+    }
+  }
 }

@@ -63,8 +63,7 @@ class _SignInScreenState extends State<SignIn> {
         await AppData.saveUserId(user.id!);
       }
       if (!mounted) return;
-      Navigator.pop(context);
-      AppNavigation.push(NotesPage());
+      AppNavigation.pushAndPopAll(NotesPage());
     } catch (e) {
       if (!mounted) return;
       Navigator.pop(context);

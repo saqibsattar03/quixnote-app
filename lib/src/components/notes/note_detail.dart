@@ -7,6 +7,7 @@ import 'package:quix_note/src/base/data.dart';
 import 'package:quix_note/src/models/comment/comment_model.dart';
 import 'package:quix_note/src/models/note/note_model.dart';
 import 'package:quix_note/src/service/api/comment_api_config.dart';
+import 'package:quix_note/src/service/api/note_api_config.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/dynamic_link.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
@@ -18,11 +19,12 @@ import '../../service/upload_service.dart';
 import '../../utils/api_errors.dart';
 import '../../utils/app_images.dart';
 import '../../utils/error_dialog.dart';
+import '../../widgets/confirmation_dialog.dart';
 
 class NoteDetail extends StatefulWidget {
-  const NoteDetail({Key? key, required this.noteModel}) : super(key: key);
+  const NoteDetail({Key? key, required this.noteModel,   this.refreshNotes}) : super(key: key);
   final NoteModel noteModel;
-
+  final  Function? refreshNotes;
   @override
   State<NoteDetail> createState() => _NoteDetailState();
 }
@@ -32,6 +34,7 @@ class _NoteDetailState extends State<NoteDetail> {
   final _commentController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final api = CommentApiConfig();
+  final noteApi = NoteApiConfig();
   File? _selectedFile;
   final notesController = NotesController();
 
@@ -58,12 +61,10 @@ class _NoteDetailState extends State<NoteDetail> {
       await api.postComment(commentModel: commentModel);
 
       await notesController.getAllComment(widget.noteModel!.id!);
-      // await api.getAllCommentByNoteId(noteId: widget.noteModel.id!);
       _commentController.clear();
 
       if (!mounted) return;
       Navigator.pop(context);
-      // AppNavigation.pop();
       setState(() {
         setState(() {});
       });
@@ -72,6 +73,73 @@ class _NoteDetailState extends State<NoteDetail> {
         error: e,
       ).show(context);
     }
+  }
+
+  Future<bool> deleteNote(String id) async {
+    try {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      );
+      await noteApi.deleteNotesById(id:id);
+      Navigator.pop(context);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+
+  Future<void> _showConfirmationDialog() {
+    print("method called -----------------------------");
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Align(
+            alignment: Alignment.center,
+            child: Text('Confirmation'),
+          ),
+          content: const SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('Are you sure you want to delete this item?',style: TextStyle(fontSize: 16),),
+                Text('This process can not be undone!',style: TextStyle(fontSize: 12),),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Confirm',style: TextStyle(color: AppColors.primaryYellow),),
+              onPressed: () async {
+                final res = await deleteNote(widget.noteModel.id!);
+
+                if (res) {
+                  Navigator.pop(context);
+
+                  if (widget.refreshNotes != null) {
+                    widget.refreshNotes!();
+                  }
+                  Navigator.of(context).pop();
+                };
+              }
+            ),
+            TextButton(
+              child: const Text('Cancel',style: TextStyle(color: AppColors.primaryYellow),),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -119,7 +187,6 @@ class _NoteDetailState extends State<NoteDetail> {
                   DynamicLinkProvide()
                       .createLink(widget.noteModel.id.toString())
                       .then((value) {
-                    print("${value}");
                     Share.share(value);
                   });
                 },
@@ -133,6 +200,37 @@ class _NoteDetailState extends State<NoteDetail> {
                 ),
               ),
               PopupMenuItem(
+                onTap: () async {
+                  Future.delayed(Duration.zero).then((value) {
+                    _showConfirmationDialog();
+                    // try{
+                    //   print("called-----------------------------");
+                    //   bool res = await const ConfirmationDialog(
+                    //     title: 'Log out',
+                    //     message: 'Are you sure to want to log out',
+                    //   ).show(context);
+                    //   // if (res) {
+                    //   //   // AppData.prefs.clear();
+                    //   //   // AppNavigationV2.pushNamedAndRemoveUntil(AppPages.signI);
+                    //   // }
+                    //   // _showMyDialog();
+                    // }catch(e){
+                    //   print("${e.toString()}--------------------------------------------");
+                    // }
+                  });
+                 // Navigator.pop(context);
+
+                },
+                // onTap: () async{
+                //   final res=await deleteNote( widget.noteModel.id!);
+                //
+                //   if(res){
+                //     Navigator.pop(context);
+                //
+                //     if(widget.refreshNotes!=null){
+                //     widget.refreshNotes!();}
+                //   }
+                // },
                 value: 2,
                 // row has two child icon and text
                 child: Text(
@@ -358,19 +456,7 @@ class _CommentItemState extends State<CommentItem> with ControlledStateMixin {
   void initState() {
     super.initState();
     widget.controller.getAllComment(widget.noteId);
-    //getAllComments();
   }
-
-  // void getAllComments() async {
-  //   try {
-  //     commentResponseModel =
-  //         await api.getAllCommentByNoteId(noteId: widget.noteId);
-  //   } catch (e) {
-  //     ErrorDialog(error: e).show(context);
-  //   }
-  //   isLoading = false;
-  //   setState(() {});
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -381,7 +467,7 @@ class _CommentItemState extends State<CommentItem> with ControlledStateMixin {
       );
     } else if (widget.controller.hasError) {
       return SliverToBoxAdapter(
-        child:Center(child: Text(widget.controller.error.description ?? '')),
+        child: Center(child: Text(widget.controller.error.description ?? '')),
       );
     } else {
       if (widget.controller.comment!.isEmpty) {
@@ -448,60 +534,6 @@ class _CommentItemState extends State<CommentItem> with ControlledStateMixin {
                                         radius: 26,
                                         child: Icon(Icons.person),
                                       ),
-
-// : const CircleAvatar(
-//     backgroundColor: Colors.black,
-//     radius: 26,
-//     child: Icon(Icons.person),
-//   ),
-// (comment.profileImage != null)
-//     ? Stack(
-//   children: [
-//     CircleAvatar(
-//       backgroundColor: Colors.black,
-//       radius: 26,
-//       backgroundImage: NetworkImage(
-//         comment.profileImage!,
-//       ),
-//     ),
-//     if (comment.role =="ADMIN") // Check if the comment is from an admin
-//       Positioned(
-//         bottom: 0,
-//         right: 0,
-//         child: Container(
-//           padding: EdgeInsets.all(2),
-//           decoration: BoxDecoration(
-//             color: Colors.blue,
-//             shape: BoxShape.circle,
-//           ),
-//           child: Icon(
-//             Icons.verified,
-//             color: Colors.white,
-//             size: 16,
-//           ),
-//         ),
-//       ),
-//   ],
-// )
-//     : const CircleAvatar(
-//   backgroundColor: Colors.black,
-//   radius: 26,
-//   child: Icon(Icons.person),
-// ),
-
-// comment.profileImage != null
-//     ? CircleAvatar(
-//         backgroundColor: Colors.black,
-//         radius: 26,
-//         backgroundImage: NetworkImage(
-//           comment.profileImage!,
-//         ),
-//       )
-//     : const CircleAvatar(
-//         backgroundColor: Colors.black,
-//         radius: 26,
-//         child: Icon(Icons.person),
-//       ),
                             const SizedBox(width: 10),
                             Flexible(
                               child: Column(

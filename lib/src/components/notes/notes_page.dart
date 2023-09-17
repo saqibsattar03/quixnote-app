@@ -16,7 +16,6 @@ import 'package:quix_note/src/components/sign_up/social_auth.dart';
 import 'package:quix_note/src/models/note/note_model.dart';
 import 'package:quix_note/src/models/profile/sign_up_model.dart';
 import 'package:quix_note/src/service/api/note_api_config.dart';
-import 'package:quix_note/src/utils/api_errors.dart';
 import 'package:quix_note/src/utils/app_colors.dart';
 import 'package:quix_note/src/utils/app_images.dart';
 import 'package:quix_note/src/widgets/app_circular_button.dart';
@@ -77,17 +76,23 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
     setState(() {});
   }
 
-  void splitUserFullName() {
-    String? fullName = _user?.fullName ?? '';
-    List<String>? nameParts = fullName.split(' ');
+  String? splitUserFullName(String username) {
+    // String? fullName = _user?.fullName ?? '';
+    print("-------------------------------------${username}");
+    if(username.contains(" ")) {
+      List<String>? nameParts = username.split(' ');
 
-    if (nameParts.length >= 2) {
-      _user?.fullName = nameParts[0];
-      // String lastName = nameParts[1];
-      // print("First Name: $firstName");
-      // print("Last Name: $lastName");
-    } else {
-      print("Invalid full name format");
+      if (nameParts.length >= 2) {
+        return nameParts[0];
+        // String lastName = nameParts[1];
+        // print("First Name: $firstName");
+        // print("Last Name: $lastName");
+      } else {
+        print("Invalid full name format");
+      }
+    }
+    else {
+      return username;
     }
   }
 
@@ -165,9 +170,10 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
                               ),
                               const SizedBox(width: 7),
                               AppCircularButton(
-                                onPressed: () {
+                                onPressed: () async{
                                   // AppNavigation.push(const ProfileInfo());
-                                  AppNavigation.push(const AddNote());
+                                  await AppNavigation.push(const AddNote());
+                                  await getAllNotes();
                                 },
                                 color: AppColors.lightYellow,
                                 svg: SvgPicture.asset(AppImages.plusIcon),
@@ -180,7 +186,8 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
                       ),
                       const SizedBox(height: 40),
                       Text(
-                        "Hello, ${_user?.fullName ?? ''}",
+                        // "Hello, ${_user?.fullName ?? ''}",
+                        "Hello, ${splitUserFullName(_user?.fullName??"" )}",
                         style: textTheme.titleLarge!.copyWith(fontSize: 34),
                       ),
                       const SizedBox(height: 8),
@@ -207,8 +214,11 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
                                   return InkWell(
                                     onTap: () {
                                       AppNavigation.push(NoteDetail(
-                                        noteModel: note,
-                                      ));
+                                          noteModel: note,
+                                          refreshNotes: () {
+                                            getAllNotes();
+                                            setState(() {});
+                                          }));
                                     },
                                     child: SingleNote(
                                       index: index,
@@ -242,23 +252,24 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 30,
-                                vertical: 20,
-                              ),
-                              decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.only(
-                                      bottomRight: Radius.circular(40))),
-                              child: Row(
-                                children: [
-                                  // InkWell(
-                                  //   onTap: () {
-                                  //     _scaffoldKey.currentState!.closeDrawer();
-                                  //     AppNavigation.push(const ProfileInfo());
-                                  //   },
-                                  //   child:
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 30,
+                                  vertical: 20,
+                                ),
+                                decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(40))),
+                                child: Row(
+                                  children: [
+                                    // InkWell(
+                                    //   onTap: () {
+                                    //     _scaffoldKey.currentState!.closeDrawer();
+                                    //     AppNavigation.push(const ProfileInfo());
+                                    //   },
+                                    //   child:
                                     _user?.profileImage == null
                                         ? const Icon(Icons.person)
                                         : CircleAvatar(
@@ -268,26 +279,30 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
                                               _user?.profileImage ?? '',
                                             ),
                                           ),
-                                  const SizedBox(width: 10),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        _user?.fullName ?? '',
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          fontSize: 19,
-                                          fontWeight: FontWeight.w400,
-                                        ),
+                                    const SizedBox(width: 10),
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            _user?.fullName ?? '',
+                                            style: textTheme.bodyMedium!.copyWith(
+                                              fontSize: 19,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          Text(
+                                            '${_user?.state ?? ''},${_user?.country ?? ''}',
+                                            style: textTheme.bodyMedium!.copyWith(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          )
+                                        ],
                                       ),
-                                      Text(
-                                        '${_user?.state ?? ''},${_user?.country ?? ''}',
-                                        style: textTheme.bodyMedium!.copyWith(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                             IconButton(
@@ -310,14 +325,16 @@ class _NotesPageState extends State<NotesPage> with ControlledStateMixin {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                InkWell(
-                                  onTap: () {
-                                    AppNavigation.push(const ChangePassword());
-                                  },
-                                  child: const DrawerItemTitle(
-                                    title: 'Change Password',
+                                if (AppData.loginVia != "google")
+                                  InkWell(
+                                    onTap: () {
+                                      AppNavigation.push(
+                                          const ChangePassword());
+                                    },
+                                    child: const DrawerItemTitle(
+                                      title: 'Change Password',
+                                    ),
                                   ),
-                                ),
                                 // InkWell(
                                 //     onTap: () {
                                 //       AppNavigation.push(const ConnectAccounts());

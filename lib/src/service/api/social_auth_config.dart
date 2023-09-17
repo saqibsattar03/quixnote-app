@@ -31,12 +31,25 @@ class SocialAuthService {
             idToken: idToken,
           );
           final api = ProfileApiConfig();
+          if(api !=null){
+            await GoogleSignIn().signOut();
+            await AppData.clearPref();
+          }
           final response = await api.socialSignIn(signUpModel: userModel);
           AppData.saveAccessToken(response.accessToken);
+          final localUser = await api.getUserUsingAccessToken();
+          if(localUser.status =="DELETED"){
+            await GoogleSignIn().signOut();
+            await AppData.clearPref();
+            return;
+          }
+          await AppData.saveUserId(localUser.id!);
+          AppData.saveLoginVia("google");
           AppNavigation.pushAndPopAll(NotesPage());
         }
       } else {}
     } catch (e) {
+      rethrow;
       print("Error signing in with Google: $e");
     }
   }

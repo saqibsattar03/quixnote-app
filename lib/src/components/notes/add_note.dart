@@ -14,7 +14,6 @@ import 'package:quix_note/src/widgets/app_button.dart';
 import 'package:quix_note/src/widgets/app_textfield.dart';
 
 import '../../models/note/note_model.dart';
-import 'notes_page.dart';
 
 enum Priority {
   high("High"),
@@ -46,7 +45,7 @@ class _AddNoteState extends State<AddNote> {
   Priority? _selectedPriority = Priority.high;
   File? _selectedFile;
 
-  void createNote() async {
+  Future<void> createNote() async {
     showDialog(
       context: context,
       builder: (context) {
@@ -68,11 +67,11 @@ class _AddNoteState extends State<AddNote> {
         deadline: _selectedDate,
       );
       await api.creteNote(createNoteModel: createNoteModel);
-      if (!mounted) return;
+      //if (!mounted) return;
       Navigator.pop(context);
-      AppNavigation.push(NotesPage());
+
     } catch (e) {
-      if (!mounted) return;
+    //  if (!mounted) return;
       Navigator.pop(context);
       ErrorDialog(
         error: e,
@@ -104,8 +103,6 @@ class _AddNoteState extends State<AddNote> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-
-
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -181,9 +178,9 @@ class _AddNoteState extends State<AddNote> {
                       onTap: datePicker,
                       child: NoteAction(
                         title: 'Due Date',
-                        buttonTitle:  _selectedDate != null
-                      ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
-                          : 'Set Due Date',
+                        buttonTitle: _selectedDate != null
+                            ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
+                            : 'Set Due Date',
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -271,7 +268,7 @@ class _AddNoteState extends State<AddNote> {
                           horizontal: 20, vertical: 40),
                       child: AppButton(
                         buttonSize: const Size(double.infinity, 56),
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             if (_selectedDate == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -283,7 +280,8 @@ class _AddNoteState extends State<AddNote> {
                               );
                               return;
                             }
-                            createNote();
+                            await createNote();
+                             Navigator.pop(context);
                           }
                         },
                         // onPressed: () {

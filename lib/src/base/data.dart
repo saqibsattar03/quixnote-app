@@ -9,6 +9,7 @@ class AppData {
   static const userNameKey = 'userNameKey';
   static const loggedUserIdKey = 'loggedUserIdKey';
   static const userKey = 'user';
+  static const loginViaKey = 'email';
 
   static Future<void> initiate() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -22,6 +23,9 @@ class AppData {
 
   static Future<void> saveAccessToken(String accessToken) async {
     await _sharedPreferences.setString(accessTokenKey, accessToken);
+  }
+  static Future<void> saveLoginVia(String loginVia) async {
+    await _sharedPreferences.setString(loginViaKey, loginVia);
   }
 
   static Future<void> saveUserName(String userName) async {
@@ -38,6 +42,9 @@ class AppData {
 
   static String get accessToken =>
       _sharedPreferences.getString(accessTokenKey) ?? '';
+
+  static String get loginVia =>
+      _sharedPreferences.getString(loginViaKey) ?? '';
 
   static String get userName => _sharedPreferences.getString(userNameKey) ?? '';
 

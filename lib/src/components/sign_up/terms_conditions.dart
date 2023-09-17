@@ -185,6 +185,7 @@ class DetailContainer extends StatelessWidget {
         ),
         Expanded(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
